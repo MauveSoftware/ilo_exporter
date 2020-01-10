@@ -2,6 +2,7 @@ package memory
 
 import (
 	"strings"
+	"sync"
 
 	"github.com/pkg/errors"
 
@@ -54,17 +55,32 @@ func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric) e
 	ch <- prometheus.MustNewConstMetric(healthyDesc, prometheus.GaugeValue, healthy, cl.HostName())
 	ch <- prometheus.MustNewConstMetric(totalMemory, prometheus.GaugeValue, float64(m.TotalSystemMemoryGiB<<30), cl.HostName())
 
+	wg := sync.WaitGroup{}
+	wg.Add(len(m.Links.Members))
+
+	doneCh := make(chan interface{})
+	errCh := make(chan error)
+
+	go func() {
+		wg.Wait()
+		doneCh <- nil
+	}()
+
 	for _, l := range m.Links.Members {
-		err := collectForDIMM(l.Href, cl, ch)
-		if err != nil {
-			return errors.Wrapf(err, "could not get memory information from %s", l)
-		}
+		go collectForDIMM(l.Href, cl, ch, &wg, errCh)
 	}
 
-	return nil
+	select {
+	case <-doneCh:
+		return nil
+	case err = <-errCh:
+		return err
+	}
 }
 
-func collectForDIMM(link string, cl client.Client, ch chan<- prometheus.Metric) error {
+func collectForDIMM(link string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
+	defer wg.Done()
+
 	i := strings.Index(link, "Systems/")
 	p := link[i:]
 
@@ -72,7 +88,8 @@ func collectForDIMM(link string, cl client.Client, ch chan<- prometheus.Metric) 
 
 	err := cl.Get(p, &d)
 	if err != nil {
-		return err
+		errCh <- errors.Wrapf(err, "could not get memory information from %s", link)
+		return
 	}
 
 	l := []string{cl.HostName(), d.Name}
@@ -84,6 +101,4 @@ func collectForDIMM(link string, cl client.Client, ch chan<- prometheus.Metric) 
 
 	ch <- prometheus.MustNewConstMetric(dimmHealthyDesc, prometheus.GaugeValue, healthy, l...)
 	ch <- prometheus.MustNewConstMetric(dimmSizeDesc, prometheus.GaugeValue, float64(d.SizeMB<<20), l...)
-
-	return nil
 }

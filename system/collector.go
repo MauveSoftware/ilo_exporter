@@ -4,6 +4,7 @@ import (
 	"github.com/MauveSoftware/ilo4_exporter/client"
 	"github.com/MauveSoftware/ilo4_exporter/system/memory"
 	"github.com/MauveSoftware/ilo4_exporter/system/processor"
+	"github.com/MauveSoftware/ilo4_exporter/system/storage"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 )
@@ -32,6 +33,7 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- powerUpDesc
 	memory.Describe(ch)
 	processor.Describe(ch)
+	storage.Describe(ch)
 }
 
 // Collect implements prometheus.Collector interface
@@ -52,6 +54,11 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	err = processor.Collect(p, c.cl, ch)
+	if err != nil {
+		logrus.Error(err)
+	}
+
+	err = storage.Collect(p, c.cl, ch)
 	if err != nil {
 		logrus.Error(err)
 	}

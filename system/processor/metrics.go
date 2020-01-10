@@ -2,6 +2,7 @@ package processor
 
 import (
 	"strings"
+	"sync"
 
 	"github.com/MauveSoftware/ilo4_exporter/client"
 	"github.com/pkg/errors"
@@ -47,17 +48,32 @@ func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric) e
 
 	ch <- prometheus.MustNewConstMetric(countDesc, prometheus.GaugeValue, procs.Count, cl.HostName())
 
+	wg := sync.WaitGroup{}
+	wg.Add(len(procs.Links.Members))
+
+	doneCh := make(chan interface{})
+	errCh := make(chan error)
+
+	go func() {
+		wg.Wait()
+		doneCh <- nil
+	}()
+
 	for _, l := range procs.Links.Members {
-		err := collectForProcessor(l.Href, cl, ch)
-		if err != nil {
-			return errors.Wrapf(err, "could not get processor information from %s", l)
-		}
+		go collectForProcessor(l.Href, cl, ch, &wg, errCh)
 	}
 
-	return nil
+	select {
+	case <-doneCh:
+		return nil
+	case err = <-errCh:
+		return err
+	}
 }
 
-func collectForProcessor(link string, cl client.Client, ch chan<- prometheus.Metric) error {
+func collectForProcessor(link string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
+	defer wg.Done()
+
 	i := strings.Index(link, "Systems/")
 	p := link[i:]
 
@@ -65,13 +81,12 @@ func collectForProcessor(link string, cl client.Client, ch chan<- prometheus.Met
 
 	err := cl.Get(p, &pr)
 	if err != nil {
-		return err
+		errCh <- errors.Wrapf(err, "could not get processor information from %s", link)
+		return
 	}
 
 	l := []string{cl.HostName(), pr.Socket, strings.Trim(pr.Model, " ")}
 	ch <- prometheus.MustNewConstMetric(coresDesc, prometheus.GaugeValue, pr.TotalCores, l...)
 	ch <- prometheus.MustNewConstMetric(threadsDesc, prometheus.GaugeValue, pr.TotalThreads, l...)
 	ch <- prometheus.MustNewConstMetric(healthyDesc, prometheus.GaugeValue, pr.Status.HealthValue(), l...)
-
-	return nil
 }

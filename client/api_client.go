@@ -101,8 +101,8 @@ func (cl *APIClient) get(path string) ([]byte, error) {
 		return nil, err
 	}
 
-	logrus.Infof("Status Code: %s", resp.Status)
 	if cl.debug {
+		logrus.Infof("Status Code: %s", resp.Status)
 		logrus.Infof("Response: %s", string(b))
 	}
 
