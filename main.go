@@ -48,6 +48,7 @@ func printVersion() {
 	fmt.Println("ilo4_exporter")
 	fmt.Printf("Version: %s\n", version)
 	fmt.Println("Author(s): Daniel Czerwonk")
+	fmt.Println("Copyright: 2020, Mauve Mailorder Software GmbH & Co. KG, Licensed under MIT license")
 	fmt.Println("Metric exporter for HP iLO4")
 }
 
