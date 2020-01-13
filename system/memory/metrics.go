@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/MauveSoftware/ilo4_exporter/client"
+	"github.com/MauveSoftware/ilo4_exporter/common"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -31,6 +32,7 @@ func init() {
 	dimmSizeDesc = prometheus.NewDesc(prefix+"dimm_byte", "DIMM size in bytes", l, nil)
 }
 
+// Describe describes all metrics for the memory package
 func Describe(ch chan<- *prometheus.Desc) {
 	ch <- healthyDesc
 	ch <- totalMemory
@@ -38,25 +40,37 @@ func Describe(ch chan<- *prometheus.Desc) {
 	ch <- dimmSizeDesc
 }
 
-func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric) error {
-	p := parentPath + "/Memory"
+// Collect collects metrics for memory modules
+func Collect(systemPath string, cl client.Client, ch chan<- prometheus.Metric) error {
 	m := Memory{}
 
-	err := cl.Get(p, &m)
+	err := cl.Get(systemPath, &m)
 	if err != nil {
 		return errors.Wrap(err, "could not get memory summary")
 	}
 
 	var healthy float64
-	if m.Status.HealthRollUp == "Ok" {
+	if strings.ToLower(m.MemorySummary.Status.HealthRollUp) == "ok" {
 		healthy = 1
 	}
 
 	ch <- prometheus.MustNewConstMetric(healthyDesc, prometheus.GaugeValue, healthy, cl.HostName())
-	ch <- prometheus.MustNewConstMetric(totalMemory, prometheus.GaugeValue, float64(m.TotalSystemMemoryGiB<<30), cl.HostName())
+	ch <- prometheus.MustNewConstMetric(totalMemory, prometheus.GaugeValue, float64(m.MemorySummary.TotalSystemMemoryGiB<<30), cl.HostName())
+
+	return collectForDIMMs(systemPath, cl, ch)
+}
+
+func collectForDIMMs(parentPath string, cl client.Client, ch chan<- prometheus.Metric) error {
+	p := parentPath + "/Memory"
+
+	mem := common.ResourceLinks{}
+	err := cl.Get(p, &mem)
+	if err != nil {
+		return errors.Wrap(err, "could not get DIMM list")
+	}
 
 	wg := sync.WaitGroup{}
-	wg.Add(len(m.Links.Members))
+	wg.Add(len(mem.Links.Members))
 
 	doneCh := make(chan interface{})
 	errCh := make(chan error)
@@ -66,7 +80,7 @@ func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric) e
 		doneCh <- nil
 	}()
 
-	for _, l := range m.Links.Members {
+	for _, l := range mem.Links.Members {
 		go collectForDIMM(l.Href, cl, ch, &wg, errCh)
 	}
 

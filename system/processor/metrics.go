@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/MauveSoftware/ilo4_exporter/client"
+	"github.com/MauveSoftware/ilo4_exporter/common"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -30,6 +31,7 @@ func init() {
 	healthyDesc = prometheus.NewDesc(prefix+"healthy", "Health status of processor", l, nil)
 }
 
+// Describe describes all metrics for the processor package
 func Describe(ch chan<- *prometheus.Desc) {
 	ch <- countDesc
 	ch <- coresDesc
@@ -37,16 +39,17 @@ func Describe(ch chan<- *prometheus.Desc) {
 	ch <- healthyDesc
 }
 
+// Collect collects processor metrics
 func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric) error {
 	p := parentPath + "/Processors"
-	procs := Processors{}
+	procs := common.ResourceLinks{}
 
 	err := cl.Get(p, &procs)
 	if err != nil {
 		return errors.Wrap(err, "could not get processor summary")
 	}
 
-	ch <- prometheus.MustNewConstMetric(countDesc, prometheus.GaugeValue, procs.Count, cl.HostName())
+	ch <- prometheus.MustNewConstMetric(countDesc, prometheus.GaugeValue, float64(len(procs.Links.Members)), cl.HostName())
 
 	wg := sync.WaitGroup{}
 	wg.Add(len(procs.Links.Members))

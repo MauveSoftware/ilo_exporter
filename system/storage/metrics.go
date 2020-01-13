@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/MauveSoftware/ilo4_exporter/client"
+	"github.com/MauveSoftware/ilo4_exporter/common"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -34,6 +35,7 @@ func init() {
 	diskDriveTempDesc = prometheus.NewDesc(prefix+"disk_temperature", "Temperature of the disc in degree celsius", dl, nil)
 }
 
+// Describe describes all metrics for the storage package
 func Describe(ch chan<- *prometheus.Desc) {
 	ch <- logicalDriveCapacityDesc
 	ch <- logicalDriveHealthyDesc
@@ -43,9 +45,10 @@ func Describe(ch chan<- *prometheus.Desc) {
 	ch <- diskDriveHealthyDesc
 }
 
+// Collect collects metrics for storage controllers
 func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric) error {
 	p := parentPath + "/SmartStorage/ArrayControllers"
-	crtls := ArrayControllers{}
+	crtls := common.ResourceLinks{}
 
 	err := cl.Get(p, &crtls)
 	if err != nil {
@@ -160,15 +163,15 @@ func collectDiskDrive(path string, crtl ArrayController, cl client.Client, ch ch
 }
 
 func driveLinks(path string, cl client.Client) ([]string, error) {
-	d := Drives{}
+	drvLinks := common.ResourceLinks{}
 
-	err := cl.Get(path, &d)
+	err := cl.Get(path, &drvLinks)
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not get drive list from %s", path)
 	}
 
-	drvs := make([]string, d.Total)
-	for i, l := range d.Links.Members {
+	drvs := make([]string, len(drvLinks.Links.Members))
+	for i, l := range drvLinks.Links.Members {
 		drvs[i] = l.Href[strings.Index(l.Href, "Systems/"):]
 	}
 
