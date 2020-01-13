@@ -46,26 +46,28 @@ func Describe(ch chan<- *prometheus.Desc) {
 }
 
 // Collect collects metrics for storage controllers
-func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric) error {
+func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
+	defer wg.Done()
+
 	p := parentPath + "/SmartStorage/ArrayControllers"
 	crtls := common.ResourceLinks{}
 
 	err := cl.Get(p, &crtls)
 	if err != nil {
-		return errors.Wrap(err, "could not get array controller summary")
+		errCh <- errors.Wrap(err, "could not get array controller summary")
+		return
 	}
+
+	wg.Add(len(crtls.Links.Members))
 
 	for _, l := range crtls.Links.Members {
-		err := collectForArrayController(l.Href, cl, ch)
-		if err != nil {
-			return errors.Wrapf(err, "could not get array controller information from %s", l.Href)
-		}
+		go collectForArrayController(l.Href, cl, ch, wg, errCh)
 	}
-
-	return nil
 }
 
-func collectForArrayController(link string, cl client.Client, ch chan<- prometheus.Metric) error {
+func collectForArrayController(link string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
+	defer wg.Done()
+
 	i := strings.Index(link, "Systems/")
 	p := link[i:]
 
@@ -73,29 +75,14 @@ func collectForArrayController(link string, cl client.Client, ch chan<- promethe
 
 	err := cl.Get(p, &crtl)
 	if err != nil {
-		return err
+		errCh <- errors.Wrapf(err, "could not get array controller information from %s", link)
+		return
 	}
 
-	wg := sync.WaitGroup{}
 	wg.Add(2)
 
-	doneCh := make(chan interface{})
-	errCh := make(chan error)
-
-	go func() {
-		wg.Wait()
-		doneCh <- nil
-	}()
-
-	go collectLogicalDrives(p, crtl, cl, ch, &wg, errCh)
-	go collectDiskDrives(p, crtl, cl, ch, &wg, errCh)
-
-	select {
-	case <-doneCh:
-		return nil
-	case err = <-errCh:
-		return err
-	}
+	go collectLogicalDrives(p, crtl, cl, ch, wg, errCh)
+	go collectDiskDrives(p, crtl, cl, ch, wg, errCh)
 }
 
 func collectLogicalDrives(parentPath string, crtl ArrayController, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {

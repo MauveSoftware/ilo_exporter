@@ -40,37 +40,24 @@ func Describe(ch chan<- *prometheus.Desc) {
 }
 
 // Collect collects processor metrics
-func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric) error {
+func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
+	defer wg.Done()
+
 	p := parentPath + "/Processors"
 	procs := common.ResourceLinks{}
 
 	err := cl.Get(p, &procs)
 	if err != nil {
-		return errors.Wrap(err, "could not get processor summary")
+		errCh <- errors.Wrap(err, "could not get processor summary")
+		return
 	}
 
 	ch <- prometheus.MustNewConstMetric(countDesc, prometheus.GaugeValue, float64(len(procs.Links.Members)), cl.HostName())
 
-	wg := sync.WaitGroup{}
 	wg.Add(len(procs.Links.Members))
 
-	doneCh := make(chan interface{})
-	errCh := make(chan error)
-
-	go func() {
-		wg.Wait()
-		doneCh <- nil
-	}()
-
 	for _, l := range procs.Links.Members {
-		go collectForProcessor(l.Href, cl, ch, &wg, errCh)
-	}
-
-	select {
-	case <-doneCh:
-		return nil
-	case err = <-errCh:
-		return err
+		go collectForProcessor(l.Href, cl, ch, wg, errCh)
 	}
 }
 

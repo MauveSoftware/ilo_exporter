@@ -1,6 +1,9 @@
 package system
 
 import (
+	"sync"
+	"time"
+
 	"github.com/MauveSoftware/ilo4_exporter/client"
 	"github.com/MauveSoftware/ilo4_exporter/system/memory"
 	"github.com/MauveSoftware/ilo4_exporter/system/processor"
@@ -14,7 +17,8 @@ const (
 )
 
 var (
-	powerUpDesc = prometheus.NewDesc(prefix+"power_up", "Power status", []string{"host"}, nil)
+	powerUpDesc        = prometheus.NewDesc(prefix+"power_up", "Power status", []string{"host"}, nil)
+	scrapeDurationDesc = prometheus.NewDesc(prefix+"system_scrape_duration_second", "Scrape duration for the system module", []string{"host"}, nil)
 )
 
 // NewCollector returns a new collector for system metrics
@@ -31,6 +35,7 @@ type collector struct {
 // Describe implements prometheus.Collector interface
 func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- powerUpDesc
+	ch <- scrapeDurationDesc
 	memory.Describe(ch)
 	processor.Describe(ch)
 	storage.Describe(ch)
@@ -38,6 +43,8 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect implements prometheus.Collector interface
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
+	start := time.Now()
+
 	p := "Systems/1"
 
 	s := System{}
@@ -48,18 +55,26 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 
 	ch <- prometheus.MustNewConstMetric(powerUpDesc, prometheus.GaugeValue, s.PowerUpValue(), c.cl.HostName())
 
-	err = memory.Collect(p, c.cl, ch)
-	if err != nil {
-		logrus.Error(err)
-	}
+	wg := &sync.WaitGroup{}
+	doneCh := make(chan interface{})
+	errCh := make(chan error)
 
-	err = processor.Collect(p, c.cl, ch)
-	if err != nil {
-		logrus.Error(err)
-	}
+	wg.Add(3)
 
-	err = storage.Collect(p, c.cl, ch)
-	if err != nil {
+	go func() {
+		wg.Wait()
+		doneCh <- nil
+	}()
+
+	go memory.Collect(p, c.cl, ch, wg, errCh)
+	go processor.Collect(p, c.cl, ch, wg, errCh)
+	go storage.Collect(p, c.cl, ch, wg, errCh)
+
+	select {
+	case <-doneCh:
+		duration := time.Now().Sub(start).Seconds()
+		ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration, c.cl.HostName())
+	case err = <-errCh:
 		logrus.Error(err)
 	}
 }

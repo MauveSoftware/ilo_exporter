@@ -41,12 +41,15 @@ func Describe(ch chan<- *prometheus.Desc) {
 }
 
 // Collect collects metrics for memory modules
-func Collect(systemPath string, cl client.Client, ch chan<- prometheus.Metric) error {
+func Collect(systemPath string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
+	defer wg.Done()
+
 	m := Memory{}
 
 	err := cl.Get(systemPath, &m)
 	if err != nil {
-		return errors.Wrap(err, "could not get memory summary")
+		errCh <- errors.Wrap(err, "could not get memory summary")
+		return
 	}
 
 	var healthy float64
@@ -57,38 +60,23 @@ func Collect(systemPath string, cl client.Client, ch chan<- prometheus.Metric) e
 	ch <- prometheus.MustNewConstMetric(healthyDesc, prometheus.GaugeValue, healthy, cl.HostName())
 	ch <- prometheus.MustNewConstMetric(totalMemory, prometheus.GaugeValue, float64(m.MemorySummary.TotalSystemMemoryGiB<<30), cl.HostName())
 
-	return collectForDIMMs(systemPath, cl, ch)
+	collectForDIMMs(systemPath, cl, ch, wg, errCh)
 }
 
-func collectForDIMMs(parentPath string, cl client.Client, ch chan<- prometheus.Metric) error {
+func collectForDIMMs(parentPath string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
 	p := parentPath + "/Memory"
 
 	mem := common.ResourceLinks{}
 	err := cl.Get(p, &mem)
 	if err != nil {
-		return errors.Wrap(err, "could not get DIMM list")
+		errCh <- errors.Wrap(err, "could not get DIMM list")
+		return
 	}
 
-	wg := sync.WaitGroup{}
 	wg.Add(len(mem.Links.Members))
 
-	doneCh := make(chan interface{})
-	errCh := make(chan error)
-
-	go func() {
-		wg.Wait()
-		doneCh <- nil
-	}()
-
 	for _, l := range mem.Links.Members {
-		go collectForDIMM(l.Href, cl, ch, &wg, errCh)
-	}
-
-	select {
-	case <-doneCh:
-		return nil
-	case err = <-errCh:
-		return err
+		go collectForDIMM(l.Href, cl, ch, wg, errCh)
 	}
 }
 
