@@ -74,15 +74,15 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	for {
 		select {
 		case <-doneCh:
-			break
+			if errs == 0 {
+				duration := time.Now().Sub(start).Seconds()
+				ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration, c.cl.HostName())
+			}
+
+			return
 		case err = <-errCh:
 			errs++
 			logrus.Error(err)
 		}
-	}
-
-	if errs == 0 {
-		duration := time.Now().Sub(start).Seconds()
-		ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration, c.cl.HostName())
 	}
 }
