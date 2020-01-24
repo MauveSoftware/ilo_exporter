@@ -94,15 +94,12 @@ func collectLogicalDrives(parentPath string, crtl ArrayController, cl client.Cli
 		return
 	}
 
-	wg.Add(len(drvs))
 	for _, d := range drvs {
-		go collectLogicalDrive(d, crtl, cl, ch, wg, errCh)
+		go collectLogicalDrive(d, crtl, cl, ch, errCh)
 	}
 }
 
-func collectLogicalDrive(path string, crtl ArrayController, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
-	defer wg.Done()
-
+func collectLogicalDrive(path string, crtl ArrayController, cl client.Client, ch chan<- prometheus.Metric, errCh chan<- error) {
 	d := LogicalDrive{}
 
 	err := cl.Get(path, &d)
@@ -125,15 +122,12 @@ func collectDiskDrives(parentPath string, crtl ArrayController, cl client.Client
 		return
 	}
 
-	wg.Add(len(drvs))
 	for _, d := range drvs {
-		go collectDiskDrive(d, crtl, cl, ch, wg, errCh)
+		collectDiskDrive(d, crtl, cl, ch, errCh)
 	}
 }
 
-func collectDiskDrive(path string, crtl ArrayController, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
-	defer wg.Done()
-
+func collectDiskDrive(path string, crtl ArrayController, cl client.Client, ch chan<- prometheus.Metric, errCh chan<- error) {
 	d := DiskDrive{}
 
 	err := cl.Get(path, &d)
