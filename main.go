@@ -18,11 +18,12 @@ import (
 const version string = "0.2.1"
 
 var (
-	showVersion   = flag.Bool("version", false, "Print version information.")
-	listenAddress = flag.String("web.listen-address", ":9545", "Address on which to expose metrics and web interface.")
-	metricsPath   = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
-	username      = flag.String("api.username", "", "Username")
-	password      = flag.String("api.password", "", "Password")
+	showVersion           = flag.Bool("version", false, "Print version information.")
+	listenAddress         = flag.String("web.listen-address", ":9545", "Address on which to expose metrics and web interface.")
+	metricsPath           = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
+	username              = flag.String("api.username", "", "Username")
+	password              = flag.String("api.password", "", "Password")
+	maxConcurrentRequests = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent against API concurrently")
 )
 
 func init() {
@@ -93,7 +94,7 @@ func handleMetricsRequest(w http.ResponseWriter, r *http.Request) error {
 
 	reg := prometheus.NewRegistry()
 
-	cl := client.NewClient(host, *username, *password, client.WithInsecure())
+	cl := client.NewClient(host, *username, *password, client.WithMaxConcurrentRequests(*maxConcurrentRequests), client.WithInsecure())
 	reg.MustRegister(system.NewCollector(cl))
 	reg.MustRegister(chassis.NewCollector(cl))
 

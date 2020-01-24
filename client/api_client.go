@@ -1,12 +1,15 @@
 package client
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"golang.org/x/sync/semaphore"
 
 	"github.com/sirupsen/logrus"
 )
@@ -19,6 +22,7 @@ type APIClient struct {
 	password string
 	client   *http.Client
 	debug    bool
+	sem      *semaphore.Weighted
 }
 
 // ClientOption applies options to APIClient
@@ -41,6 +45,14 @@ func WithDebug() ClientOption {
 	}
 }
 
+// WithMaxConcurrentRequests defines the maximum number of GET requests sent against API concurrently
+func WithMaxConcurrentRequests(max uint) ClientOption {
+	return func(c *APIClient) {
+		c.sem = semaphore.NewWeighted(int64(max))
+	}
+}
+
+// NewClient creates a new client instance
 func NewClient(hostName, username, password string, opts ...ClientOption) Client {
 	cl := &APIClient{
 		url:      fmt.Sprintf("https://%s/rest/v1/", hostName),
@@ -48,6 +60,7 @@ func NewClient(hostName, username, password string, opts ...ClientOption) Client
 		username: username,
 		password: password,
 		client:   &http.Client{},
+		sem:      semaphore.NewWeighted(1),
 	}
 
 	for _, o := range opts {
@@ -74,6 +87,9 @@ func (cl *APIClient) Get(path string, obj interface{}) error {
 }
 
 func (cl *APIClient) get(path string) ([]byte, error) {
+	cl.sem.Acquire(context.Background(), 1)
+	defer cl.sem.Release(1)
+
 	uri := strings.Trim(cl.url, "/") + "/" + strings.Trim(path, "/")
 
 	logrus.Infof("GET %s", uri)
