@@ -60,10 +60,10 @@ func Collect(systemPath string, cl client.Client, ch chan<- prometheus.Metric, w
 	ch <- prometheus.MustNewConstMetric(healthyDesc, prometheus.GaugeValue, healthy, cl.HostName())
 	ch <- prometheus.MustNewConstMetric(totalMemory, prometheus.GaugeValue, float64(m.MemorySummary.TotalSystemMemoryGiB<<30), cl.HostName())
 
-	collectForDIMMs(systemPath, cl, ch, errCh)
+	collectForDIMMs(systemPath, cl, ch, wg, errCh)
 }
 
-func collectForDIMMs(parentPath string, cl client.Client, ch chan<- prometheus.Metric, errCh chan<- error) {
+func collectForDIMMs(parentPath string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
 	p := parentPath + "/Memory"
 
 	mem := common.ResourceLinks{}
@@ -73,12 +73,16 @@ func collectForDIMMs(parentPath string, cl client.Client, ch chan<- prometheus.M
 		return
 	}
 
+	wg.Add(len(mem.Links.Members))
+
 	for _, l := range mem.Links.Members {
-		collectForDIMM(l.Href, cl, ch, errCh)
+		go collectForDIMM(l.Href, cl, ch, wg, errCh)
 	}
 }
 
-func collectForDIMM(link string, cl client.Client, ch chan<- prometheus.Metric, errCh chan<- error) {
+func collectForDIMM(link string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
+	defer wg.Done()
+
 	i := strings.Index(link, "Systems/")
 	p := link[i:]
 

@@ -54,12 +54,16 @@ func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric, w
 
 	ch <- prometheus.MustNewConstMetric(countDesc, prometheus.GaugeValue, float64(len(procs.Links.Members)), cl.HostName())
 
+	wg.Add(len(procs.Links.Members))
+
 	for _, l := range procs.Links.Members {
-		collectForProcessor(l.Href, cl, ch, errCh)
+		go collectForProcessor(l.Href, cl, ch, wg, errCh)
 	}
 }
 
-func collectForProcessor(link string, cl client.Client, ch chan<- prometheus.Metric, errCh chan<- error) {
+func collectForProcessor(link string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
+	defer wg.Done()
+
 	i := strings.Index(link, "Systems/")
 	p := link[i:]
 
