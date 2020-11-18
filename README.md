@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/MauveSoftware/ilo4_exporter.svg?style=shield)](https://circleci.com/gh/MauveSoftware/ilo4_exporter)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mauvesoftware/ilo4_exporter)](https://goreportcard.com/report/github.com/mauvesoftware/ilo4_exporter)
 
 # ilo4_exporter
 Metrics exporter for HP iLO4 to prometheus
