@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/MauveSoftware/ilo4_exporter/chassis"
-	"github.com/MauveSoftware/ilo4_exporter/client"
-	"github.com/MauveSoftware/ilo4_exporter/system"
+	"github.com/MauveSoftware/ilo4_exporter/pkg/chassis"
+	"github.com/MauveSoftware/ilo4_exporter/pkg/client"
+	"github.com/MauveSoftware/ilo4_exporter/pkg/system"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/prometheus/common/log"
 	"github.com/sirupsen/logrus"
 )
 
@@ -97,8 +97,11 @@ func handleMetricsRequest(w http.ResponseWriter, r *http.Request) error {
 	reg.MustRegister(system.NewCollector(cl))
 	reg.MustRegister(chassis.NewCollector(cl))
 
+	l := logrus.New()
+	l.Level = logrus.ErrorLevel
+
 	promhttp.HandlerFor(reg, promhttp.HandlerOpts{
-		ErrorLog:      log.NewErrorLogger(),
+		ErrorLog:      l,
 		ErrorHandling: promhttp.ContinueOnError}).ServeHTTP(w, r)
 	return nil
 }
