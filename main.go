@@ -24,6 +24,9 @@ var (
 	username              = flag.String("api.username", "", "Username")
 	password              = flag.String("api.password", "", "Password")
 	maxConcurrentRequests = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent against API concurrently")
+	tlsEnabled            = flag.Bool("tls.enabled", false, "Enables TLS")
+	tlsCertChainPath      = flag.String("tls.cert-file", "", "Path to TLS cert file")
+	tlsKeyPath            = flag.String("tls.key-file", "", "Path to TLS key file")
 )
 
 func init() {
@@ -70,7 +73,12 @@ func startServer() {
 	})
 	http.HandleFunc(*metricsPath, errorHandler(handleMetricsRequest))
 
-	logrus.Infof("Listening for %s on %s", *metricsPath, *listenAddress)
+	logrus.Infof("Listening for %s on %s (TLS: %v)", *metricsPath, *listenAddress, *tlsEnabled)
+	if *tlsEnabled {
+		logrus.Fatal(http.ListenAndServeTLS(*listenAddress, *tlsCertChainPath, *tlsKeyPath, nil))
+		return
+	}
+
 	logrus.Fatal(http.ListenAndServe(*listenAddress, nil))
 }
 
