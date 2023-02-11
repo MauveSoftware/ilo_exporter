@@ -4,7 +4,9 @@
 
 package client
 
+import "context"
+
 type Client interface {
 	HostName() string
-	Get(ressource string, obj interface{}) error
+	Get(ctx context.Context, ressource string, obj interface{}) error
 }

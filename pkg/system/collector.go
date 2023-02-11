@@ -5,15 +5,17 @@
 package system
 
 import (
-	"sync"
+	"context"
 	"time"
 
 	"github.com/MauveSoftware/ilo4_exporter/pkg/client"
+	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 	"github.com/MauveSoftware/ilo4_exporter/pkg/system/memory"
 	"github.com/MauveSoftware/ilo4_exporter/pkg/system/processor"
 	"github.com/MauveSoftware/ilo4_exporter/pkg/system/storage"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
+	"go.opentelemetry.io/otel/trace"
 )
 
 const (
@@ -26,14 +28,18 @@ var (
 )
 
 // NewCollector returns a new collector for system metrics
-func NewCollector(cl client.Client) prometheus.Collector {
+func NewCollector(ctx context.Context, cl client.Client, tracer trace.Tracer) prometheus.Collector {
 	return &collector{
-		cl: cl,
+		rootCtx: ctx,
+		cl:      cl,
+		tracer:  tracer,
 	}
 }
 
 type collector struct {
-	cl client.Client
+	rootCtx context.Context
+	cl      client.Client
+	tracer  trace.Tracer
 }
 
 // Describe implements prometheus.Collector interface
@@ -49,44 +55,36 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	start := time.Now()
 
+	ctx, span := c.tracer.Start(c.rootCtx, "System.Collect")
+	defer span.End()
+
 	p := "Systems/1"
 
 	s := System{}
-	err := c.cl.Get(p, &s)
+	err := c.cl.Get(ctx, p, &s)
 	if err != nil {
 		logrus.Error(err)
 	}
 
 	ch <- prometheus.MustNewConstMetric(powerUpDesc, prometheus.GaugeValue, s.PowerUpValue(), c.cl.HostName())
 
-	wg := &sync.WaitGroup{}
 	doneCh := make(chan interface{})
-	errCh := make(chan error)
 
-	wg.Add(3)
+	cc := common.NewCollectorContext(ctx, c.cl, ch, c.tracer)
 
+	cc.WaitGroup().Add(3)
 	go func() {
-		wg.Wait()
+		cc.WaitGroup().Wait()
 		doneCh <- nil
 	}()
 
-	go memory.Collect(p, c.cl, ch, wg, errCh)
-	go processor.Collect(p, c.cl, ch, wg, errCh)
-	go storage.Collect(p, c.cl, ch, wg, errCh)
+	go memory.Collect(p, cc)
+	go processor.Collect(p, cc)
+	go storage.Collect(p, cc)
 
-	errs := 0
-	for {
-		select {
-		case <-doneCh:
-			if errs == 0 {
-				duration := time.Now().Sub(start).Seconds()
-				ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration, c.cl.HostName())
-			}
-
-			return
-		case err = <-errCh:
-			errs++
-			logrus.Error(err)
-		}
+	<-doneCh
+	if cc.ErrCount() == 0 {
+		duration := time.Since(start).Seconds()
+		ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration, c.cl.HostName())
 	}
 }

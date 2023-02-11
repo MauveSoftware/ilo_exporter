@@ -5,13 +5,16 @@
 package storage
 
 import (
+	"context"
+	"fmt"
 	"strings"
-	"sync"
 
 	"github.com/MauveSoftware/ilo4_exporter/pkg/client"
 	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 const (
@@ -50,113 +53,145 @@ func Describe(ch chan<- *prometheus.Desc) {
 }
 
 // Collect collects metrics for storage controllers
-func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
-	defer wg.Done()
+func Collect(parentPath string, cc *common.CollectorContext) {
+	defer cc.WaitGroup().Done()
+
+	ctx, span := cc.Tracer().Start(cc.RootCtx(), "Storage.Collect", trace.WithAttributes(
+		attribute.String("parent_path", parentPath),
+	))
+	defer span.End()
 
 	p := parentPath + "/SmartStorage/ArrayControllers"
 	crtls := common.ResourceLinks{}
 
-	err := cl.Get(p, &crtls)
+	err := cc.Client().Get(ctx, p, &crtls)
 	if err != nil {
-		errCh <- errors.Wrap(err, "could not get array controller summary")
+		cc.HandleError(fmt.Errorf("could not get array controller summary: %w", err), span)
 		return
 	}
 
-	wg.Add(len(crtls.Links.Members))
+	cc.WaitGroup().Add(len(crtls.Links.Members))
 
 	for _, l := range crtls.Links.Members {
-		go collectForArrayController(l.Href, cl, ch, wg, errCh)
+		go collectForArrayController(ctx, l.Href, cc)
 	}
 }
 
-func collectForArrayController(link string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
-	defer wg.Done()
+func collectForArrayController(ctx context.Context, link string, cc *common.CollectorContext) {
+	defer cc.WaitGroup().Done()
+
+	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectForArrayController", trace.WithAttributes(
+		attribute.String("path", link),
+	))
+	defer span.End()
 
 	i := strings.Index(link, "Systems/")
 	p := link[i:]
 
 	crtl := ArrayController{}
 
-	err := cl.Get(p, &crtl)
+	err := cc.Client().Get(ctx, p, &crtl)
 	if err != nil {
-		errCh <- errors.Wrapf(err, "could not get array controller information from %s", link)
+		cc.HandleError(fmt.Errorf("could not get array controller information from %s: %w", link, err), span)
 		return
 	}
 
-	wg.Add(2)
+	cc.WaitGroup().Add(2)
 
-	go collectLogicalDrives(p, crtl, cl, ch, wg, errCh)
-	go collectDiskDrives(p, crtl, cl, ch, wg, errCh)
+	go collectLogicalDrives(ctx, p, crtl, cc)
+	go collectDiskDrives(ctx, p, crtl, cc)
 }
 
-func collectLogicalDrives(parentPath string, crtl ArrayController, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
-	defer wg.Done()
+func collectLogicalDrives(ctx context.Context, parentPath string, crtl ArrayController, cc *common.CollectorContext) {
+	defer cc.WaitGroup().Done()
 
-	drvs, err := driveLinks(parentPath+"/"+"LogicalDrives", cl)
+	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectLogicalDrives", trace.WithAttributes(
+		attribute.String("parent_path", parentPath),
+	))
+	defer span.End()
+
+	drvs, err := driveLinks(ctx, parentPath+"/"+"LogicalDrives", cc.Client())
 	if err != nil {
-		errCh <- errors.Wrapf(err, "could not get logical drive information for array controller %s", crtl.SerialNumber)
+		cc.HandleError(fmt.Errorf("could not get logical drive information for array controller %s: %w", crtl.SerialNumber, err), span)
 		return
 	}
 
-	wg.Add(len(drvs))
+	cc.WaitGroup().Add(len(drvs))
 	for _, d := range drvs {
-		go collectLogicalDrive(d, crtl, cl, ch, wg, errCh)
+		go collectLogicalDrive(ctx, d, crtl, cc)
 	}
 }
 
-func collectLogicalDrive(path string, crtl ArrayController, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
-	defer wg.Done()
+func collectLogicalDrive(ctx context.Context, path string, crtl ArrayController, cc *common.CollectorContext) {
+	defer cc.WaitGroup().Done()
+
+	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectLogicalDrive", trace.WithAttributes(
+		attribute.String("path", path),
+	))
+	defer span.End()
 
 	d := LogicalDrive{}
-
-	err := cl.Get(path, &d)
+	err := cc.Client().Get(ctx, path, &d)
 	if err != nil {
-		errCh <- errors.Wrapf(err, "could not get drive information from %s", path)
+		cc.HandleError(fmt.Errorf("could not get drive information from %s: %w", path, err), span)
 		return
 	}
 
-	l := []string{cl.HostName(), crtl.SerialNumber, d.LogicalDriveName, d.Raid}
-	ch <- prometheus.MustNewConstMetric(logicalDriveCapacityDesc, prometheus.GaugeValue, float64(d.CapacityMiB<<20), l...)
-	ch <- prometheus.MustNewConstMetric(logicalDriveHealthyDesc, prometheus.GaugeValue, d.Status.HealthValue(), l...)
+	l := []string{cc.Client().HostName(), crtl.SerialNumber, d.LogicalDriveName, d.Raid}
+	cc.RecordMetrics(
+		prometheus.MustNewConstMetric(logicalDriveCapacityDesc, prometheus.GaugeValue, float64(d.CapacityMiB<<20), l...),
+		prometheus.MustNewConstMetric(logicalDriveHealthyDesc, prometheus.GaugeValue, d.Status.HealthValue(), l...),
+	)
 }
 
-func collectDiskDrives(parentPath string, crtl ArrayController, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
-	defer wg.Done()
+func collectDiskDrives(ctx context.Context, parentPath string, crtl ArrayController, cc *common.CollectorContext) {
+	defer cc.WaitGroup().Done()
 
-	drvs, err := driveLinks(parentPath+"/"+"DiskDrives", cl)
+	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectDiskDrives", trace.WithAttributes(
+		attribute.String("parent_path", parentPath),
+	))
+	defer span.End()
+
+	drvs, err := driveLinks(ctx, parentPath+"/"+"DiskDrives", cc.Client())
 	if err != nil {
-		errCh <- errors.Wrapf(err, "could not get disk drive information for array controller %s", crtl.SerialNumber)
+		cc.HandleError(fmt.Errorf("could not get disk drive information for array controller %s: %w", crtl.SerialNumber, err), span)
 		return
 	}
 
-	wg.Add(len(drvs))
+	cc.WaitGroup().Add(len(drvs))
 	for _, d := range drvs {
-		go collectDiskDrive(d, crtl, cl, ch, wg, errCh)
+		go collectDiskDrive(ctx, d, crtl, cc)
 	}
 }
 
-func collectDiskDrive(path string, crtl ArrayController, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
-	defer wg.Done()
+func collectDiskDrive(ctx context.Context, path string, crtl ArrayController, cc *common.CollectorContext) {
+	defer cc.WaitGroup().Done()
+
+	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectDiskDrive", trace.WithAttributes(
+		attribute.String("path", path),
+	))
+	defer span.End()
 
 	d := DiskDrive{}
-
-	err := cl.Get(path, &d)
+	err := cc.Client().Get(ctx, path, &d)
 	if err != nil {
-		errCh <- errors.Wrapf(err, "could not get drive information from %s", path)
+		cc.HandleError(fmt.Errorf("could not get drive information from %s: %w", path, err), span)
 		return
 	}
 
-	l := []string{cl.HostName(), crtl.SerialNumber, d.Location, d.Model, d.InterfaceType}
-	ch <- prometheus.MustNewConstMetric(diskDriveCapacityDesc, prometheus.GaugeValue, float64(d.CapacityGB<<30), l...)
-	ch <- prometheus.MustNewConstMetric(diskDriveHealthyDesc, prometheus.GaugeValue, d.Status.HealthValue(), l...)
-	ch <- prometheus.MustNewConstMetric(diskDriveRotationDesc, prometheus.GaugeValue, d.RotationalSpeedRpm, l...)
-	ch <- prometheus.MustNewConstMetric(diskDriveTempDesc, prometheus.GaugeValue, d.CurrentTemperatureCelsius, l...)
+	l := []string{cc.Client().HostName(), crtl.SerialNumber, d.Location, d.Model, d.InterfaceType}
+	cc.RecordMetrics(
+		prometheus.MustNewConstMetric(diskDriveCapacityDesc, prometheus.GaugeValue, float64(d.CapacityGB<<30), l...),
+		prometheus.MustNewConstMetric(diskDriveHealthyDesc, prometheus.GaugeValue, d.Status.HealthValue(), l...),
+		prometheus.MustNewConstMetric(diskDriveRotationDesc, prometheus.GaugeValue, d.RotationalSpeedRpm, l...),
+		prometheus.MustNewConstMetric(diskDriveTempDesc, prometheus.GaugeValue, d.CurrentTemperatureCelsius, l...),
+	)
 }
 
-func driveLinks(path string, cl client.Client) ([]string, error) {
+func driveLinks(ctx context.Context, path string, cl client.Client) ([]string, error) {
 	drvLinks := common.ResourceLinks{}
 
-	err := cl.Get(path, &drvLinks)
+	err := cl.Get(ctx, path, &drvLinks)
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not get drive list from %s", path)
 	}

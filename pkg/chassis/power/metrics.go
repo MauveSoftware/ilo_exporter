@@ -5,9 +5,13 @@
 package power
 
 import (
-	"github.com/MauveSoftware/ilo4_exporter/pkg/client"
+	"context"
+
+	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 const (
@@ -44,24 +48,32 @@ func Describe(ch chan<- *prometheus.Desc) {
 	ch <- powerSupplyEnabledDesc
 }
 
-func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric) error {
-	pwr := Power{}
+func Collect(ctx context.Context, parentPath string, cc *common.CollectorContext) error {
+	ctx, span := cc.Tracer().Start(ctx, "Power.Collect", trace.WithAttributes(
+		attribute.String("parent_path", parentPath),
+	))
+	defer span.End()
 
-	err := cl.Get(parentPath+"/Power", &pwr)
+	pwr := Power{}
+	err := cc.Client().Get(ctx, parentPath+"/Power", &pwr)
 	if err != nil {
 		return errors.Wrap(err, "could not get power data")
 	}
 
-	l := []string{cl.HostName()}
-	ch <- prometheus.MustNewConstMetric(powerCurrentDesc, prometheus.GaugeValue, pwr.PowerConsumedWatts, l...)
-	ch <- prometheus.MustNewConstMetric(powerAvgDesc, prometheus.GaugeValue, pwr.Metrics.AverageConsumedWatts, l...)
-	ch <- prometheus.MustNewConstMetric(powerMinDesc, prometheus.GaugeValue, pwr.Metrics.MinConsumedWatts, l...)
-	ch <- prometheus.MustNewConstMetric(powerMaxDesc, prometheus.GaugeValue, pwr.Metrics.MaxConsumedWatts, l...)
+	l := []string{cc.Client().HostName()}
+	cc.RecordMetrics(
+		prometheus.MustNewConstMetric(powerCurrentDesc, prometheus.GaugeValue, pwr.PowerConsumedWatts, l...),
+		prometheus.MustNewConstMetric(powerAvgDesc, prometheus.GaugeValue, pwr.Metrics.AverageConsumedWatts, l...),
+		prometheus.MustNewConstMetric(powerMinDesc, prometheus.GaugeValue, pwr.Metrics.MinConsumedWatts, l...),
+		prometheus.MustNewConstMetric(powerMaxDesc, prometheus.GaugeValue, pwr.Metrics.MaxConsumedWatts, l...),
+	)
 
 	for _, sup := range pwr.PowerSupplies {
 		la := append(l, sup.SerialNumber)
-		ch <- prometheus.MustNewConstMetric(powerSupplyEnabledDesc, prometheus.GaugeValue, sup.Status.EnabledValue(), la...)
-		ch <- prometheus.MustNewConstMetric(powerSupplyHealthyDesc, prometheus.GaugeValue, sup.Status.HealthValue(), la...)
+		cc.RecordMetrics(
+			prometheus.MustNewConstMetric(powerSupplyEnabledDesc, prometheus.GaugeValue, sup.Status.EnabledValue(), la...),
+			prometheus.MustNewConstMetric(powerSupplyHealthyDesc, prometheus.GaugeValue, sup.Status.HealthValue(), la...),
+		)
 	}
 
 	return nil

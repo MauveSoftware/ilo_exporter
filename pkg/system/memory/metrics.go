@@ -5,12 +5,13 @@
 package memory
 
 import (
+	"context"
+	"fmt"
 	"strings"
-	"sync"
 
-	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 
-	"github.com/MauveSoftware/ilo4_exporter/pkg/client"
 	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -45,14 +46,18 @@ func Describe(ch chan<- *prometheus.Desc) {
 }
 
 // Collect collects metrics for memory modules
-func Collect(systemPath string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
-	defer wg.Done()
+func Collect(systemPath string, cc *common.CollectorContext) {
+	defer cc.WaitGroup().Done()
+
+	ctx, span := cc.Tracer().Start(cc.RootCtx(), "Memory.Collect", trace.WithAttributes(
+		attribute.String("parent_path", systemPath),
+	))
+	defer span.End()
 
 	m := Memory{}
-
-	err := cl.Get(systemPath, &m)
+	err := cc.Client().Get(ctx, systemPath, &m)
 	if err != nil {
-		errCh <- errors.Wrap(err, "could not get memory summary")
+		cc.HandleError(fmt.Errorf("could not get memory summary: %w", err), span)
 		return
 	}
 
@@ -61,50 +66,64 @@ func Collect(systemPath string, cl client.Client, ch chan<- prometheus.Metric, w
 		healthy = 1
 	}
 
-	ch <- prometheus.MustNewConstMetric(healthyDesc, prometheus.GaugeValue, healthy, cl.HostName())
-	ch <- prometheus.MustNewConstMetric(totalMemory, prometheus.GaugeValue, float64(m.MemorySummary.TotalSystemMemoryGiB<<30), cl.HostName())
+	hostname := cc.Client().HostName()
+	cc.RecordMetrics(
+		prometheus.MustNewConstMetric(healthyDesc, prometheus.GaugeValue, healthy, hostname),
+		prometheus.MustNewConstMetric(totalMemory, prometheus.GaugeValue, float64(m.MemorySummary.TotalSystemMemoryGiB<<30), hostname),
+	)
 
-	collectForDIMMs(systemPath, cl, ch, wg, errCh)
+	collectForDIMMs(ctx, systemPath, cc)
 }
 
-func collectForDIMMs(parentPath string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
+func collectForDIMMs(ctx context.Context, parentPath string, cc *common.CollectorContext) {
 	p := parentPath + "/Memory"
 
+	ctx, span := cc.Tracer().Start(ctx, "Memory.CollectForDIMMs", trace.WithAttributes(
+		attribute.String("parent_path", parentPath),
+	))
+	defer span.End()
+
 	mem := common.ResourceLinks{}
-	err := cl.Get(p, &mem)
+	err := cc.Client().Get(ctx, p, &mem)
 	if err != nil {
-		errCh <- errors.Wrap(err, "could not get DIMM list")
+		cc.HandleError(fmt.Errorf("could not get DIMM list: %w", err), span)
 		return
 	}
 
-	wg.Add(len(mem.Links.Members))
+	cc.WaitGroup().Add(len(mem.Links.Members))
 
 	for _, l := range mem.Links.Members {
-		go collectForDIMM(l.Href, cl, ch, wg, errCh)
+		go collectForDIMM(ctx, l.Href, cc)
 	}
 }
 
-func collectForDIMM(link string, cl client.Client, ch chan<- prometheus.Metric, wg *sync.WaitGroup, errCh chan<- error) {
-	defer wg.Done()
+func collectForDIMM(ctx context.Context, link string, cc *common.CollectorContext) {
+	defer cc.WaitGroup().Done()
 
 	i := strings.Index(link, "Systems/")
 	p := link[i:]
 
-	d := MemoryDIMM{}
+	ctx, span := cc.Tracer().Start(ctx, "Memory.CollectForDIMM", trace.WithAttributes(
+		attribute.String("path", link),
+	))
+	defer span.End()
 
-	err := cl.Get(p, &d)
+	d := MemoryDIMM{}
+	err := cc.Client().Get(ctx, p, &d)
 	if err != nil {
-		errCh <- errors.Wrapf(err, "could not get memory information from %s", link)
+		cc.HandleError(fmt.Errorf("could not get memory information from %s: %w", link, err), span)
 		return
 	}
 
-	l := []string{cl.HostName(), d.Name}
+	l := []string{cc.Client().HostName(), d.Name}
 
 	var healthy float64
 	if d.DIMMStatus == "GoodInUse" {
 		healthy = 1
 	}
 
-	ch <- prometheus.MustNewConstMetric(dimmHealthyDesc, prometheus.GaugeValue, healthy, l...)
-	ch <- prometheus.MustNewConstMetric(dimmSizeDesc, prometheus.GaugeValue, float64(d.SizeMB<<20), l...)
+	cc.RecordMetrics(
+		prometheus.MustNewConstMetric(dimmHealthyDesc, prometheus.GaugeValue, healthy, l...),
+		prometheus.MustNewConstMetric(dimmSizeDesc, prometheus.GaugeValue, float64(d.SizeMB<<20), l...),
+	)
 }

@@ -5,14 +5,19 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"os/signal"
 
 	"github.com/MauveSoftware/ilo4_exporter/pkg/chassis"
 	"github.com/MauveSoftware/ilo4_exporter/pkg/client"
 	"github.com/MauveSoftware/ilo4_exporter/pkg/system"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -22,15 +27,18 @@ import (
 const version string = "0.3.0"
 
 var (
-	showVersion           = flag.Bool("version", false, "Print version information.")
-	listenAddress         = flag.String("web.listen-address", ":9545", "Address on which to expose metrics and web interface.")
-	metricsPath           = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
-	username              = flag.String("api.username", "", "Username")
-	password              = flag.String("api.password", "", "Password")
-	maxConcurrentRequests = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent against API concurrently")
-	tlsEnabled            = flag.Bool("tls.enabled", false, "Enables TLS")
-	tlsCertChainPath      = flag.String("tls.cert-file", "", "Path to TLS cert file")
-	tlsKeyPath            = flag.String("tls.key-file", "", "Path to TLS key file")
+	showVersion              = flag.Bool("version", false, "Print version information.")
+	listenAddress            = flag.String("web.listen-address", ":9545", "Address on which to expose metrics and web interface.")
+	metricsPath              = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
+	username                 = flag.String("api.username", "", "Username")
+	password                 = flag.String("api.password", "", "Password")
+	maxConcurrentRequests    = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent against API concurrently")
+	tlsEnabled               = flag.Bool("tls.enabled", false, "Enables TLS")
+	tlsCertChainPath         = flag.String("tls.cert-file", "", "Path to TLS cert file")
+	tlsKeyPath               = flag.String("tls.key-file", "", "Path to TLS key file")
+	tracingEnabled           = flag.Bool("tracing.enabled", false, "Enables tracing using OpenTelemetry")
+	tracingProvider          = flag.String("tracing.provider", "", "Sets the tracing provider (stdout or collector)")
+	tracingCollectorEndpoint = flag.String("tracing.collector.grpc-endpoint", "", "Sets the tracing provider (stdout or collector)")
 )
 
 func init() {
@@ -48,6 +56,15 @@ func main() {
 		printVersion()
 		os.Exit(0)
 	}
+
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+
+	shutdownTracing, err := initTracing(ctx)
+	if err != nil {
+		log.Fatalf("could not initialize tracing: %v", err)
+	}
+	defer shutdownTracing()
 
 	startServer()
 }
@@ -100,15 +117,20 @@ func errorHandler(f func(http.ResponseWriter, *http.Request) error) http.Handler
 func handleMetricsRequest(w http.ResponseWriter, r *http.Request) error {
 	host := r.URL.Query().Get("host")
 
+	ctx, span := tracer.Start(r.Context(), "HandleMetricsRequest", trace.WithAttributes(
+		attribute.String("host", host),
+	))
+	defer span.End()
+
 	if host == "" {
 		return fmt.Errorf("no host defined")
 	}
 
 	reg := prometheus.NewRegistry()
 
-	cl := client.NewClient(host, *username, *password, client.WithMaxConcurrentRequests(*maxConcurrentRequests), client.WithInsecure())
-	reg.MustRegister(system.NewCollector(cl))
-	reg.MustRegister(chassis.NewCollector(cl))
+	cl := client.NewClient(host, *username, *password, tracer, client.WithMaxConcurrentRequests(*maxConcurrentRequests), client.WithInsecure(), client.WithDebug())
+	reg.MustRegister(system.NewCollector(ctx, cl, tracer))
+	reg.MustRegister(chassis.NewCollector(ctx, cl, tracer))
 
 	l := logrus.New()
 	l.Level = logrus.ErrorLevel

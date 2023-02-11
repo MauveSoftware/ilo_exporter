@@ -4,7 +4,10 @@
 
 package client
 
-import "encoding/json"
+import (
+	"context"
+	"encoding/json"
+)
 
 type DummyClient struct {
 	values map[string]string
@@ -27,6 +30,6 @@ func (cl *DummyClient) SetResponse(ressource string, value string) {
 }
 
 // Get parses the dummy string for an given ressource and unmarshals the json
-func (cl *DummyClient) Get(ressource string, obj interface{}) error {
+func (cl *DummyClient) Get(ctx context.Context, ressource string, obj interface{}) error {
 	return json.Unmarshal([]byte(cl.values[ressource]), obj)
 }

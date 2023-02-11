@@ -9,10 +9,13 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/sync/semaphore"
 
 	"github.com/sirupsen/logrus"
@@ -27,6 +30,7 @@ type APIClient struct {
 	client   *http.Client
 	debug    bool
 	sem      *semaphore.Weighted
+	tracer   trace.Tracer
 }
 
 // ClientOption applies options to APIClient
@@ -57,7 +61,7 @@ func WithMaxConcurrentRequests(max uint) ClientOption {
 }
 
 // NewClient creates a new client instance
-func NewClient(hostName, username, password string, opts ...ClientOption) Client {
+func NewClient(hostName, username, password string, tracer trace.Tracer, opts ...ClientOption) Client {
 	cl := &APIClient{
 		url:      fmt.Sprintf("https://%s/rest/v1/", hostName),
 		hostName: hostName,
@@ -80,8 +84,8 @@ func (cl *APIClient) HostName() string {
 }
 
 // Get retrieves the ressource from the API and unmashals the json retrieved
-func (cl *APIClient) Get(path string, obj interface{}) error {
-	b, err := cl.get(path)
+func (cl *APIClient) Get(ctx context.Context, path string, obj interface{}) error {
+	b, err := cl.get(ctx, path)
 	if err != nil {
 		return err
 	}
@@ -90,16 +94,23 @@ func (cl *APIClient) Get(path string, obj interface{}) error {
 	return err
 }
 
-func (cl *APIClient) get(path string) ([]byte, error) {
+func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 	cl.sem.Acquire(context.Background(), 1)
 	defer cl.sem.Release(1)
 
 	uri := strings.Trim(cl.url, "/") + "/" + strings.Trim(path, "/")
 
+	_, span := cl.tracer.Start(ctx, "Client.Get", trace.WithAttributes(
+		attribute.String("URI", uri),
+	))
+	defer span.End()
+
 	logrus.Infof("GET %s", uri)
 
 	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -108,15 +119,20 @@ func (cl *APIClient) get(path string) ([]byte, error) {
 
 	resp, err := cl.client.Do(req)
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 300 {
+		err = fmt.Errorf(resp.Status)
+		span.RecordError(err)
+		span.SetStatus(codes.Error, resp.Status)
 		return nil, fmt.Errorf(resp.Status)
 	}
 
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -125,6 +141,8 @@ func (cl *APIClient) get(path string) ([]byte, error) {
 		logrus.Infof("Status Code: %s", resp.Status)
 		logrus.Infof("Response: %s", string(b))
 	}
+
+	span.SetStatus(codes.Ok, "")
 
 	return b, err
 }

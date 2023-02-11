@@ -5,9 +5,13 @@
 package thermal
 
 import (
-	"github.com/MauveSoftware/ilo4_exporter/pkg/client"
+	"context"
+
+	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 const (
@@ -46,36 +50,45 @@ func Describe(ch chan<- *prometheus.Desc) {
 	ch <- tempHealthyDesc
 }
 
-func Collect(parentPath string, cl client.Client, ch chan<- prometheus.Metric) error {
-	th := Thermal{}
+func Collect(ctx context.Context, parentPath string, cc *common.CollectorContext) error {
+	ctx, span := cc.Tracer().Start(ctx, "Thermal.Collect", trace.WithAttributes(
+		attribute.String("parent_path", parentPath),
+	))
+	defer span.End()
 
-	err := cl.Get(parentPath+"/Thermal", &th)
+	th := Thermal{}
+	err := cc.Client().Get(ctx, parentPath+"/Thermal", &th)
 	if err != nil {
 		return errors.Wrap(err, "could not get thermal data")
 	}
 
+	hostname := cc.Client().HostName()
 	for _, f := range th.Fans {
-		collectForFan(cl.HostName(), &f, ch)
+		collectForFan(hostname, &f, cc)
 	}
 
 	for _, t := range th.Temperatures {
-		collectForTemperature(cl.HostName(), &t, ch)
+		collectForTemperature(hostname, &t, cc)
 	}
 
 	return nil
 }
 
-func collectForFan(hostName string, f *Fan, ch chan<- prometheus.Metric) {
+func collectForFan(hostName string, f *Fan, cc *common.CollectorContext) {
 	l := []string{hostName, f.Name}
-	ch <- prometheus.MustNewConstMetric(fanHealthyDesc, prometheus.GaugeValue, f.Status.HealthValue(), l...)
-	ch <- prometheus.MustNewConstMetric(fanEnabledDesc, prometheus.GaugeValue, f.Status.EnabledValue(), l...)
-	ch <- prometheus.MustNewConstMetric(fanCurrentDesc, prometheus.GaugeValue, f.CurrentReading, l...)
+	cc.RecordMetrics(
+		prometheus.MustNewConstMetric(fanHealthyDesc, prometheus.GaugeValue, f.Status.HealthValue(), l...),
+		prometheus.MustNewConstMetric(fanEnabledDesc, prometheus.GaugeValue, f.Status.EnabledValue(), l...),
+		prometheus.MustNewConstMetric(fanCurrentDesc, prometheus.GaugeValue, f.CurrentReading, l...),
+	)
 }
 
-func collectForTemperature(hostName string, t *Temperature, ch chan<- prometheus.Metric) {
+func collectForTemperature(hostName string, t *Temperature, cc *common.CollectorContext) {
 	l := []string{hostName, t.Name}
-	ch <- prometheus.MustNewConstMetric(tempCurrentDesc, prometheus.GaugeValue, t.ReadingCelsius, l...)
-	ch <- prometheus.MustNewConstMetric(tempCriticalThresholdDesc, prometheus.GaugeValue, t.UpperThresholdCritical, l...)
-	ch <- prometheus.MustNewConstMetric(tempFatalThresholdDesc, prometheus.GaugeValue, t.UpperThresholdFatal, l...)
-	ch <- prometheus.MustNewConstMetric(tempHealthyDesc, prometheus.GaugeValue, t.Status.HealthValue(), l...)
+	cc.RecordMetrics(
+		prometheus.MustNewConstMetric(tempCurrentDesc, prometheus.GaugeValue, t.ReadingCelsius, l...),
+		prometheus.MustNewConstMetric(tempCriticalThresholdDesc, prometheus.GaugeValue, t.UpperThresholdCritical, l...),
+		prometheus.MustNewConstMetric(tempFatalThresholdDesc, prometheus.GaugeValue, t.UpperThresholdFatal, l...),
+		prometheus.MustNewConstMetric(tempHealthyDesc, prometheus.GaugeValue, t.Status.HealthValue(), l...),
+	)
 }

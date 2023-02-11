@@ -5,13 +5,15 @@
 package chassis
 
 import (
+	"context"
 	"time"
 
 	"github.com/MauveSoftware/ilo4_exporter/pkg/chassis/power"
 	"github.com/MauveSoftware/ilo4_exporter/pkg/chassis/thermal"
 	"github.com/MauveSoftware/ilo4_exporter/pkg/client"
+	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/sirupsen/logrus"
+	"go.opentelemetry.io/otel/trace"
 )
 
 const (
@@ -23,14 +25,18 @@ var (
 )
 
 // NewCollector returns a new collector for chassis metrics
-func NewCollector(cl client.Client) prometheus.Collector {
+func NewCollector(ctx context.Context, cl client.Client, tracer trace.Tracer) prometheus.Collector {
 	return &collector{
-		cl: cl,
+		rootCtx: ctx,
+		cl:      cl,
+		tracer:  tracer,
 	}
 }
 
 type collector struct {
-	cl client.Client
+	rootCtx context.Context
+	cl      client.Client
+	tracer  trace.Tracer
 }
 
 // Describe implements prometheus.Collector interface
@@ -44,17 +50,15 @@ func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	start := time.Now()
 
+	ctx, span := c.tracer.Start(c.rootCtx, "Chassis.Collect")
+	defer span.End()
+
 	p := "Chassis/1"
-	err := power.Collect(p, c.cl, ch)
-	if err != nil {
-		logrus.Error(err)
-	}
 
-	err = thermal.Collect(p, c.cl, ch)
-	if err != nil {
-		logrus.Error(err)
-	}
+	cc := common.NewCollectorContext(ctx, c.cl, ch, c.tracer)
+	power.Collect(ctx, p, cc)
+	thermal.Collect(ctx, p, cc)
 
-	duration := time.Now().Sub(start).Seconds()
+	duration := time.Since(start).Seconds()
 	ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration, c.cl.HostName())
 }
