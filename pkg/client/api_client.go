@@ -69,6 +69,7 @@ func NewClient(hostName, username, password string, tracer trace.Tracer, opts ..
 		password: password,
 		client:   &http.Client{},
 		sem:      semaphore.NewWeighted(1),
+		tracer:   tracer,
 	}
 
 	for _, o := range opts {
@@ -129,7 +130,7 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 		err = fmt.Errorf(resp.Status)
 		span.RecordError(err)
 		span.SetStatus(codes.Error, resp.Status)
-		return nil, fmt.Errorf(resp.Status)
+		return nil, err
 	}
 
 	b, err := io.ReadAll(resp.Body)
