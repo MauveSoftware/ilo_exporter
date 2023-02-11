@@ -117,7 +117,7 @@ func errorHandler(f func(http.ResponseWriter, *http.Request) error) http.Handler
 func handleMetricsRequest(w http.ResponseWriter, r *http.Request) error {
 	host := r.URL.Query().Get("host")
 
-	ctx, span := tracer.Start(context.Background(), "HandleMetricsRequest", trace.WithAttributes(
+	ctx, span := tracer.Start(r.Context(), "HandleMetricsRequest", trace.WithAttributes(
 		attribute.String("host", host),
 	))
 	defer span.End()
