@@ -13,11 +13,12 @@ import (
 	"os"
 	"os/signal"
 
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
+
 	"github.com/MauveSoftware/ilo4_exporter/pkg/chassis"
 	"github.com/MauveSoftware/ilo4_exporter/pkg/client"
 	"github.com/MauveSoftware/ilo4_exporter/pkg/system"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/trace"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -106,7 +107,6 @@ func startServer() {
 func errorHandler(f func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := f(w, r)
-
 		if err != nil {
 			logrus.Errorln(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -137,6 +137,7 @@ func handleMetricsRequest(w http.ResponseWriter, r *http.Request) error {
 
 	promhttp.HandlerFor(reg, promhttp.HandlerOpts{
 		ErrorLog:      l,
-		ErrorHandling: promhttp.ContinueOnError}).ServeHTTP(w, r)
+		ErrorHandling: promhttp.ContinueOnError,
+	}).ServeHTTP(w, r)
 	return nil
 }
