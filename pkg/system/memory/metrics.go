@@ -12,8 +12,9 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 )
 
 const (
@@ -21,7 +22,6 @@ const (
 )
 
 var (
-	healthyDesc     *prometheus.Desc
 	totalMemory     *prometheus.Desc
 	dimmHealthyDesc *prometheus.Desc
 	dimmSizeDesc    *prometheus.Desc
@@ -29,7 +29,6 @@ var (
 
 func init() {
 	l := []string{"host"}
-	healthyDesc = prometheus.NewDesc(prefix+"healthy", "Health status of the memory", l, nil)
 	totalMemory = prometheus.NewDesc(prefix+"total_byte", "Total memory installed in bytes", l, nil)
 
 	l = append(l, "name")
@@ -39,7 +38,6 @@ func init() {
 
 // Describe describes all metrics for the memory package
 func Describe(ch chan<- *prometheus.Desc) {
-	ch <- healthyDesc
 	ch <- totalMemory
 	ch <- dimmHealthyDesc
 	ch <- dimmSizeDesc
@@ -61,14 +59,8 @@ func Collect(systemPath string, cc *common.CollectorContext) {
 		return
 	}
 
-	var healthy float64
-	if strings.ToLower(m.MemorySummary.Status.HealthRollUp) == "ok" {
-		healthy = 1
-	}
-
 	hostname := cc.Client().HostName()
 	cc.RecordMetrics(
-		prometheus.MustNewConstMetric(healthyDesc, prometheus.GaugeValue, healthy, hostname),
 		prometheus.MustNewConstMetric(totalMemory, prometheus.GaugeValue, float64(m.MemorySummary.TotalSystemMemoryGiB<<30), hostname),
 	)
 
@@ -116,6 +108,10 @@ func collectForDIMM(ctx context.Context, link string, cc *common.CollectorContex
 	}
 
 	l := []string{cc.Client().HostName(), d.Name}
+
+	if d.DIMMStatus == "Unknown" {
+		return
+	}
 
 	var healthy float64
 	if d.DIMMStatus == "GoodInUse" {

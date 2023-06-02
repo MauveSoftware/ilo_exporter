@@ -7,11 +7,12 @@ package thermal
 import (
 	"context"
 
-	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 )
 
 const (
@@ -75,6 +76,10 @@ func Collect(ctx context.Context, parentPath string, cc *common.CollectorContext
 }
 
 func collectForFan(hostName string, f *Fan, cc *common.CollectorContext) {
+	if f.Status.State == "Offline" {
+		return
+	}
+
 	l := []string{hostName, f.Name}
 	cc.RecordMetrics(
 		prometheus.MustNewConstMetric(fanHealthyDesc, prometheus.GaugeValue, f.Status.HealthValue(), l...),
@@ -84,6 +89,10 @@ func collectForFan(hostName string, f *Fan, cc *common.CollectorContext) {
 }
 
 func collectForTemperature(hostName string, t *Temperature, cc *common.CollectorContext) {
+	if t.Status.State == "Offline" {
+		return
+	}
+
 	l := []string{hostName, t.Name}
 	cc.RecordMetrics(
 		prometheus.MustNewConstMetric(tempCurrentDesc, prometheus.GaugeValue, t.ReadingCelsius, l...),

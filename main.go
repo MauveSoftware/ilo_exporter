@@ -25,13 +25,13 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const version string = "0.3.0"
+const version string = "0.3.1"
 
 var (
 	showVersion              = flag.Bool("version", false, "Print version information.")
 	listenAddress            = flag.String("web.listen-address", ":9545", "Address on which to expose metrics and web interface.")
 	metricsPath              = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
-	username                 = flag.String("api.username", "", "Username")
+	username                 = flag.String("api.username", "Administrator", "Username")
 	password                 = flag.String("api.password", "", "Password")
 	maxConcurrentRequests    = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent against API concurrently")
 	tlsEnabled               = flag.Bool("tls.enabled", false, "Enables TLS")

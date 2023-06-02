@@ -7,11 +7,12 @@ package power
 import (
 	"context"
 
-	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 )
 
 const (
@@ -69,12 +70,20 @@ func Collect(ctx context.Context, parentPath string, cc *common.CollectorContext
 	)
 
 	for _, sup := range pwr.PowerSupplies {
-		la := append(l, sup.SerialNumber)
-		cc.RecordMetrics(
-			prometheus.MustNewConstMetric(powerSupplyEnabledDesc, prometheus.GaugeValue, sup.Status.EnabledValue(), la...),
-			prometheus.MustNewConstMetric(powerSupplyHealthyDesc, prometheus.GaugeValue, sup.Status.HealthValue(), la...),
-		)
+		collectForPowerSupply(sup, l, cc)
 	}
 
 	return nil
+}
+
+func collectForPowerSupply(sup PowerSupply, labelVals []string, cc *common.CollectorContext) {
+	if sup.Status.State == "Absent" {
+		return
+	}
+
+	la := append(labelVals, sup.SerialNumber)
+	cc.RecordMetrics(
+		prometheus.MustNewConstMetric(powerSupplyEnabledDesc, prometheus.GaugeValue, sup.Status.EnabledValue(), la...),
+		prometheus.MustNewConstMetric(powerSupplyHealthyDesc, prometheus.GaugeValue, sup.Status.HealthValue(), la...),
+	)
 }
