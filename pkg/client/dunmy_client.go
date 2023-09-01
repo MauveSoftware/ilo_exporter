@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2020. Licensed under [MIT](LICENSE) license.
+// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2022. Licensed under [MIT](LICENSE) license.
 //
 // SPDX-License-Identifier: MIT
 
@@ -30,6 +30,6 @@ func (cl *DummyClient) SetResponse(ressource string, value string) {
 }
 
 // Get parses the dummy string for an given ressource and unmarshals the json
-func (cl *DummyClient) Get(ctx context.Context, ressource string, obj interface{}) error {
+func (cl *DummyClient) Get(context context.Context, ressource string, obj interface{}) error {
 	return json.Unmarshal([]byte(cl.values[ressource]), obj)
 }

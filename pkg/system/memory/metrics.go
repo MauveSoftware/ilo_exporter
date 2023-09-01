@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2020. Licensed under [MIT](LICENSE) license.
+// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2022. Licensed under [MIT](LICENSE) license.
 //
 // SPDX-License-Identifier: MIT
 
@@ -12,16 +12,16 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
+	"github.com/MauveSoftware/ilo5_exporter/pkg/common"
 	"github.com/prometheus/client_golang/prometheus"
-
-	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 )
 
 const (
-	prefix = "ilo4_memory_"
+	prefix = "ilo_memory_"
 )
 
 var (
+	healthyDesc     *prometheus.Desc
 	totalMemory     *prometheus.Desc
 	dimmHealthyDesc *prometheus.Desc
 	dimmSizeDesc    *prometheus.Desc
@@ -29,6 +29,7 @@ var (
 
 func init() {
 	l := []string{"host"}
+	healthyDesc = prometheus.NewDesc(prefix+"healthy", "Health status of the memory", l, nil)
 	totalMemory = prometheus.NewDesc(prefix+"total_byte", "Total memory installed in bytes", l, nil)
 
 	l = append(l, "name")
@@ -38,67 +39,47 @@ func init() {
 
 // Describe describes all metrics for the memory package
 func Describe(ch chan<- *prometheus.Desc) {
+	ch <- healthyDesc
 	ch <- totalMemory
 	ch <- dimmHealthyDesc
 	ch <- dimmSizeDesc
 }
 
 // Collect collects metrics for memory modules
-func Collect(systemPath string, cc *common.CollectorContext) {
+func Collect(parentPath string, cc *common.CollectorContext) {
 	defer cc.WaitGroup().Done()
 
 	ctx, span := cc.Tracer().Start(cc.RootCtx(), "Memory.Collect", trace.WithAttributes(
-		attribute.String("parent_path", systemPath),
+		attribute.String("parent_path", parentPath),
 	))
 	defer span.End()
 
-	m := Memory{}
-	err := cc.Client().Get(ctx, systemPath, &m)
+	p := parentPath + "/Memory"
+	mem := common.MemberList{}
+
+	err := cc.Client().Get(ctx, p, &mem)
 	if err != nil {
 		cc.HandleError(fmt.Errorf("could not get memory summary: %w", err), span)
 		return
 	}
 
-	hostname := cc.Client().HostName()
-	cc.RecordMetrics(
-		prometheus.MustNewConstMetric(totalMemory, prometheus.GaugeValue, float64(m.MemorySummary.TotalSystemMemoryGiB<<30), hostname),
-	)
+	cc.WaitGroup().Add(len(mem.Members))
 
-	collectForDIMMs(ctx, systemPath, cc)
-}
-
-func collectForDIMMs(ctx context.Context, parentPath string, cc *common.CollectorContext) {
-	p := parentPath + "/Memory"
-
-	ctx, span := cc.Tracer().Start(ctx, "Memory.CollectForDIMMs", trace.WithAttributes(
-		attribute.String("parent_path", parentPath),
-	))
-	defer span.End()
-
-	mem := common.ResourceLinks{}
-	err := cc.Client().Get(ctx, p, &mem)
-	if err != nil {
-		cc.HandleError(fmt.Errorf("could not get DIMM list: %w", err), span)
-		return
-	}
-
-	cc.WaitGroup().Add(len(mem.Links.Members))
-
-	for _, l := range mem.Links.Members {
-		go collectForDIMM(ctx, l.Href, cc)
+	for _, m := range mem.Members {
+		go collectForDIMM(ctx, m.Path, cc)
 	}
 }
 
 func collectForDIMM(ctx context.Context, link string, cc *common.CollectorContext) {
 	defer cc.WaitGroup().Done()
 
-	i := strings.Index(link, "Systems/")
-	p := link[i:]
-
 	ctx, span := cc.Tracer().Start(ctx, "Memory.CollectForDIMM", trace.WithAttributes(
 		attribute.String("path", link),
 	))
 	defer span.End()
+
+	i := strings.Index(link, "Systems/")
+	p := link[i:]
 
 	d := MemoryDIMM{}
 	err := cc.Client().Get(ctx, p, &d)
@@ -109,17 +90,12 @@ func collectForDIMM(ctx context.Context, link string, cc *common.CollectorContex
 
 	l := []string{cc.Client().HostName(), d.Name}
 
-	if d.DIMMStatus == "Unknown" {
+	if !d.IsValid() {
 		return
 	}
 
-	var healthy float64
-	if d.DIMMStatus == "GoodInUse" {
-		healthy = 1
-	}
-
 	cc.RecordMetrics(
-		prometheus.MustNewConstMetric(dimmHealthyDesc, prometheus.GaugeValue, healthy, l...),
-		prometheus.MustNewConstMetric(dimmSizeDesc, prometheus.GaugeValue, float64(d.SizeMB<<20), l...),
+		prometheus.MustNewConstMetric(dimmHealthyDesc, prometheus.GaugeValue, d.HealthValue(), l...),
+		prometheus.MustNewConstMetric(dimmSizeDesc, prometheus.GaugeValue, float64(d.SizeMB()<<20), l...),
 	)
 }

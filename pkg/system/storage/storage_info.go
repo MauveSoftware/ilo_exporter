@@ -2,11 +2,10 @@
 //
 // SPDX-License-Identifier: MIT
 
-package client
+package storage
 
-import "context"
+import "github.com/MauveSoftware/ilo5_exporter/pkg/common"
 
-type Client interface {
-	HostName() string
-	Get(ctx context.Context, ressource string, obj interface{}) error
+type StorageInfo struct {
+	Drives []common.Member `json:"Drives"`
 }

@@ -1,6 +1,6 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/mauvesoftware/ilo4_exporter)](https://goreportcard.com/report/github.com/mauvesoftware/ilo4_exporter)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mauvesoftware/ilo_exporter)](https://goreportcard.com/report/github.com/mauvesoftware/ilo_exporter)
 # ilo_exporter
-Metrics exporter for HP iLO4+ to prometheus
+Metrics exporter for HP iLO to prometheus
 
 ## Install
 ```
@@ -22,7 +22,7 @@ Password: g3tM3trics
 
 ### Docker
 ```bash
-docker run -d --restart always --name ilo_exporter -p 9545:9545 -e API_USERNAME=ilo_exporter -e API_PASSWORD=g3tM3trics mauvesoftware/ilo_exporter
+docker run -d --restart always --name ilo_exporter -p 19545:19545 -e API_USERNAME=ilo_exporter -e API_PASSWORD=g3tM3trics mauvesoftware/ilo_exporter
 ```
 
 ## Prometheus configuration
@@ -47,7 +47,7 @@ To get metrics for 172.16.0.200 using https://my-exporter-tld/metrics?hosts=172.
 ```
 
 ## License
-(c) Mauve Mailorder Software GmbH & Co. KG, 2020. Licensed under [MIT](LICENSE) license.
+(c) Mauve Mailorder Software GmbH & Co. KG, 2022. Licensed under [MIT](LICENSE) license.
 
 ## Prometheus
 see https://prometheus.io/

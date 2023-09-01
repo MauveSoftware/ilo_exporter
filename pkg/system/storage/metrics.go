@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2020. Licensed under [MIT](LICENSE) license.
+// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2022. Licensed under [MIT](LICENSE) license.
 //
 // SPDX-License-Identifier: MIT
 
@@ -7,48 +7,31 @@ package storage
 import (
 	"context"
 	"fmt"
-	"strings"
 
-	"github.com/MauveSoftware/ilo4_exporter/pkg/client"
-	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
-	"github.com/pkg/errors"
+	"github.com/MauveSoftware/ilo5_exporter/pkg/common"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 )
 
 const (
-	prefix = "ilo4_storage_"
+	prefix = "ilo_storage_"
 )
 
 var (
-	logicalDriveCapacityDesc *prometheus.Desc
-	logicalDriveHealthyDesc  *prometheus.Desc
-	diskDriveTempDesc        *prometheus.Desc
-	diskDriveCapacityDesc    *prometheus.Desc
-	diskDriveRotationDesc    *prometheus.Desc
-	diskDriveHealthyDesc     *prometheus.Desc
+	diskDriveCapacityDesc *prometheus.Desc
+	diskDriveHealthyDesc  *prometheus.Desc
 )
 
 func init() {
-	ll := []string{"host", "array_controller", "name", "raid"}
-	logicalDriveCapacityDesc = prometheus.NewDesc(prefix+"logical_capacity_byte", "Capacity of the logical drive in bytes", ll, nil)
-	logicalDriveHealthyDesc = prometheus.NewDesc(prefix+"logical_healthy", "Health status of the logical drive", ll, nil)
-
-	dl := []string{"host", "array_controller", "location", "model", "interface_type"}
+	dl := []string{"host", "location", "model", "media_type"}
 	diskDriveCapacityDesc = prometheus.NewDesc(prefix+"disk_capacity_byte", "Capacity of the disk in bytes", dl, nil)
 	diskDriveHealthyDesc = prometheus.NewDesc(prefix+"disk_healthy", "Health status of the diks", dl, nil)
-	diskDriveRotationDesc = prometheus.NewDesc(prefix+"disk_rpm", "Disk rotations / minute", dl, nil)
-	diskDriveTempDesc = prometheus.NewDesc(prefix+"disk_temperature", "Temperature of the disc in degree celsius", dl, nil)
 }
 
 // Describe describes all metrics for the storage package
 func Describe(ch chan<- *prometheus.Desc) {
-	ch <- logicalDriveCapacityDesc
-	ch <- logicalDriveHealthyDesc
-	ch <- diskDriveTempDesc
 	ch <- diskDriveCapacityDesc
-	ch <- diskDriveRotationDesc
 	ch <- diskDriveHealthyDesc
 }
 
@@ -61,113 +44,88 @@ func Collect(parentPath string, cc *common.CollectorContext) {
 	))
 	defer span.End()
 
-	p := parentPath + "/SmartStorage/ArrayControllers"
-	crtls := common.ResourceLinks{}
-
-	err := cc.Client().Get(ctx, p, &crtls)
-	if err != nil {
-		cc.HandleError(fmt.Errorf("could not get array controller summary: %w", err), span)
-		return
-	}
-
-	cc.WaitGroup().Add(len(crtls.Links.Members))
-
-	for _, l := range crtls.Links.Members {
-		go collectForArrayController(ctx, l.Href, cc)
-	}
+	collectStorage(ctx, parentPath, cc)
+	collectSmartStorage(ctx, parentPath, cc)
 }
 
-func collectForArrayController(ctx context.Context, link string, cc *common.CollectorContext) {
-	defer cc.WaitGroup().Done()
-
-	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectForArrayController", trace.WithAttributes(
-		attribute.String("path", link),
-	))
-	defer span.End()
-
-	i := strings.Index(link, "Systems/")
-	p := link[i:]
-
-	crtl := ArrayController{}
-
-	err := cc.Client().Get(ctx, p, &crtl)
-	if err != nil {
-		cc.HandleError(fmt.Errorf("could not get array controller information from %s: %w", link, err), span)
-		return
-	}
-
-	cc.WaitGroup().Add(2)
-
-	go collectLogicalDrives(ctx, p, crtl, cc)
-	go collectDiskDrives(ctx, p, crtl, cc)
-}
-
-func collectLogicalDrives(ctx context.Context, parentPath string, crtl ArrayController, cc *common.CollectorContext) {
-	defer cc.WaitGroup().Done()
-
-	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectLogicalDrives", trace.WithAttributes(
+func collectStorage(ctx context.Context, parentPath string, cc *common.CollectorContext) {
+	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectStorage", trace.WithAttributes(
 		attribute.String("parent_path", parentPath),
 	))
 	defer span.End()
 
-	drvs, err := driveLinks(ctx, parentPath+"/"+"LogicalDrives", cc.Client())
+	p := parentPath + "/Storage"
+	crtls := common.MemberList{}
+
+	err := cc.Client().Get(ctx, p, &crtls)
 	if err != nil {
-		cc.HandleError(fmt.Errorf("could not get logical drive information for array controller %s: %w", crtl.SerialNumber, err), span)
+		cc.HandleError(fmt.Errorf("could not get storage controller summary: %w", err), span)
 		return
 	}
 
-	cc.WaitGroup().Add(len(drvs))
-	for _, d := range drvs {
-		go collectLogicalDrive(ctx, d, crtl, cc)
+	for _, l := range crtls.Members {
+		collectStorageController(ctx, l.Path, cc)
 	}
 }
 
-func collectLogicalDrive(ctx context.Context, path string, crtl ArrayController, cc *common.CollectorContext) {
-	defer cc.WaitGroup().Done()
-
-	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectLogicalDrive", trace.WithAttributes(
+func collectStorageController(ctx context.Context, path string, cc *common.CollectorContext) {
+	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectController", trace.WithAttributes(
 		attribute.String("path", path),
 	))
 	defer span.End()
 
-	d := LogicalDrive{}
-	err := cc.Client().Get(ctx, path, &d)
+	strg := StorageInfo{}
+	err := cc.Client().Get(ctx, path, &strg)
 	if err != nil {
-		cc.HandleError(fmt.Errorf("could not get drive information from %s: %w", path, err), span)
+		cc.HandleError(fmt.Errorf("could not get storage controller summary: %w", err), span)
 		return
 	}
 
-	l := []string{cc.Client().HostName(), crtl.SerialNumber, d.LogicalDriveName, d.Raid}
-	cc.RecordMetrics(
-		prometheus.MustNewConstMetric(logicalDriveCapacityDesc, prometheus.GaugeValue, float64(d.CapacityMiB<<20), l...),
-		prometheus.MustNewConstMetric(logicalDriveHealthyDesc, prometheus.GaugeValue, d.Status.HealthValue(), l...),
-	)
+	for _, drv := range strg.Drives {
+		collectDiskDrive(ctx, drv.Path, cc)
+	}
 }
 
-func collectDiskDrives(ctx context.Context, parentPath string, crtl ArrayController, cc *common.CollectorContext) {
-	defer cc.WaitGroup().Done()
-
-	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectDiskDrives", trace.WithAttributes(
+func collectSmartStorage(ctx context.Context, parentPath string, cc *common.CollectorContext) {
+	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectSmartStorage", trace.WithAttributes(
 		attribute.String("parent_path", parentPath),
 	))
 	defer span.End()
 
-	drvs, err := driveLinks(ctx, parentPath+"/"+"DiskDrives", cc.Client())
+	p := parentPath + "/SmartStorage/ArrayControllers/"
+	crtls := common.MemberList{}
+	err := cc.Client().Get(ctx, p, &crtls)
 	if err != nil {
-		cc.HandleError(fmt.Errorf("could not get disk drive information for array controller %s: %w", crtl.SerialNumber, err), span)
+		cc.HandleError(fmt.Errorf("could not get smart storage controller summary: %w", err), span)
 		return
 	}
 
-	cc.WaitGroup().Add(len(drvs))
-	for _, d := range drvs {
-		go collectDiskDrive(ctx, d, crtl, cc)
+	for _, m := range crtls.Members {
+		collectSmartStorageController(ctx, m.Path, cc)
 	}
 }
 
-func collectDiskDrive(ctx context.Context, path string, crtl ArrayController, cc *common.CollectorContext) {
-	defer cc.WaitGroup().Done()
+func collectSmartStorageController(ctx context.Context, path string, cc *common.CollectorContext) {
+	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectSmartController", trace.WithAttributes(
+		attribute.String("path", path),
+	))
+	defer span.End()
 
-	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectDiskDrive", trace.WithAttributes(
+	p := path + "DiskDrives/"
+	drives := common.MemberList{}
+	err := cc.Client().Get(ctx, p, &drives)
+	if err != nil {
+		cc.HandleError(fmt.Errorf("could not get drives for controller %s: %w", path, err), span)
+		return
+	}
+
+	for _, drv := range drives.Members {
+		collectDiskDrive(ctx, drv.Path, cc)
+	}
+}
+
+func collectDiskDrive(ctx context.Context, path string, cc *common.CollectorContext) {
+	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectDisk", trace.WithAttributes(
 		attribute.String("path", path),
 	))
 	defer span.End()
@@ -179,27 +137,9 @@ func collectDiskDrive(ctx context.Context, path string, crtl ArrayController, cc
 		return
 	}
 
-	l := []string{cc.Client().HostName(), crtl.SerialNumber, d.Location, d.Model, d.InterfaceType}
+	l := []string{cc.Client().HostName(), string(d.Location), d.Model, d.MediaType}
 	cc.RecordMetrics(
-		prometheus.MustNewConstMetric(diskDriveCapacityDesc, prometheus.GaugeValue, float64(d.CapacityGB<<30), l...),
+		prometheus.MustNewConstMetric(diskDriveCapacityDesc, prometheus.GaugeValue, float64(d.CapacityBytes()), l...),
 		prometheus.MustNewConstMetric(diskDriveHealthyDesc, prometheus.GaugeValue, d.Status.HealthValue(), l...),
-		prometheus.MustNewConstMetric(diskDriveRotationDesc, prometheus.GaugeValue, d.RotationalSpeedRpm, l...),
-		prometheus.MustNewConstMetric(diskDriveTempDesc, prometheus.GaugeValue, d.CurrentTemperatureCelsius, l...),
 	)
-}
-
-func driveLinks(ctx context.Context, path string, cl client.Client) ([]string, error) {
-	drvLinks := common.ResourceLinks{}
-
-	err := cl.Get(ctx, path, &drvLinks)
-	if err != nil {
-		return nil, errors.Wrapf(err, "could not get drive list from %s", path)
-	}
-
-	drvs := make([]string, len(drvLinks.Links.Members))
-	for i, l := range drvLinks.Links.Members {
-		drvs[i] = l.Href[strings.Index(l.Href, "Systems/"):]
-	}
-
-	return drvs, nil
 }

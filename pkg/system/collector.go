@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2020. Licensed under [MIT](LICENSE) license.
+// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2022. Licensed under [MIT](LICENSE) license.
 //
 // SPDX-License-Identifier: MIT
 
@@ -8,18 +8,18 @@ import (
 	"context"
 	"time"
 
-	"github.com/MauveSoftware/ilo4_exporter/pkg/client"
-	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
-	"github.com/MauveSoftware/ilo4_exporter/pkg/system/memory"
-	"github.com/MauveSoftware/ilo4_exporter/pkg/system/processor"
-	"github.com/MauveSoftware/ilo4_exporter/pkg/system/storage"
+	"github.com/MauveSoftware/ilo5_exporter/pkg/client"
+	"github.com/MauveSoftware/ilo5_exporter/pkg/common"
+	"github.com/MauveSoftware/ilo5_exporter/pkg/system/memory"
+	"github.com/MauveSoftware/ilo5_exporter/pkg/system/processor"
+	"github.com/MauveSoftware/ilo5_exporter/pkg/system/storage"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel/trace"
 )
 
 const (
-	prefix = "ilo4_"
+	prefix = "ilo_"
 )
 
 var (

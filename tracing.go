@@ -22,7 +22,7 @@ import (
 
 var (
 	tracer = otel.GetTracerProvider().Tracer(
-		"github.com/czerwonk/ilo4_exporter",
+		"github.com/czerwonk/ilo_exporter",
 		trace.WithSchemaURL(semconv.SchemaURL),
 	)
 )
@@ -102,7 +102,7 @@ func shutdownTraceProvider(ctx context.Context, shutdownFunc func(ctx context.Co
 func resourceDefinition() *resource.Resource {
 	return resource.NewWithAttributes(
 		semconv.SchemaURL,
-		semconv.ServiceNameKey.String("ilo4_exporter"),
+		semconv.ServiceNameKey.String("ilo_exporter"),
 		semconv.ServiceVersionKey.String(version),
 	)
 }

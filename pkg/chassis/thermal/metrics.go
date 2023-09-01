@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2020. Licensed under [MIT](LICENSE) license.
+// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2022. Licensed under [MIT](LICENSE) license.
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,17 +6,16 @@ package thermal
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/pkg/errors"
+	"github.com/MauveSoftware/ilo5_exporter/pkg/common"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
-
-	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
 )
 
 const (
-	prefix = "ilo4_chassis_"
+	prefix = "ilo_chassis_"
 )
 
 var (
@@ -51,7 +50,7 @@ func Describe(ch chan<- *prometheus.Desc) {
 	ch <- tempHealthyDesc
 }
 
-func Collect(ctx context.Context, parentPath string, cc *common.CollectorContext) error {
+func Collect(ctx context.Context, parentPath string, cc *common.CollectorContext) {
 	ctx, span := cc.Tracer().Start(ctx, "Thermal.Collect", trace.WithAttributes(
 		attribute.String("parent_path", parentPath),
 	))
@@ -60,39 +59,37 @@ func Collect(ctx context.Context, parentPath string, cc *common.CollectorContext
 	th := Thermal{}
 	err := cc.Client().Get(ctx, parentPath+"/Thermal", &th)
 	if err != nil {
-		return errors.Wrap(err, "could not get thermal data")
+		cc.HandleError(fmt.Errorf("could not get thermal data: %w", err), span)
 	}
 
 	hostname := cc.Client().HostName()
 	for _, f := range th.Fans {
+		if f.Status.State == "UnavailableOffline" || f.Status.State == "Offline" {
+			continue
+		}
+
 		collectForFan(hostname, &f, cc)
 	}
 
 	for _, t := range th.Temperatures {
+		if t.Status.State == "Absent" || t.Status.State == "Offline" {
+			continue
+		}
+
 		collectForTemperature(hostname, &t, cc)
 	}
-
-	return nil
 }
 
 func collectForFan(hostName string, f *Fan, cc *common.CollectorContext) {
-	if f.Status.State == "Offline" {
-		return
-	}
-
-	l := []string{hostName, f.Name}
+	l := []string{hostName, f.Name()}
 	cc.RecordMetrics(
 		prometheus.MustNewConstMetric(fanHealthyDesc, prometheus.GaugeValue, f.Status.HealthValue(), l...),
 		prometheus.MustNewConstMetric(fanEnabledDesc, prometheus.GaugeValue, f.Status.EnabledValue(), l...),
-		prometheus.MustNewConstMetric(fanCurrentDesc, prometheus.GaugeValue, f.CurrentReading, l...),
+		prometheus.MustNewConstMetric(fanCurrentDesc, prometheus.GaugeValue, f.Reading(), l...),
 	)
 }
 
 func collectForTemperature(hostName string, t *Temperature, cc *common.CollectorContext) {
-	if t.Status.State == "Offline" {
-		return
-	}
-
 	l := []string{hostName, t.Name}
 	cc.RecordMetrics(
 		prometheus.MustNewConstMetric(tempCurrentDesc, prometheus.GaugeValue, t.ReadingCelsius, l...),

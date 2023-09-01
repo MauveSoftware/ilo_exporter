@@ -1,11 +1,11 @@
-// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2020. Licensed under [MIT](LICENSE) license.
+// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2022. Licensed under [MIT](LICENSE) license.
 //
 // SPDX-License-Identifier: MIT
 
 package thermal
 
 import (
-	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
+	"github.com/MauveSoftware/ilo5_exporter/pkg/common"
 )
 
 type Temperature struct {

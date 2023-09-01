@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2020. Licensed under [MIT](LICENSE) license.
+// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2022. Licensed under [MIT](LICENSE) license.
 //
 // SPDX-License-Identifier: MIT
 
@@ -27,10 +27,10 @@ type APIClient struct {
 	hostName string
 	username string
 	password string
+	tracer   trace.Tracer
 	client   *http.Client
 	debug    bool
 	sem      *semaphore.Weighted
-	tracer   trace.Tracer
 }
 
 // ClientOption applies options to APIClient
@@ -63,13 +63,13 @@ func WithMaxConcurrentRequests(max uint) ClientOption {
 // NewClient creates a new client instance
 func NewClient(hostName, username, password string, tracer trace.Tracer, opts ...ClientOption) Client {
 	cl := &APIClient{
-		url:      fmt.Sprintf("https://%s/rest/v1/", hostName),
+		url:      fmt.Sprintf("https://%s/redfish/v1/", hostName),
 		hostName: hostName,
 		username: username,
 		password: password,
 		client:   &http.Client{},
-		sem:      semaphore.NewWeighted(1),
 		tracer:   tracer,
+		sem:      semaphore.NewWeighted(1),
 	}
 
 	for _, o := range opts {
@@ -86,6 +86,8 @@ func (cl *APIClient) HostName() string {
 
 // Get retrieves the ressource from the API and unmashals the json retrieved
 func (cl *APIClient) Get(ctx context.Context, path string, obj interface{}) error {
+	path = strings.Replace(path, "/redfish/v1/", "", 1)
+
 	b, err := cl.get(ctx, path)
 	if err != nil {
 		return err
@@ -127,10 +129,9 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 300 {
-		err = fmt.Errorf(resp.Status)
 		span.RecordError(err)
 		span.SetStatus(codes.Error, resp.Status)
-		return nil, err
+		return nil, fmt.Errorf(resp.Status)
 	}
 
 	b, err := io.ReadAll(resp.Body)

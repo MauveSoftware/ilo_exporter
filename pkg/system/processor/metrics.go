@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2020. Licensed under [MIT](LICENSE) license.
+// SPDX-FileCopyrightText: (c) Mauve Mailorder Software GmbH & Co. KG, 2022. Licensed under [MIT](LICENSE) license.
 //
 // SPDX-License-Identifier: MIT
 
@@ -9,14 +9,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/MauveSoftware/ilo4_exporter/pkg/common"
+	"github.com/MauveSoftware/ilo5_exporter/pkg/common"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 )
 
 const (
-	prefix = "ilo4_processor_"
+	prefix = "ilo_processor_"
 )
 
 var (
@@ -54,8 +54,7 @@ func Collect(parentPath string, cc *common.CollectorContext) {
 	defer span.End()
 
 	p := parentPath + "/Processors"
-	procs := common.ResourceLinks{}
-
+	procs := common.MemberList{}
 	err := cc.Client().Get(ctx, p, &procs)
 	if err != nil {
 		cc.HandleError(fmt.Errorf("could not get processor summary: %w", err), span)
@@ -63,30 +62,22 @@ func Collect(parentPath string, cc *common.CollectorContext) {
 	}
 
 	cc.RecordMetrics(
-		prometheus.MustNewConstMetric(countDesc, prometheus.GaugeValue, float64(len(procs.Links.Members)), cc.Client().HostName()),
+		prometheus.MustNewConstMetric(countDesc, prometheus.GaugeValue, float64(len(procs.Members)), cc.Client().HostName()),
 	)
 
-	cc.WaitGroup().Add(len(procs.Links.Members))
-
-	for _, l := range procs.Links.Members {
-		go collectForProcessor(ctx, l.Href, cc)
+	for _, l := range procs.Members {
+		collectForProcessor(ctx, l.Path, cc)
 	}
 }
 
 func collectForProcessor(ctx context.Context, link string, cc *common.CollectorContext) {
-	defer cc.WaitGroup().Done()
-
 	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectProcessor", trace.WithAttributes(
 		attribute.String("path", link),
 	))
 	defer span.End()
 
-	i := strings.Index(link, "Systems/")
-	p := link[i:]
-
 	pr := Processor{}
-
-	err := cc.Client().Get(ctx, p, &pr)
+	err := cc.Client().Get(ctx, link, &pr)
 	if err != nil {
 		cc.HandleError(fmt.Errorf("could not get processor information from %s: %w", link, err), span)
 		return

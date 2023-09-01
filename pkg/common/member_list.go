@@ -2,11 +2,12 @@
 //
 // SPDX-License-Identifier: MIT
 
-package client
+package common
 
-import "context"
+type MemberList struct {
+	Members []Member
+}
 
-type Client interface {
-	HostName() string
-	Get(ctx context.Context, ressource string, obj interface{}) error
+type Member struct {
+	Path string `json:"@odata.id"`
 }
