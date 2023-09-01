@@ -1,6 +1,6 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/mauvesoftware/ilo4_exporter)](https://goreportcard.com/report/github.com/mauvesoftware/ilo4_exporter)
 # ilo_exporter
-Metrics exporter for HP iLO4/5 to prometheus
+Metrics exporter for HP iLO4+ to prometheus
 
 ## Install
 ```
