@@ -4,7 +4,7 @@
 
 package processor
 
-import "github.com/MauveSoftware/ilo5_exporter/pkg/common"
+import "github.com/MauveSoftware/ilo_exporter/pkg/common"
 
 type Processor struct {
 	Socket       string        `json:"Socket"`

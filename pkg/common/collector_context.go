@@ -9,7 +9,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/MauveSoftware/ilo5_exporter/pkg/client"
+	"github.com/MauveSoftware/ilo_exporter/pkg/client"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel/codes"

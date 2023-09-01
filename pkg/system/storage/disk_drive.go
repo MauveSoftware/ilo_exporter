@@ -5,7 +5,7 @@
 package storage
 
 import (
-	"github.com/MauveSoftware/ilo5_exporter/pkg/common"
+	"github.com/MauveSoftware/ilo_exporter/pkg/common"
 )
 
 type DiskDrive struct {

@@ -13,9 +13,9 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/MauveSoftware/ilo5_exporter/pkg/chassis"
-	"github.com/MauveSoftware/ilo5_exporter/pkg/client"
-	"github.com/MauveSoftware/ilo5_exporter/pkg/system"
+	"github.com/MauveSoftware/ilo_exporter/pkg/chassis"
+	"github.com/MauveSoftware/ilo_exporter/pkg/client"
+	"github.com/MauveSoftware/ilo_exporter/pkg/system"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
