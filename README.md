@@ -1,28 +1,28 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/mauvesoftware/ilo4_exporter)](https://goreportcard.com/report/github.com/mauvesoftware/ilo4_exporter)
-# ilo4_exporter
-Metrics exporter for HP iLO4 to prometheus
+# ilo_exporter
+Metrics exporter for HP iLO4/5 to prometheus
 
 ## Install
 ```
-go get -u github.com/MauveSoftware/ilo4_exporter
+go get -u github.com/MauveSoftware/ilo_exporter
 ```
 
 ## Usage
 Running the exporter with the following test credentials:
 
 ```
-Username: ilo4_exporter
+Username: ilo_exporter
 Password: g3tM3trics
 ```
 
 ### Binary
 ```bash
-./ilo4_exporter -api.username=ilo4_exporter -api.password=g3tM3trics
+./ilo_exporter -api.username=ilo_exporter -api.password=g3tM3trics
 ```
 
 ### Docker
 ```bash
-docker run -d --restart always --name ilo4_exporter -p 9545:9545 -e API_USERNAME=ilo4_exporter -e API_PASSWORD=g3tM3trics mauvesoftware/ilo4_exporter
+docker run -d --restart always --name ilo_exporter -p 9545:9545 -e API_USERNAME=ilo_exporter -e API_PASSWORD=g3tM3trics mauvesoftware/ilo_exporter
 ```
 
 ## Prometheus configuration
