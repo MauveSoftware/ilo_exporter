@@ -2,6 +2,9 @@
 # ilo_exporter
 Metrics exporter for HP iLO to prometheus
 
+## Breaking changes
+Beginning with version 1.0.0 the projects ilo4_exporter and ilo5_exporter were merged to ilo_exporter. Due to this change metric names are based on ilo5_exporter but were renamed to show compatiblity to both versions.
+
 ## Install
 ```
 go get -u github.com/MauveSoftware/ilo_exporter
