@@ -28,7 +28,7 @@ func (m *MemoryDIMM) legacyHealthValue() float64 {
 
 func (m *MemoryDIMM) IsValid() bool {
 	if m.isLegacy() {
-		return true
+		return m.StatusLegacy != "Unknown"
 	}
 
 	return len(m.StatusCurrent.State) > 0
