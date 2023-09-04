@@ -131,7 +131,7 @@ func handleMetricsRequest(w http.ResponseWriter, r *http.Request) error {
 
 	cl := client.NewClient(host, *username, *password, tracer, client.WithMaxConcurrentRequests(*maxConcurrentRequests), client.WithInsecure(), client.WithDebug())
 	reg.MustRegister(system.NewCollector(ctx, cl, tracer))
-  reg.MustRegister(manager.NewCollector(ctx, cl, tracer))
+	reg.MustRegister(manager.NewCollector(ctx, cl, tracer))
 	reg.MustRegister(chassis.NewCollector(ctx, cl, tracer))
 
 	l := logrus.New()
