@@ -5,7 +5,13 @@
 package system
 
 type System struct {
-	PowerState string `json:"PowerState"`
+	PowerState   string `json:"PowerState"`
+	UUID         string `json:"UUID"`
+	SerialNumber string `json:"SerialNumber"`
+	SKU          string `json:"SKU"`
+	Model        string `json:"Model"`
+	HostName     string `json:"HostName"`
+  BiosVersion string `json:"BiosVersion"`
 }
 
 func (s *System) PowerUpValue() float64 {

@@ -24,6 +24,7 @@ const (
 
 var (
 	powerUpDesc        = prometheus.NewDesc(prefix+"power_up", "Power status", []string{"host"}, nil)
+	infoDesc           = prometheus.NewDesc(prefix+"system_info", "System Info", []string{"host", "uuid", "serial", "sku", "model", "host_name", "bios_version"}, nil)
 	scrapeDurationDesc = prometheus.NewDesc(prefix+"system_scrape_duration_second", "Scrape duration for the system module", []string{"host"}, nil)
 )
 
@@ -45,6 +46,7 @@ type collector struct {
 // Describe implements prometheus.Collector interface
 func (c *collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- powerUpDesc
+	ch <- infoDesc
 	ch <- scrapeDurationDesc
 	memory.Describe(ch)
 	processor.Describe(ch)
@@ -67,6 +69,8 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	ch <- prometheus.MustNewConstMetric(powerUpDesc, prometheus.GaugeValue, s.PowerUpValue(), c.cl.HostName())
+	ch <- prometheus.MustNewConstMetric(infoDesc, prometheus.GaugeValue, 1, c.cl.HostName(), 
+    s.UUID, s.SerialNumber, s.SKU, s.Model, s.HostName, s.BiosVersion)
 
 	doneCh := make(chan interface{})
 
