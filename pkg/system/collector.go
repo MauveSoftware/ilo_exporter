@@ -69,8 +69,8 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	ch <- prometheus.MustNewConstMetric(powerUpDesc, prometheus.GaugeValue, s.PowerUpValue(), c.cl.HostName())
-	ch <- prometheus.MustNewConstMetric(infoDesc, prometheus.GaugeValue, 1, c.cl.HostName(), 
-    s.UUID, s.SerialNumber, s.SKU, s.Model, s.HostName, s.BiosVersion)
+	ch <- prometheus.MustNewConstMetric(infoDesc, prometheus.GaugeValue, 1, c.cl.HostName(),
+		s.UUID, s.SerialNumber, s.SKU, s.Model, s.HostName, s.BiosVersion)
 
 	doneCh := make(chan interface{})
 

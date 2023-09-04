@@ -11,7 +11,7 @@ type System struct {
 	SKU          string `json:"SKU"`
 	Model        string `json:"Model"`
 	HostName     string `json:"HostName"`
-  BiosVersion string `json:"BiosVersion"`
+	BiosVersion  string `json:"BiosVersion"`
 }
 
 func (s *System) PowerUpValue() float64 {
