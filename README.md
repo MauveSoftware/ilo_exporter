@@ -49,6 +49,10 @@ To get metrics for 172.16.0.200 using https://my-exporter-tld/metrics?hosts=172.
         replacement: my-exporter-tld
 ```
 
+## Grafana
+
+For users of [Grafana](https://grafana.com/), this repository includes an example [dashboard](iLO-grafana-dashboard.json) and example [alert rules](ilo-grafana-alerts.yaml).
+
 ## License
 (c) Mauve Mailorder Software GmbH & Co. KG, 2022. Licensed under [MIT](LICENSE) license.
 
