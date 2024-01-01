@@ -1,0 +1,1144 @@
+apiVersion: 1
+groups:
+    - orgId: 1
+      name: ilo-tf
+      folder: Hosts
+      interval: 1m
+      rules:
+        - uid: fb4fc6b9-2005-4995-b011-71f90bfc25c4
+          title: Chassis Fan Enabled
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: false
+                expr: ilo_chassis_fan_enabled[10m]
+                instant: true
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: min
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 3
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "3"
+            description: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} enabled was {{ printf "%.2f" $values.B.Value }} in the last minute'
+            summary: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} is disabled'
+          labels:
+            Severity: warning
+            dashboard: iLO
+          isPaused: false
+        - uid: fc3256d0-1e96-4851-957a-fc7ab0c30f2b
+          title: Chassis Fan Healthy
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: false
+                expr: ilo_chassis_fan_healthy[10m]
+                instant: true
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: min
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 3
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "3"
+            description: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} healthy was {{ printf "%.2f" $values.B.Value }} in the last minute'
+            summary: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} is unhealthy'
+          labels:
+            Severity: warning
+            dashboard: iLO
+          isPaused: false
+        - uid: f2a6672f-e9f6-43de-a6d0-520d11c16af3
+          title: Chassis Temperature Healthy
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: false
+                expr: ilo_chassis_temperature_healthy[10m]
+                instant: true
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: min
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 2
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "2"
+            description: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} healthy was {{ printf "%.2f" $values.B.Value }} in the last minute'
+            summary: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} is unhealthy'
+          labels:
+            Severity: warning
+            dashboard: iLO
+          isPaused: false
+        - uid: ca0af254-b35e-4c63-853a-880dd6d5d2c8
+          title: Temperature Critical
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: true
+                expr: ((ilo_chassis_temperature_critical > 0) and (max_over_time(ilo_chassis_temperature_critical[10m]) - max_over_time(ilo_chassis_temperature_current[10m]))) * -1
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: true
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: max
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0.1
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 2
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "2"
+            description: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} temperature is Critical'
+            summary: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} temperature is {{ printf "%.2f" $values.B.Value }}°C over the Critical threshold!'
+          labels:
+            Severity: critical
+            dashboard: iLO
+          isPaused: false
+        - uid: b1458be7-7483-4cc5-8ec7-1c840feec39d
+          title: Temperature Fatal
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: true
+                expr: ((ilo_chassis_temperature_fatal > 0) and (max_over_time(ilo_chassis_temperature_fatal[10m]) - max_over_time(ilo_chassis_temperature_current[10m]))) * -1
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: true
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: max
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0.1
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 2
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "2"
+            description: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} temperature is FATAL'
+            summary: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} temperature is {{ printf "%.2f" $values.B.Value }}°C over the FATAL threshold!'
+          labels:
+            Severity: critical
+            dashboard: iLO
+          isPaused: false
+        - uid: b1bf599f-66f8-44e9-9290-49ebf82b20c2
+          title: DIMM Healthy
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: false
+                expr: ilo_memory_dimm_healthy[10m]
+                instant: true
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: min
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 15
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "15"
+            description: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} healthy was {{ printf "%.2f" $values.B.Value }} in the last minute'
+            summary: '{{ $values.B.Labels.host }} {{ $values.B.Labels.name }} is unhealthy'
+          labels:
+            Severity: warning
+            dashboard: iLO
+          isPaused: false
+        - uid: a778084f-eb8a-460f-a651-8e0c63777bf9
+          title: High Max Power Consumption
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: true
+                expr: max_over_time(ilo_power_max_watt[10m]) / max_over_time(ilo_power_capacity_watt[10m]) * 100
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: true
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: max
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 50
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 4
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "4"
+            description: '{{ $values.B.Labels.host }} max power consumption over the last minute was {{ printf "%.2f" $values.B.Value }}% of capacity'
+            summary: '{{ $values.B.Labels.host }} high power consumption'
+          labels:
+            Severity: warning
+            dashboard: iLO
+          isPaused: false
+        - uid: dd05c127-41ae-4134-95f7-882a3aaab5bb
+          title: Power Supply Enabled
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: false
+                expr: ilo_power_supply_enabled[10m]
+                instant: true
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: min
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 16
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "16"
+            description: '{{ $values.B.Labels.host }} {{ $values.B.Labels.serial }} power supply was not enabled in the last minute'
+            summary: '{{ $values.B.Labels.host }} {{ $values.B.Labels.serial }} power supply disabled'
+          labels:
+            Severity: warning
+            dashboard: iLO
+          isPaused: false
+        - uid: b80043e8-992b-46dd-908a-a17f29b1d740
+          title: Power Supply Unhealthy
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: false
+                expr: ilo_power_supply_healthy[10m]
+                instant: true
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: min
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 17
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "17"
+            description: '{{ $values.B.Labels.host }} {{ $values.B.Labels.serial }} power supply was not healthy in the last minute'
+            summary: '{{ $values.B.Labels.host }} {{ $values.B.Labels.serial }} power supply unhealthy'
+          labels:
+            Severity: warning
+            dashboard: iLO
+          isPaused: false
+        - uid: ffd32292-9a1f-43df-aa14-c00bfcfd283d
+          title: Power Up
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: false
+                expr: ilo_power_up[10m]
+                instant: true
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: min
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 8
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "8"
+            description: '{{ $values.B.Labels.host }} iLO Power Up was {{ printf "%.2f" $values.B.Value }} in the last minute'
+            summary: '{{ $values.B.Labels.host }} iLO is powered off'
+          labels:
+            Severity: warning
+            dashboard: iLO
+          isPaused: false
+        - uid: fae1f39d-4816-4365-a5ec-a93dcaa702d2
+          title: Processor Unhealthy
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: false
+                expr: ilo_processor_healthy[10m]
+                instant: true
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: min
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 18
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "18"
+            description: '{{ $values.B.Labels.host }} {{ $values.B.Labels.socket }} power supply was not healthy in the last minute'
+            summary: '{{ $values.B.Labels.host }} {{ $values.B.Labels.socket }} processor unhealthy'
+          labels:
+            Severity: warning
+            dashboard: iLO
+          isPaused: false
+        - uid: ef3315c8-835e-432d-b8ee-b24a1be798e1
+          title: Disk Unhealthy
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: false
+                expr: ilo_storage_disk_healthy[10m]
+                instant: true
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: min
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: tUMY2B5Mk
+          panelId: 19
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            __dashboardUid__: tUMY2B5Mk
+            __panelId__: "19"
+            description: '{{ $values.B.Labels.host }} {{ $values.B.Labels.location }} disk was not healthy in the last minute'
+            summary: '{{ $values.B.Labels.host }} {{ $values.B.Labels.location }} disk unhealthy'
+          labels:
+            Severity: warning
+            dashboard: iLO
+          isPaused: false
