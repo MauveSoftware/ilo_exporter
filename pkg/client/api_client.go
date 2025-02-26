@@ -131,7 +131,7 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 	if resp.StatusCode >= 300 {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, resp.Status)
-		return nil, fmt.Errorf(resp.Status)
+		return nil, fmt.Errorf("%s", resp.Status)
 	}
 
 	b, err := io.ReadAll(resp.Body)
