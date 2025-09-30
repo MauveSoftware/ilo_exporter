@@ -139,7 +139,7 @@ func collectDiskDrive(ctx context.Context, path string, cc *common.CollectorCont
 		return
 	}
 
-	// dl := []string{"host", "location", "model", "media_type", "name", "serial_number"}
+	// Labels: host, location, model, media_type, name, serial_number
 	l := []string{cc.Client().HostName(), d.GetLocation(), d.Model, d.MediaType, d.Name, d.SerialNumber}
 	cc.RecordMetrics(
 		prometheus.MustNewConstMetric(diskDriveCapacityDesc, prometheus.GaugeValue, d.CapacityBytes(), l...),
