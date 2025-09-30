@@ -9,12 +9,24 @@ import (
 )
 
 type DiskDrive struct {
-	MediaType  string        `json:"MediaType"`
-	Model      string        `json:"Model"`
-	Location   Location      `json:"Location"`
-	CapacityB  uint64        `json:"CapacityBytes"`
-	CapacityMB uint64        `json:"CapacityMiB"`
-	Status     common.Status `json:"Status"`
+	Name             string        `json:"Name"`
+	SerialNumber     string        `json:"SerialNumber"`
+	MediaType        string        `json:"MediaType"`
+	Model            string        `json:"Model"`
+	Location         Location      `json:"Location"`
+	PhysicalLocation Location      `json:"PhysicalLocation"`
+	CapacityB        uint64        `json:"CapacityBytes"`
+	CapacityMB       uint64        `json:"CapacityMiB"`
+	Status           common.Status `json:"Status"`
+	FailurePredicted bool          `json:"FailurePredicted"`
+}
+
+func (d *DiskDrive) GetLocation() string {
+	if d.Location != "" {
+		return string(d.Location)
+	}
+
+	return string(d.PhysicalLocation)
 }
 
 func (d *DiskDrive) CapacityBytes() float64 {
@@ -23,4 +35,12 @@ func (d *DiskDrive) CapacityBytes() float64 {
 	}
 
 	return float64(d.CapacityB)
+}
+
+func (d *DiskDrive) FailurePredictedFloat() float64 {
+	if d.FailurePredicted {
+		return 1
+	}
+
+	return 0
 }

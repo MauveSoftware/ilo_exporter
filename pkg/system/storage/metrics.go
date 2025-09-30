@@ -19,14 +19,16 @@ const (
 )
 
 var (
-	diskDriveCapacityDesc *prometheus.Desc
-	diskDriveHealthyDesc  *prometheus.Desc
+	diskDriveCapacityDesc     *prometheus.Desc
+	diskDriveHealthyDesc      *prometheus.Desc
+	diskDriveFailurePredicted *prometheus.Desc
 )
 
 func init() {
-	dl := []string{"host", "location", "model", "media_type"}
+	dl := []string{"host", "location", "model", "media_type", "name", "serial_number"}
 	diskDriveCapacityDesc = prometheus.NewDesc(prefix+"disk_capacity_byte", "Capacity of the disk in bytes", dl, nil)
-	diskDriveHealthyDesc = prometheus.NewDesc(prefix+"disk_healthy", "Health status of the diks", dl, nil)
+	diskDriveHealthyDesc = prometheus.NewDesc(prefix+"disk_healthy", "Health status of the disk", dl, nil)
+	diskDriveFailurePredicted = prometheus.NewDesc(prefix+"disk_failure_predicted", "Failure of disk is predicted", dl, nil)
 }
 
 // Describe describes all metrics for the storage package
@@ -137,9 +139,11 @@ func collectDiskDrive(ctx context.Context, path string, cc *common.CollectorCont
 		return
 	}
 
-	l := []string{cc.Client().HostName(), string(d.Location), d.Model, d.MediaType}
+	// dl := []string{"host", "location", "model", "media_type", "name", "serial_number"}
+	l := []string{cc.Client().HostName(), d.GetLocation(), d.Model, d.MediaType, d.Name, d.SerialNumber}
 	cc.RecordMetrics(
-		prometheus.MustNewConstMetric(diskDriveCapacityDesc, prometheus.GaugeValue, float64(d.CapacityBytes()), l...),
+		prometheus.MustNewConstMetric(diskDriveCapacityDesc, prometheus.GaugeValue, d.CapacityBytes(), l...),
 		prometheus.MustNewConstMetric(diskDriveHealthyDesc, prometheus.GaugeValue, d.Status.HealthValue(), l...),
+		prometheus.MustNewConstMetric(diskDriveFailurePredicted, prometheus.GaugeValue, d.FailurePredictedFloat(), l...),
 	)
 }
