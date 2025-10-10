@@ -101,7 +101,13 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 	cl.sem.Acquire(context.Background(), 1)
 	defer cl.sem.Release(1)
 
-	uri := strings.Trim(cl.url, "/") + "/" + strings.Trim(path, "/")
+	baseURL := strings.TrimSuffix(cl.url, "/")
+	relativePath := strings.TrimPrefix(path, "/")
+
+	uri := baseURL
+	if relativePath != "" {
+		uri += "/" + relativePath
+	}
 
 	_, span := cl.tracer.Start(ctx, "Client.Get", trace.WithAttributes(
 		attribute.String("URI", uri),
