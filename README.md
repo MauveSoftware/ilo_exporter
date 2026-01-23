@@ -25,11 +25,11 @@ Password: g3tM3trics
 
 ### Docker
 ```bash
-docker run -d --restart always --name ilo_exporter -p 19545:19545 -e API_USERNAME=ilo_exporter -e API_PASSWORD=g3tM3trics mauvesoftware/ilo_exporter
+docker run -d --restart always --name ilo_exporter -p 9545:9545 -e API_USERNAME=ilo_exporter -e API_PASSWORD=g3tM3trics mauvesoftware/ilo_exporter
 ```
 
 ## Prometheus configuration
-To get metrics for 172.16.0.200 using https://my-exporter-tld/metrics?hosts=172.16.0.200
+To get metrics for 172.16.0.200 using https://my-exporter-tld/metrics?host=172.16.0.200
 
 ```bash
   - job_name: 'ilo'
