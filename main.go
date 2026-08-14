@@ -53,6 +53,12 @@ func init() {
 func main() {
 	flag.Parse()
 
+	// Read API_USERNAME and API_PASSWORD from environment variablegit@github.com:bbruun/ilo_exporter.gits
+	if *username == "" || *password == "" {
+		*username = os.Getenv("API_USERNAME")
+		*password = os.Getenv("API_PASSWORD")
+	}
+
 	if *showVersion {
 		printVersion()
 		os.Exit(0)
