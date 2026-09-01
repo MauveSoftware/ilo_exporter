@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"strings"
 
@@ -40,7 +41,9 @@ type ClientOption func(*APIClient)
 func WithInsecure() ClientOption {
 	return func(c *APIClient) {
 		tr := &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			// iLO controllers typically use self-signed certificates, so skipping verification
+			// is an explicit opt-in via this option rather than the default client behavior.
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // #nosec G402 -- intentional opt-in for iLO self-signed certs
 		}
 		c.client = &http.Client{Transport: tr}
 	}
@@ -55,8 +58,13 @@ func WithDebug() ClientOption {
 
 // WithMaxConcurrentRequests defines the maximum number of GET requests sent against API concurrently
 func WithMaxConcurrentRequests(max uint) ClientOption {
+	n := int64(math.MaxInt64)
+	if uint64(max) <= math.MaxInt64 {
+		n = int64(max)
+	}
+
 	return func(c *APIClient) {
-		c.sem = semaphore.NewWeighted(int64(max))
+		c.sem = semaphore.NewWeighted(n)
 	}
 }
 
@@ -98,7 +106,9 @@ func (cl *APIClient) Get(ctx context.Context, path string, obj interface{}) erro
 }
 
 func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
-	cl.sem.Acquire(context.Background(), 1)
+	if err := cl.sem.Acquire(context.Background(), 1); err != nil {
+		return nil, err
+	}
 	defer cl.sem.Release(1)
 
 	baseURL := strings.TrimSuffix(cl.url, "/")
@@ -132,7 +142,7 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode >= 300 {
 		span.RecordError(err)
