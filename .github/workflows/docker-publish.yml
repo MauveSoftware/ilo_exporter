@@ -1,0 +1,19 @@
+name: Docker
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["v*.*.*"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  docker:
+    uses: czerwonk/go-ci/.github/workflows/docker-publish.yml@v2
+    with:
+      platforms: linux/amd64,linux/arm64,linux/arm/v7
