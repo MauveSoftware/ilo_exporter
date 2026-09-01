@@ -8,10 +8,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"html"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/MauveSoftware/ilo_exporter/pkg/chassis"
 	"github.com/MauveSoftware/ilo_exporter/pkg/client"
@@ -25,7 +27,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const version string = "1.0.4"
+const version string = "1.0.5"
 
 var (
 	showVersion              = flag.Bool("version", false, "Print version information.")
@@ -87,27 +89,37 @@ func printVersion() {
 func startServer() {
 	logrus.Infof("Starting iLO exporter (Version: %s)", version)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`<html>
+		_, err := w.Write([]byte(`<html>
 			<head><title>iLO5 Exporter (Version ` + version + `)</title></head>
 			<body>
 			<h1>iLO Exporter by Mauve Mailorder Software</h1>
 			<h2>Example</h2>
 			<p>Metrics for host 172.16.0.200</p>
-			<p><a href="` + *metricsPath + `?host=172.16.0.200">` + r.Host + *metricsPath + `?host=172.16.0.200</a></p>
+			<p><a href="` + *metricsPath + `?host=172.16.0.200">` + html.EscapeString(r.Host) + *metricsPath + `?host=172.16.0.200</a></p>
 			<h2>More information</h2>
 			<p><a href="https://github.com/MauveSoftware/ilo_exporter">github.com/MauveSoftware/ilo_exporter</a></p>
 			</body>
 			</html>`))
+		if err != nil {
+			logrus.Errorf("failed to write response: %v", err)
+		}
 	})
 	http.HandleFunc(*metricsPath, errorHandler(handleMetricsRequest))
 
 	logrus.Infof("Listening for %s on %s (TLS: %v)", *metricsPath, *listenAddress, *tlsEnabled)
+	srv := &http.Server{
+		Addr:              *listenAddress,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      30 * time.Second,
+	}
+
 	if *tlsEnabled {
-		logrus.Fatal(http.ListenAndServeTLS(*listenAddress, *tlsCertChainPath, *tlsKeyPath, nil))
+		logrus.Fatal(srv.ListenAndServeTLS(*tlsCertChainPath, *tlsKeyPath))
 		return
 	}
 
-	logrus.Fatal(http.ListenAndServe(*listenAddress, nil))
+	logrus.Fatal(srv.ListenAndServe())
 }
 
 func errorHandler(f func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
