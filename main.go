@@ -33,6 +33,7 @@ var (
 	showVersion              = flag.Bool("version", false, "Print version information.")
 	listenAddress            = flag.String("web.listen-address", ":9545", "Address on which to expose metrics and web interface.")
 	metricsPath              = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
+	writeTimeout             = flag.Duration("web.write-timeout", 2*time.Minute, "Maximum duration for writing a response incl. collecting metrics from the API (0 disables the timeout)")
 	username                 = flag.String("api.username", "", "Username")
 	password                 = flag.String("api.password", "", "Password")
 	maxConcurrentRequests    = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent against API concurrently")
@@ -113,7 +114,7 @@ func startServer() {
 		Addr:              *listenAddress,
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       10 * time.Second,
-		WriteTimeout:      30 * time.Second,
+		WriteTimeout:      *writeTimeout,
 	}
 
 	if *tlsEnabled {
