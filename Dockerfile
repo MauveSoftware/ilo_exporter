@@ -23,5 +23,5 @@ FROM gcr.io/distroless/static-debian13:nonroot@sha256:e2e927ec666bae08560abb3c55
 WORKDIR /app
 COPY --from=builder /out/ilo_exporter /app/ilo_exporter
 
-EXPOSE 19545
+EXPOSE 9545
 ENTRYPOINT ["/app/ilo_exporter"]
