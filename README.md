@@ -1,4 +1,3 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/mauvesoftware/ilo_exporter)](https://goreportcard.com/report/github.com/mauvesoftware/ilo_exporter)
 # ilo_exporter
 Metrics exporter for HP iLO to prometheus
 
