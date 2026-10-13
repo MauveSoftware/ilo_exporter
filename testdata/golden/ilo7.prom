@@ -255,6 +255,27 @@ ilo_processor_healthy{host="ilo.test",model="Intel(R) Xeon(R) 6517P",socket="Pro
 # TYPE ilo_processor_thread_count gauge
 ilo_processor_thread_count{host="ilo.test",model="Intel(R) Xeon(R) 6517P",socket="Proc 1"} 32
 ilo_processor_thread_count{host="ilo.test",model="Intel(R) Xeon(R) 6517P",socket="Proc 2"} 32
+# HELP ilo_scrape_collector_duration_seconds Duration of the collector in seconds
+# TYPE ilo_scrape_collector_duration_seconds gauge
+ilo_scrape_collector_duration_seconds{collector="manager",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="memory",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="power",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="processor",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="storage",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="system",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="thermal",host="ilo.test"} <duration>
+# HELP ilo_scrape_collector_success 1 if all resources of the collector could be retrieved, 0 otherwise
+# TYPE ilo_scrape_collector_success gauge
+ilo_scrape_collector_success{collector="manager",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="memory",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="power",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="processor",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="storage",host="ilo.test"} 0
+ilo_scrape_collector_success{collector="system",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="thermal",host="ilo.test"} 1
+# HELP ilo_scrape_redfish_requests Number of Redfish requests sent during the scrape
+# TYPE ilo_scrape_redfish_requests gauge
+ilo_scrape_redfish_requests{host="ilo.test"} 45
 # HELP ilo_storage_disk_capacity_byte Capacity of the disk in bytes
 # TYPE ilo_storage_disk_capacity_byte gauge
 ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=14:Port=2:Box=1:Bay=1",media_type="SSD",model="MO001600PXVRU",name="HPE 1.60TB 22.5G SAS SSD",serial_number="5F90A0810UG3"} 1.600321314816e+12
@@ -270,3 +291,6 @@ ilo_storage_disk_healthy{host="ilo.test",location="Slot=14:Port=2:Box=1:Bay=2",m
 # HELP ilo_system_info System Info
 # TYPE ilo_system_info gauge
 ilo_system_info{bios_version="U68 v1.40 (05/22/2025)",host="ilo.test",host_name="",model="HPE ProLiant Compute DL360 Gen12 -- SIMULATED",serial="3M1D2V13TW",sku="P72176-B21",uuid="31323750-3637-4D33-3144-325631335457"} 1
+# HELP ilo_up 1 if the system resource of the iLO could be retrieved, 0 otherwise
+# TYPE ilo_up gauge
+ilo_up{host="ilo.test"} 1

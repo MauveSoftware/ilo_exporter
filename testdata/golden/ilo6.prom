@@ -258,6 +258,27 @@ ilo_processor_thread_count{host="ilo.test",model="900-21010-0320-030",socket="3"
 ilo_processor_thread_count{host="ilo.test",model="900-21010-0320-030",socket="4"} 0
 ilo_processor_thread_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 1"} 64
 ilo_processor_thread_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 2"} 64
+# HELP ilo_scrape_collector_duration_seconds Duration of the collector in seconds
+# TYPE ilo_scrape_collector_duration_seconds gauge
+ilo_scrape_collector_duration_seconds{collector="manager",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="memory",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="power",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="processor",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="storage",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="system",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="thermal",host="ilo.test"} <duration>
+# HELP ilo_scrape_collector_success 1 if all resources of the collector could be retrieved, 0 otherwise
+# TYPE ilo_scrape_collector_success gauge
+ilo_scrape_collector_success{collector="manager",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="memory",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="power",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="processor",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="storage",host="ilo.test"} 0
+ilo_scrape_collector_success{collector="system",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="thermal",host="ilo.test"} 1
+# HELP ilo_scrape_redfish_requests Number of Redfish requests sent during the scrape
+# TYPE ilo_scrape_redfish_requests gauge
+ilo_scrape_redfish_requests{host="ilo.test"} 46
 # HELP ilo_storage_disk_capacity_byte Capacity of the disk in bytes
 # TYPE ilo_storage_disk_capacity_byte gauge
 ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=17:Port=1:Box=1:Bay=1",media_type="SSD",model="MO006400KYDND",name="6.40TB 64G NVMe SSD",serial_number="S70XNN0XC14051"} 6.401252745216e+12
@@ -291,3 +312,6 @@ ilo_storage_disk_healthy{host="ilo.test",location="Slot=18:Port=2:Box=1:Bay=8",m
 # HELP ilo_system_info System Info
 # TYPE ilo_system_info gauge
 ilo_system_info{bios_version="U58 v2.44 (01/17/2025)",host="ilo.test",host_name="DS03-worker",model="ProLiant DL380a Gen11 -- SIMULATED",serial="2M2D2J00L4",sku="P54903-B21",uuid="39343550-3330-4D32-3244-324A30304C34"} 1
+# HELP ilo_up 1 if the system resource of the iLO could be retrieved, 0 otherwise
+# TYPE ilo_up gauge
+ilo_up{host="ilo.test"} 1

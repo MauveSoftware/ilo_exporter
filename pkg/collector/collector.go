@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"sync"
 	"time"
 
@@ -29,6 +30,16 @@ func newDesc(name, help string, labels ...string) *prometheus.Desc {
 	allDescs = append(allDescs, d)
 	return d
 }
+
+var (
+	upDesc                = newDesc(prefix+"up", "1 if the system resource of the iLO could be retrieved, 0 otherwise", "host")
+	collectorSuccessDesc  = newDesc(prefix+"scrape_collector_success", "1 if all resources of the collector could be retrieved, 0 otherwise", "host", "collector")
+	collectorDurationDesc = newDesc(prefix+"scrape_collector_duration_seconds", "Duration of the collector in seconds", "host", "collector")
+	requestsDesc          = newDesc(prefix+"scrape_redfish_requests", "Number of Redfish requests sent during the scrape", "host")
+)
+
+// errSkipped is the error of sub collectors which were not run since the iLO is unreachable
+var errSkipped = errors.New("skipped")
 
 // group is a set of sub collectors sharing a scrape duration metric (as the former system, chassis and manager collectors)
 type group struct {
@@ -69,20 +80,53 @@ var subCollectors = []subCollector{
 	{name: "memory", group: systemGroup, run: collectMemory},
 }
 
+// Names returns the names of the collectors which can be enabled or disabled
+func Names() []string {
+	names := make([]string, len(subCollectors))
+	for i, sc := range subCollectors {
+		names[i] = sc.name
+	}
+
+	return names
+}
+
 // Collector collects all metrics of an iLO. A collector is intended to be used for a single scrape.
 type Collector struct {
-	ctx    context.Context
-	cl     client.Client
-	tracer trace.Tracer
+	ctx     context.Context
+	cl      client.Client
+	tracer  trace.Tracer
+	enabled []subCollector
+}
+
+// Option configures a Collector
+type Option func(*Collector)
+
+// WithCollectors only enables the given collectors (see Names). The system resource is always collected.
+func WithCollectors(names ...string) Option {
+	return func(c *Collector) {
+		c.enabled = nil
+		for _, sc := range subCollectors {
+			if slices.Contains(names, sc.name) {
+				c.enabled = append(c.enabled, sc)
+			}
+		}
+	}
 }
 
 // New returns a new collector. All requests are bound to ctx.
-func New(ctx context.Context, cl client.Client, tracer trace.Tracer) *Collector {
-	return &Collector{
-		ctx:    ctx,
-		cl:     cl,
-		tracer: tracer,
+func New(ctx context.Context, cl client.Client, tracer trace.Tracer, opts ...Option) *Collector {
+	c := &Collector{
+		ctx:     ctx,
+		cl:      cl,
+		tracer:  tracer,
+		enabled: subCollectors,
 	}
+
+	for _, o := range opts {
+		o(c)
+	}
+
+	return c
 }
 
 // Describe implements prometheus.Collector interface
@@ -109,42 +153,76 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		managerPath: "Managers/1",
 	}
 
-	// errors of the system resource do not affect the scrape duration metric of the system module
-	_ = s.run(ctx, "system", collectSystem)
+	// the system resource is retrieved first: if it fails because the iLO is unreachable or the
+	// credentials are invalid, the remaining requests are not sent
+	sysErr := s.run(ctx, "system", collectSystem)
+	s.emitResult("system", sysErr, time.Since(start))
+	s.emit(upDesc, boolValue(sysErr == nil), s.host)
 
 	type result struct {
-		err error
-		end time.Time
+		err      error
+		duration time.Duration
+		end      time.Time
 	}
-	results := make([]result, len(subCollectors))
+	results := make([]result, len(c.enabled))
 
-	var wg sync.WaitGroup
-	for i, sc := range subCollectors {
-		wg.Go(func() {
-			err := s.run(ctx, sc.name, sc.run)
-			results[i] = result{err: err, end: time.Now()}
-		})
+	if client.IsFatal(sysErr) {
+		for i := range results {
+			results[i] = result{err: errSkipped, end: time.Now()}
+		}
+	} else {
+		var wg sync.WaitGroup
+		for i, sc := range c.enabled {
+			wg.Go(func() {
+				scStart := time.Now()
+				err := s.run(ctx, sc.name, sc.run)
+				results[i] = result{err: err, duration: time.Since(scStart), end: time.Now()}
+			})
+		}
+		wg.Wait()
 	}
-	wg.Wait()
 
+	for i, sc := range c.enabled {
+		if results[i].err == errSkipped {
+			s.emit(collectorSuccessDesc, 0, s.host, sc.name)
+			continue
+		}
+
+		s.emitResult(sc.name, results[i].err, results[i].duration)
+	}
+
+	// errors of the system resource do not affect the scrape duration metric of the system module
 	for _, g := range groups {
 		var end time.Time
-		failed := false
-		for i, sc := range subCollectors {
+		enabled, failed := false, false
+		for i, sc := range c.enabled {
 			if sc.group != g {
 				continue
 			}
 
+			enabled = true
 			failed = failed || results[i].err != nil
 			if results[i].end.After(end) {
 				end = results[i].end
 			}
 		}
 
-		if !failed || g.emitOnError {
-			s.emit(g.durationDesc, end.Sub(start).Seconds(), s.host)
+		if !enabled || (failed && !g.emitOnError) {
+			continue
 		}
+
+		s.emit(g.durationDesc, end.Sub(start).Seconds(), s.host)
 	}
+
+	s.emit(requestsDesc, float64(c.cl.Requests()), s.host)
+}
+
+func boolValue(b bool) float64 {
+	if b {
+		return 1
+	}
+
+	return 0
 }
 
 // scrape is the state of a single collection shared by all sub collectors
@@ -176,6 +254,12 @@ func (s *scrape) run(ctx context.Context, name string, f func(ctx context.Contex
 	}()
 
 	return f(ctx, s)
+}
+
+// emitResult sends the success and duration metrics of a collector
+func (s *scrape) emitResult(name string, err error, duration time.Duration) {
+	s.emit(collectorSuccessDesc, boolValue(err == nil), s.host, name)
+	s.emit(collectorDurationDesc, duration.Seconds(), s.host, name)
 }
 
 // emit sends a gauge metric

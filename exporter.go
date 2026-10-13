@@ -10,7 +10,9 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"slices"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/MauveSoftware/ilo_exporter/pkg/client"
@@ -78,6 +80,16 @@ func (e *exporter) handleMetricsRequest(w http.ResponseWriter, r *http.Request) 
 		return &httpError{code: http.StatusForbidden, err: fmt.Errorf("host %s is not allowed", host)}
 	}
 
+	var collectorOpts []collector.Option
+	if names := r.URL.Query()["collect[]"]; len(names) > 0 {
+		for _, n := range names {
+			if !slices.Contains(collector.Names(), n) {
+				return &httpError{code: http.StatusBadRequest, err: fmt.Errorf("unknown collector %q (valid: %s)", n, strings.Join(collector.Names(), ", "))}
+			}
+		}
+		collectorOpts = append(collectorOpts, collector.WithCollectors(names...))
+	}
+
 	ctx, cancel := scrapeContext(r, e.maxTimeout, e.timeoutOffset)
 	defer cancel()
 
@@ -96,7 +108,7 @@ func (e *exporter) handleMetricsRequest(w http.ResponseWriter, r *http.Request) 
 	cl := client.NewClient(host, e.username, e.password, tracer, opts...)
 
 	reg := prometheus.NewRegistry()
-	reg.MustRegister(collector.New(ctx, cl, tracer))
+	reg.MustRegister(collector.New(ctx, cl, tracer, collectorOpts...))
 
 	promhttp.HandlerFor(reg, promhttp.HandlerOpts{
 		ErrorLog:      slog.NewLogLogger(e.logger.Handler(), slog.LevelWarn),

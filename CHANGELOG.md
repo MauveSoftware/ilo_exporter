@@ -13,6 +13,16 @@
 
 ### Added
 
+- New metrics:
+  - `ilo_up`: 1 if the system resource of the iLO could be retrieved, 0 otherwise.
+  - `ilo_scrape_collector_success{collector}` and `ilo_scrape_collector_duration_seconds{collector}` per collector
+    (`system`, `manager`, `power`, `thermal`, `processor`, `storage`, `memory`).
+  - `ilo_scrape_redfish_requests`: number of Redfish requests sent during the scrape, to monitor the load on the iLO.
+- The `collect[]` query parameter limits a scrape to the given collectors, e.g.
+  `/metrics?host=ilo1&collect[]=power&collect[]=thermal`. This allows scraping inventory (`memory`, `processor`,
+  `storage`) less often than health and sensor data. The system resource is always collected.
+- When the iLO is unreachable or rejects the credentials, no further requests are sent after the system resource.
+  Previously every collector tried, causing several failed logins per scrape.
 - `-log.level` (`debug`, `info`, `warn`, `error`; default `info`) and `-log.format` (`logfmt`, `json`).
 - `-log.redfish-bodies` logs every Redfish response body at debug level.
 - `-api.timeout` limits the duration of a scrape. Scrapes are also limited by the scrape timeout sent by Prometheus
