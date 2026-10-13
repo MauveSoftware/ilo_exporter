@@ -10,16 +10,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"math"
 	"net/http"
 	"strings"
+	"sync"
+	"sync/atomic"
 
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/sync/semaphore"
-
-	"github.com/sirupsen/logrus"
 )
 
 // maxResponseSize limits the size of a response body read from the API
@@ -27,14 +28,18 @@ const maxResponseSize = 32 << 20
 
 // APIClient communicates with the API and parses the results
 type APIClient struct {
-	url      string
-	hostName string
-	username string
-	password string
-	tracer   trace.Tracer
-	client   *http.Client
-	debug    bool
-	sem      *semaphore.Weighted
+	url        string
+	hostName   string
+	username   string
+	password   string
+	tracer     trace.Tracer
+	client     *http.Client
+	logger     *slog.Logger
+	logBodies  bool
+	sem        *semaphore.Weighted
+	failures   atomic.Int64
+	firstErrMu sync.Mutex
+	firstErr   error
 }
 
 // ClientOption applies options to APIClient
@@ -52,10 +57,17 @@ func WithInsecure() ClientOption {
 	}
 }
 
-// WithDebug enables debug mode
-func WithDebug() ClientOption {
+// WithLogger sets the logger used for request logging (debug level)
+func WithLogger(logger *slog.Logger) ClientOption {
 	return func(c *APIClient) {
-		c.debug = true
+		c.logger = logger
+	}
+}
+
+// WithResponseLogging logs the body of every response (debug level)
+func WithResponseLogging() ClientOption {
+	return func(c *APIClient) {
+		c.logBodies = true
 	}
 }
 
@@ -72,7 +84,7 @@ func WithMaxConcurrentRequests(max uint) ClientOption {
 }
 
 // NewClient creates a new client instance
-func NewClient(hostName, username, password string, tracer trace.Tracer, opts ...ClientOption) Client {
+func NewClient(hostName, username, password string, tracer trace.Tracer, opts ...ClientOption) *APIClient {
 	cl := &APIClient{
 		url:      fmt.Sprintf("https://%s/redfish/v1/", hostName),
 		hostName: hostName,
@@ -80,6 +92,7 @@ func NewClient(hostName, username, password string, tracer trace.Tracer, opts ..
 		password: password,
 		client:   &http.Client{},
 		tracer:   tracer,
+		logger:   slog.New(slog.DiscardHandler),
 		sem:      semaphore.NewWeighted(1),
 	}
 
@@ -95,17 +108,42 @@ func (cl *APIClient) HostName() string {
 	return cl.hostName
 }
 
+// Failures returns the number of failed requests and the first error which occurred
+func (cl *APIClient) Failures() (int64, error) {
+	cl.firstErrMu.Lock()
+	defer cl.firstErrMu.Unlock()
+
+	return cl.failures.Load(), cl.firstErr
+}
+
 // Get retrieves the ressource from the API and unmashals the json retrieved
 func (cl *APIClient) Get(ctx context.Context, path string, obj any) error {
 	path = strings.Replace(path, "/redfish/v1/", "", 1)
 
 	b, err := cl.get(ctx, path)
-	if err != nil {
-		return err
+	if err == nil {
+		err = json.Unmarshal(b, obj)
+		if err != nil {
+			err = fmt.Errorf("could not parse response of %s: %w", path, err)
+		}
 	}
 
-	err = json.Unmarshal(b, obj)
+	if err != nil {
+		cl.recordFailure(err)
+	}
+
 	return err
+}
+
+func (cl *APIClient) recordFailure(err error) {
+	cl.failures.Add(1)
+
+	cl.firstErrMu.Lock()
+	defer cl.firstErrMu.Unlock()
+
+	if cl.firstErr == nil {
+		cl.firstErr = err
+	}
 }
 
 func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
@@ -127,12 +165,23 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 	))
 	defer span.End()
 
-	logrus.Infof("GET %s", uri)
+	b, err := cl.do(uri)
+	if err != nil {
+		cl.logger.Debug("Request failed", "uri", uri, "err", err)
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	span.SetStatus(codes.Ok, "")
+	return b, nil
+}
+
+func (cl *APIClient) do(uri string) ([]byte, error) {
+	cl.logger.Debug("GET", "uri", uri)
 
 	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
-		span.RecordError(err)
-		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
@@ -142,8 +191,6 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 
 	resp, err := cl.client.Do(req)
 	if err != nil {
-		span.RecordError(err)
-		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 	defer func() {
@@ -153,32 +200,21 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 	}()
 
 	if resp.StatusCode >= 300 {
-		err := fmt.Errorf("%s", resp.Status)
-		span.RecordError(err)
-		span.SetStatus(codes.Error, resp.Status)
-		return nil, err
+		return nil, fmt.Errorf("%s returned %s", uri, resp.Status)
 	}
 
 	b, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseSize+1))
 	if err != nil {
-		span.RecordError(err)
-		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
 	if len(b) > maxResponseSize {
-		err := fmt.Errorf("response of %s exceeds %d bytes", uri, maxResponseSize)
-		span.RecordError(err)
-		span.SetStatus(codes.Error, err.Error())
-		return nil, err
+		return nil, fmt.Errorf("response of %s exceeds %d bytes", uri, maxResponseSize)
 	}
 
-	if cl.debug {
-		logrus.Infof("Status Code: %s", resp.Status)
-		logrus.Infof("Response: %s", string(b))
+	if cl.logBodies {
+		cl.logger.Debug("Response", "uri", uri, "status", resp.Status, "body", string(b))
 	}
 
-	span.SetStatus(codes.Ok, "")
-
-	return b, err
+	return b, nil
 }

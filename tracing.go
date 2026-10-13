@@ -7,9 +7,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 
-	log "github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
@@ -29,18 +29,18 @@ var (
 	)
 )
 
-func initTracing(ctx context.Context) (func(), error) {
+func initTracing(ctx context.Context, logger *slog.Logger) (func(), error) {
 	if !*tracingEnabled {
 		return initTracingWithNoop()
 	}
 
 	switch *tracingProvider {
 	case "stdout":
-		return initTracingToStdOut(ctx)
+		return initTracingToStdOut(logger)
 	case "collector":
-		return initTracingToCollector(ctx)
+		return initTracingToCollector(ctx, logger)
 	default:
-		log.Warnf("got invalid value for tracing.provider: %s, disable tracing", *tracingProvider)
+		logger.Warn("Invalid value for tracing.provider, disabling tracing", "provider", *tracingProvider)
 		return initTracingWithNoop()
 	}
 }
@@ -52,8 +52,8 @@ func initTracingWithNoop() (func(), error) {
 	return func() {}, nil
 }
 
-func initTracingToStdOut(ctx context.Context) (func(), error) {
-	log.Info("Initialize tracing (STDOUT)")
+func initTracingToStdOut(logger *slog.Logger) (func(), error) {
+	logger.Info("Initialize tracing (STDOUT)")
 
 	exp, err := stdouttrace.New(stdouttrace.WithPrettyPrint())
 	if err != nil {
@@ -66,11 +66,11 @@ func initTracingToStdOut(ctx context.Context) (func(), error) {
 	)
 	otel.SetTracerProvider(tp)
 
-	return shutdownTraceProvider(tp.Shutdown), nil
+	return shutdownTraceProvider(tp.Shutdown, logger), nil
 }
 
-func initTracingToCollector(ctx context.Context) (func(), error) {
-	log.Infof("Initialize tracing (agent: %s)", *tracingCollectorEndpoint)
+func initTracingToCollector(ctx context.Context, logger *slog.Logger) (func(), error) {
+	logger.Info("Initialize tracing", "collector", *tracingCollectorEndpoint)
 
 	cl := otlptracegrpc.NewClient(
 		otlptracegrpc.WithInsecure(),
@@ -90,17 +90,17 @@ func initTracingToCollector(ctx context.Context) (func(), error) {
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.TraceContext{})
 
-	return shutdownTraceProvider(tp.Shutdown), nil
+	return shutdownTraceProvider(tp.Shutdown, logger), nil
 }
 
-func shutdownTraceProvider(shutdownFunc func(ctx context.Context) error) func() {
+func shutdownTraceProvider(shutdownFunc func(ctx context.Context) error, logger *slog.Logger) func() {
 	return func() {
 		// the context passed to initTracing is already canceled on shutdown, so use a new one to flush pending spans
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
 		if err := shutdownFunc(ctx); err != nil {
-			log.Errorf("failed to shutdown TracerProvider: %v", err)
+			logger.Error("Failed to shutdown TracerProvider", "err", err)
 		}
 	}
 }

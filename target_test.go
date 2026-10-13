@@ -6,10 +6,9 @@ package main
 
 import (
 	"bytes"
+	"log/slog"
 	"strings"
 	"testing"
-
-	"github.com/sirupsen/logrus"
 )
 
 func TestParseTarget(t *testing.T) {
@@ -117,12 +116,10 @@ func TestTargetFilterSuffixDoesNotMatchIP(t *testing.T) {
 
 func TestLogTargetFilter(t *testing.T) {
 	var buf bytes.Buffer
-	logger := logrus.New()
-	logger.SetOutput(&buf)
-	logger.SetFormatter(&logrus.TextFormatter{DisableTimestamp: true})
+	logger := slog.New(slog.NewTextHandler(&buf, nil))
 
 	logTargetFilter(logger, nil, "")
-	if out := buf.String(); !strings.Contains(out, "level=warning") || !strings.Contains(out, "every host") {
+	if out := buf.String(); !strings.Contains(out, "level=WARN") || !strings.Contains(out, "every host") {
 		t.Errorf("expected a warning without allowed targets, got %q", out)
 	}
 
@@ -132,7 +129,7 @@ func TestLogTargetFilter(t *testing.T) {
 		t.Fatal(err)
 	}
 	logTargetFilter(logger, f, ".ilo.example.com")
-	if out := buf.String(); !strings.Contains(out, "level=info") || !strings.Contains(out, "allowed_targets=.ilo.example.com") {
+	if out := buf.String(); !strings.Contains(out, "level=INFO") || !strings.Contains(out, "allowed_targets=.ilo.example.com") {
 		t.Errorf("expected the allowed targets to be logged, got %q", out)
 	}
 }

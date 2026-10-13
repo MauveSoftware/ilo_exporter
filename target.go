@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"net"
 	"net/netip"
 	"net/url"
@@ -13,8 +14,6 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
-
-	"github.com/sirupsen/logrus"
 )
 
 // parseTarget validates the host parameter of a scrape request and returns it in a form
@@ -147,14 +146,14 @@ func (f *targetFilter) allows(addr string) bool {
 }
 
 // logTargetFilter logs at startup which hosts may be scraped (raw is the value of -web.allowed-targets)
-func logTargetFilter(logger logrus.FieldLogger, f *targetFilter, raw string) {
+func logTargetFilter(logger *slog.Logger, f *targetFilter, raw string) {
 	if f == nil {
 		logger.Warn("No allowed targets configured (-web.allowed-targets): the configured credentials are sent to " +
 			"every host requested via the host parameter")
 		return
 	}
 
-	logger.WithField("allowed_targets", raw).Info("Scrape targets restricted")
+	logger.Info("Scrape targets restricted", "allowed_targets", raw)
 }
 
 // normalizeHost returns the host name in lower case without the trailing dot of a fully qualified name

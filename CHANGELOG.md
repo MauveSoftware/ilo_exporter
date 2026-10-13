@@ -9,8 +9,17 @@
 - `API_USERNAME`/`API_PASSWORD` overwrote both credentials when only one of `-api.username`/`-api.password` was set.
 - The version reported by release binaries and container images is now set at build time.
 
+### Added
+
+- `-log.level` (`debug`, `info`, `warn`, `error`; default `info`) and `-log.format` (`logfmt`, `json`).
+- `-log.redfish-bodies` logs every Redfish response body at debug level.
+
 ### Changed
 
+- Logging is quiet by default: Redfish requests are only logged at debug level and response bodies only with
+  `-log.redfish-bodies` (previously every request and response body was logged at info level).
+  Failed scrapes are summarized in a single warning per scrape instead of one error per failed request.
+- Logging uses `log/slog` (Prometheus `promslog` format) instead of logrus.
 - The binary in release archives is named `ilo_exporter` (was `ilo5_exporter`), matching the container image.
 
 ## 1.1.3

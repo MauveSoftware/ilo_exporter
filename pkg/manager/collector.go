@@ -10,7 +10,6 @@ import (
 
 	"github.com/MauveSoftware/ilo_exporter/pkg/client"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -56,7 +55,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	m := &manager{}
 	err := c.cl.Get(ctx, p, m)
 	if err != nil {
-		logrus.Error(err)
+		// failed requests are logged by the client
 		return
 	}
 

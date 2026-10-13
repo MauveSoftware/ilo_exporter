@@ -5,8 +5,8 @@
 package main
 
 import (
+	"bytes"
 	"flag"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -16,7 +16,7 @@ import (
 	"testing"
 
 	"github.com/MauveSoftware/ilo_exporter/internal/fakeilo"
-	"github.com/sirupsen/logrus"
+	"github.com/prometheus/common/promslog"
 )
 
 var update = flag.Bool("update", false, "update golden files")
@@ -35,7 +35,6 @@ const (
 
 func TestMain(m *testing.M) {
 	flag.Parse()
-	logrus.SetOutput(io.Discard)
 	*username = testUser
 	*password = testPassword
 	os.Exit(m.Run())
@@ -195,4 +194,24 @@ func writeMockup(t *testing.T, resources map[string]string) string {
 	}
 
 	return dir
+}
+
+func TestDefaultLogging(t *testing.T) {
+	var buf bytes.Buffer
+	logger = promslog.New(&promslog.Config{Writer: &buf})
+	t.Cleanup(func() { logger = promslog.NewNopLogger() })
+
+	srv := fakeilo.New(t, mockupDir("ilo7"), fakeilo.WithCredentials(testUser, testPassword))
+	scrape(t, srv.Host())
+
+	out := buf.String()
+	t.Log(out)
+	if strings.Contains(out, "GET") || strings.Contains(out, "@odata") {
+		t.Errorf("requests or responses logged at default level:\n%s", out)
+	}
+
+	// TODO: no log output at all when the SmartStorage API is only requested if present
+	if n := strings.Count(out, "\n"); n > 1 {
+		t.Errorf("expected at most one log line per scrape, got %d:\n%s", n, out)
+	}
 }
