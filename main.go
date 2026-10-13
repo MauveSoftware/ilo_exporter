@@ -20,7 +20,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/MauveSoftware/ilo_exporter/internal/lru"
 	"github.com/MauveSoftware/ilo_exporter/pkg/client"
+	"github.com/MauveSoftware/ilo_exporter/pkg/topology"
 	"github.com/prometheus/common/promslog"
 )
 
@@ -39,6 +41,8 @@ var (
 	maxConcurrentRequests    = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent to an iLO concurrently, across all scrapes of the iLO (0: unlimited)")
 	apiTimeout               = flag.Duration("api.timeout", 0, "Maximum duration of a scrape (0: limited by the scrape timeout sent by Prometheus and -web.write-timeout)")
 	idleConnTimeout          = flag.Duration("api.idle-conn-timeout", time.Minute, "Time after which idle connections to an iLO are closed")
+	discoveryTTL             = flag.Duration("api.discovery-ttl", time.Hour, "Time after which the capabilities and resource layout of an iLO are discovered again (0: on every scrape)")
+	cacheMaxHosts            = flag.Int("api.cache-max-hosts", 4096, "Maximum number of iLOs to keep discovery results and state for")
 	insecureSkipVerify       = flag.Bool("api.insecure-skip-verify", true, "Skip verification of iLO certificates (ignored if -api.ca-file is set)")
 	caFile                   = flag.String("api.ca-file", "", "PEM file with CA certificates to verify iLO certificates with")
 	tlsEnabled               = flag.Bool("tls.enabled", false, "Enables TLS")
@@ -131,7 +135,7 @@ func newExporterFromFlags(logger *slog.Logger) (*exporter, error) {
 		}
 	}
 
-	return &exporter{
+	e := &exporter{
 		username:      *username,
 		password:      *password,
 		httpClient:    &http.Client{Transport: tr},
@@ -140,7 +144,14 @@ func newExporterFromFlags(logger *slog.Logger) (*exporter, error) {
 		logBodies:     *logRedfishBodies,
 		maxTimeout:    maxTimeout,
 		timeoutOffset: *timeoutOffset,
-	}, nil
+		states:        lru.New[hostState](*cacheMaxHosts),
+	}
+
+	if *discoveryTTL > 0 {
+		e.topologies = topology.NewCache(*cacheMaxHosts, *discoveryTTL)
+	}
+
+	return e, nil
 }
 
 func run(e *exporter, logger *slog.Logger) int {

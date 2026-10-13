@@ -17,11 +17,17 @@ type Manager struct {
 }
 
 func collectManager(ctx context.Context, s *scrape) error {
+	path := "Managers/1"
+	if s.system != nil && len(s.system.Links.ManagedBy) > 0 {
+		path = s.system.Links.ManagedBy[0].ID
+	}
+
 	m := Manager{}
-	if err := s.cl.Get(ctx, s.managerPath, &m); err != nil {
+	if err := s.cl.Get(ctx, path, &m); err != nil {
 		return fmt.Errorf("could not get manager: %w", err)
 	}
 
+	s.firmwareVersion = m.FirmwareVersion
 	s.emit(managerInfoDesc, 1, s.host, m.FirmwareVersion)
 	return nil
 }

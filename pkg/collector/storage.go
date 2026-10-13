@@ -9,6 +9,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"slices"
+	"strings"
+	"sync"
 
 	"github.com/MauveSoftware/ilo_exporter/pkg/redfish"
 )
@@ -106,59 +109,117 @@ func (f *Location) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func collectStorage(ctx context.Context, s *scrape) error {
-	errs := make(chan error, 2)
-	go func() { errs <- collectStorageControllers(ctx, s) }()
-	go func() { errs <- collectSmartStorage(ctx, s) }()
-
-	return errors.Join(<-errs, <-errs)
+// SmartArrayController is an array controller of the HPE SmartStorage API
+type SmartArrayController struct {
+	Links struct {
+		PhysicalDrives redfish.Link `json:"PhysicalDrives"`
+	} `json:"Links"`
 }
 
-func collectStorageControllers(ctx context.Context, s *scrape) error {
-	ctrls := redfish.Collection{}
-	if err := s.cl.Get(ctx, s.systemPath+"/Storage", &ctrls); err != nil {
-		return fmt.Errorf("could not get storage controller summary: %w", err)
+// collectStorage collects drives of the DMTF storage model and of the HPE SmartStorage API (iLO 4 and 5).
+// iLO 5 reports drives of Smart Array controllers supporting RDE in both, so drives are deduplicated by
+// serial number, preferring the DMTF model.
+func collectStorage(ctx context.Context, s *scrape) error {
+	var dmtf, smart []DiskDrive
+	var dmtfErr, smartErr error
+
+	var wg sync.WaitGroup
+	wg.Go(func() { dmtf, dmtfErr = collectStorageControllers(ctx, s) })
+	wg.Go(func() { smart, smartErr = collectSmartStorage(ctx, s) })
+	wg.Wait()
+
+	serials := make(map[string]bool)
+	for _, d := range dmtf {
+		if d.SerialNumber != "" {
+			serials[d.SerialNumber] = true
+		}
+		emitDiskDrive(s, &d)
 	}
 
-	return forEach(ctx, ctrls.Members, func(ctx context.Context, l redfish.Link) error {
+	for _, d := range smart {
+		if d.SerialNumber != "" && serials[d.SerialNumber] {
+			continue
+		}
+		emitDiskDrive(s, &d)
+	}
+
+	return errors.Join(dmtfErr, smartErr)
+}
+
+func collectStorageControllers(ctx context.Context, s *scrape) ([]DiskDrive, error) {
+	path := s.systemLink(func(sys *System) string { return sys.Storage.ID }, "Storage")
+	if path == "" {
+		return nil, nil
+	}
+
+	ctrls := redfish.Collection{}
+	if err := s.cl.Get(ctx, path, &ctrls); err != nil {
+		return nil, fmt.Errorf("could not get storage controller summary: %w", err)
+	}
+
+	drives, err := collectAll(ctx, ctrls.Members, func(ctx context.Context, l redfish.Link) ([]DiskDrive, error) {
 		strg := Storage{}
 		if err := s.cl.Get(ctx, l.ID, &strg); err != nil {
-			return fmt.Errorf("could not get storage controller summary: %w", err)
+			return nil, fmt.Errorf("could not get storage controller %s: %w", l.ID, err)
 		}
 
-		return forEach(ctx, strg.Drives, func(ctx context.Context, l redfish.Link) error {
-			return collectDiskDrive(ctx, s, l.ID)
-		})
+		return collectAll(ctx, strg.Drives, getDiskDrive(s))
 	})
+
+	return slices.Concat(drives...), err
 }
 
-func collectSmartStorage(ctx context.Context, s *scrape) error {
+func collectSmartStorage(ctx context.Context, s *scrape) ([]DiskDrive, error) {
+	path := s.systemLink(func(sys *System) string {
+		if l := sys.SmartStorageLink(); l != "" {
+			return strings.TrimSuffix(l, "/") + "/ArrayControllers/"
+		}
+		return ""
+	}, "SmartStorage/ArrayControllers/")
+	if path == "" {
+		return nil, nil
+	}
+
 	ctrls := redfish.Collection{}
-	if err := s.cl.Get(ctx, s.systemPath+"/SmartStorage/ArrayControllers/", &ctrls); err != nil {
-		return fmt.Errorf("could not get smart storage controller summary: %w", err)
+	if err := s.cl.Get(ctx, path, &ctrls); err != nil {
+		return nil, fmt.Errorf("could not get smart storage controller summary: %w", err)
 	}
 
-	return forEach(ctx, ctrls.Members, func(ctx context.Context, l redfish.Link) error {
-		drives := redfish.Collection{}
-		if err := s.cl.Get(ctx, l.ID+"DiskDrives/", &drives); err != nil {
-			return fmt.Errorf("could not get drives for controller %s: %w", l.ID, err)
+	drives, err := collectAll(ctx, ctrls.Members, func(ctx context.Context, l redfish.Link) ([]DiskDrive, error) {
+		ctrl := SmartArrayController{}
+		if err := s.cl.Get(ctx, l.ID, &ctrl); err != nil {
+			return nil, fmt.Errorf("could not get smart storage controller %s: %w", l.ID, err)
 		}
 
-		return forEach(ctx, drives.Members, func(ctx context.Context, l redfish.Link) error {
-			return collectDiskDrive(ctx, s, l.ID)
-		})
+		if ctrl.Links.PhysicalDrives.ID == "" {
+			return nil, nil
+		}
+
+		drives := redfish.Collection{}
+		if err := s.cl.Get(ctx, ctrl.Links.PhysicalDrives.ID, &drives); err != nil {
+			return nil, fmt.Errorf("could not get drives for controller %s: %w", l.ID, err)
+		}
+
+		return collectAll(ctx, drives.Members, getDiskDrive(s))
 	})
+
+	return slices.Concat(drives...), err
 }
 
-func collectDiskDrive(ctx context.Context, s *scrape, path string) error {
-	d := DiskDrive{}
-	if err := s.cl.Get(ctx, path, &d); err != nil {
-		return fmt.Errorf("could not get drive information from %s: %w", path, err)
-	}
+func getDiskDrive(s *scrape) func(ctx context.Context, l redfish.Link) (DiskDrive, error) {
+	return func(ctx context.Context, l redfish.Link) (DiskDrive, error) {
+		d := DiskDrive{}
+		if err := s.cl.Get(ctx, l.ID, &d); err != nil {
+			return d, fmt.Errorf("could not get drive information from %s: %w", l.ID, err)
+		}
 
+		return d, nil
+	}
+}
+
+func emitDiskDrive(s *scrape, d *DiskDrive) {
 	labels := []string{s.host, d.GetLocation(), d.Model, d.MediaType, d.Name, d.SerialNumber}
 	s.emit(diskCapacityDesc, d.CapacityBytes(), labels...)
 	s.emit(diskHealthyDesc, d.Status.HealthValue(), labels...)
 	s.emit(diskFailurePredictedDesc, d.FailurePredictedValue(), labels...)
-	return nil
 }

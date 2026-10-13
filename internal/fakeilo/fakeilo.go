@@ -145,6 +145,19 @@ func (s *Server) Host() string {
 	return strings.TrimPrefix(s.srv.URL, "https://")
 }
 
+// SetStatus makes requests for path fail with code (0: serve the resource again)
+func (s *Server) SetStatus(path string, code int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if code == 0 {
+		delete(s.status, normalize(path))
+		return
+	}
+
+	s.status[normalize(path)] = code
+}
+
 // Certificate returns the certificate of the server
 func (s *Server) Certificate() *x509.Certificate {
 	return s.srv.Certificate()
@@ -262,7 +275,10 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if code, found := s.status[p]; found {
+	s.mu.Lock()
+	code, found := s.status[p]
+	s.mu.Unlock()
+	if found {
 		writeError(w, code, "Base.1.0.InternalError")
 		return
 	}

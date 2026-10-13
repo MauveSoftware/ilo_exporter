@@ -94,8 +94,13 @@ func (m *MemoryDIMM) SizeMB() uint64 {
 }
 
 func collectMemory(ctx context.Context, s *scrape) error {
+	path := s.systemLink(func(sys *System) string { return sys.Memory.ID }, "Memory")
+	if path == "" {
+		return nil
+	}
+
 	mem := redfish.Collection{}
-	if err := s.cl.Get(ctx, s.systemPath+"/Memory", &mem); err != nil {
+	if err := s.cl.Get(ctx, path, &mem); err != nil {
 		return fmt.Errorf("could not get memory summary: %w", err)
 	}
 

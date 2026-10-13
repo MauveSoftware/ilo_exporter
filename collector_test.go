@@ -57,6 +57,8 @@ func TestUnreachableHost(t *testing.T) {
 func TestCollectParameter(t *testing.T) {
 	srv := fakeilo.New(t, mockupDir("ilo5"))
 	e := newTestExporter(t)
+	scrape(t, e, srv.Host())
+	srv.ResetRequests()
 
 	r := httptest.NewRequest(http.MethodGet, "/metrics?host="+srv.Host()+"&collect[]=power&collect[]=manager", nil)
 	body := scrapeRequest(t, e, r)

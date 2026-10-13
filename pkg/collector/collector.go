@@ -9,11 +9,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 	"slices"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/MauveSoftware/ilo_exporter/pkg/client"
+	"github.com/MauveSoftware/ilo_exporter/pkg/topology"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
@@ -92,10 +95,33 @@ func Names() []string {
 
 // Collector collects all metrics of an iLO. A collector is intended to be used for a single scrape.
 type Collector struct {
-	ctx     context.Context
-	cl      client.Client
-	tracer  trace.Tracer
-	enabled []subCollector
+	ctx      context.Context
+	cl       client.Client
+	tracer   trace.Tracer
+	enabled  []subCollector
+	topology func(context.Context) (*topology.Topology, error)
+	result   Result
+}
+
+// Result describes the outcome of a collection
+type Result struct {
+	// Up is true if the system resource could be retrieved
+	Up bool
+
+	// Err is the first error which occurred (nil if all resources could be retrieved)
+	Err error
+
+	// Failed are the names of the collectors which failed
+	Failed []string
+
+	// StaleTopology is true if a resource of the topology was not found, so it should be discovered again
+	StaleTopology bool
+
+	// FirmwareVersion is the firmware version of the manager (empty if not collected)
+	FirmwareVersion string
+
+	// SystemUUID is the UUID of the system (empty if not collected)
+	SystemUUID string
 }
 
 // Option configures a Collector
@@ -113,6 +139,14 @@ func WithCollectors(names ...string) Option {
 	}
 }
 
+// WithTopology sets the function providing the topology of the host, typically from a cache.
+// Without topology, the resources are expected at the paths used by iLO 4 and later.
+func WithTopology(f func(context.Context) (*topology.Topology, error)) Option {
+	return func(c *Collector) {
+		c.topology = f
+	}
+}
+
 // New returns a new collector. All requests are bound to ctx.
 func New(ctx context.Context, cl client.Client, tracer trace.Tracer, opts ...Option) *Collector {
 	c := &Collector{
@@ -127,6 +161,11 @@ func New(ctx context.Context, cl client.Client, tracer trace.Tracer, opts ...Opt
 	}
 
 	return c
+}
+
+// Result returns the outcome of the last collection
+func (c *Collector) Result() Result {
+	return c.result
 }
 
 // Describe implements prometheus.Collector interface
@@ -150,12 +189,14 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		host:        c.cl.HostName(),
 		systemPath:  "Systems/1",
 		chassisPath: "Chassis/1",
-		managerPath: "Managers/1",
 	}
 
-	// the system resource is retrieved first: if it fails because the iLO is unreachable or the
-	// credentials are invalid, the remaining requests are not sent
-	sysErr := s.run(ctx, "system", collectSystem)
+	// the topology and system resource are retrieved first: if this fails because the iLO is unreachable
+	// or the credentials are invalid, the remaining requests are not sent
+	sysErr := c.discover(ctx, s)
+	if !client.IsFatal(sysErr) {
+		sysErr = s.run(ctx, "system", collectSystem)
+	}
 	s.emitResult("system", sysErr, time.Since(start))
 	s.emit(upDesc, boolValue(sysErr == nil), s.host)
 
@@ -182,6 +223,19 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		wg.Wait()
 	}
 
+	c.result = Result{
+		Up:              sysErr == nil,
+		Err:             sysErr,
+		StaleTopology:   s.staleTopology.Load(),
+		FirmwareVersion: s.firmwareVersion,
+	}
+	if sysErr != nil {
+		c.result.Failed = append(c.result.Failed, "system")
+	}
+	if s.system != nil {
+		c.result.SystemUUID = s.system.UUID
+	}
+
 	for i, sc := range c.enabled {
 		if results[i].err == errSkipped {
 			s.emit(collectorSuccessDesc, 0, s.host, sc.name)
@@ -189,6 +243,13 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		}
 
 		s.emitResult(sc.name, results[i].err, results[i].duration)
+
+		if results[i].err != nil {
+			c.result.Failed = append(c.result.Failed, sc.name)
+			if c.result.Err == nil {
+				c.result.Err = results[i].err
+			}
+		}
 	}
 
 	// errors of the system resource do not affect the scrape duration metric of the system module
@@ -217,6 +278,27 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	s.emit(requestsDesc, float64(c.cl.Requests()), s.host)
 }
 
+// discover sets the topology of the scrape. If the topology can not be discovered (e.g. on iLO 4),
+// the resources are expected at their default paths.
+func (c *Collector) discover(ctx context.Context, s *scrape) error {
+	if c.topology == nil {
+		return nil
+	}
+
+	t, err := c.topology(ctx)
+	if err != nil {
+		return err
+	}
+
+	s.topology = t
+	s.systemPath = t.SystemPath
+	if t.ChassisPath != "" {
+		s.chassisPath = t.ChassisPath
+	}
+
+	return nil
+}
+
 func boolValue(b bool) float64 {
 	if b {
 		return 1
@@ -232,9 +314,25 @@ type scrape struct {
 	ch     chan<- prometheus.Metric
 	host   string
 
+	// topology is the discovered topology (nil if unknown)
+	topology    *topology.Topology
 	systemPath  string
 	chassisPath string
-	managerPath string
+
+	// system is the system resource (nil if it could not be retrieved), set before the sub collectors run
+	system *System
+
+	// set by sub collectors
+	staleTopology   atomic.Bool
+	firmwareVersion string
+}
+
+// checkStale marks the topology as stale if a resource of the topology was not found
+func (s *scrape) checkStale(err error) {
+	var he *client.HTTPError
+	if s.topology != nil && errors.As(err, &he) && he.StatusCode == http.StatusNotFound {
+		s.staleTopology.Store(true)
+	}
 }
 
 // run runs a sub collector in a span and recovers from panics
@@ -270,6 +368,37 @@ func (s *scrape) emit(desc *prometheus.Desc, value float64, labels ...string) {
 	}
 
 	s.ch <- m
+}
+
+// collectAll calls f concurrently for all items and returns the results of the successful calls (in order) and all errors.
+// The number of concurrent requests is limited by the HTTP transport.
+func collectAll[T, R any](ctx context.Context, items []T, f func(ctx context.Context, item T) (R, error)) ([]R, error) {
+	results := make([]R, len(items))
+	ok := make([]bool, len(items))
+
+	idx := make([]int, len(items))
+	for i := range idx {
+		idx[i] = i
+	}
+
+	err := forEach(ctx, idx, func(ctx context.Context, i int) error {
+		r, err := f(ctx, items[i])
+		if err != nil {
+			return err
+		}
+
+		results[i], ok[i] = r, true
+		return nil
+	})
+
+	var res []R
+	for i, r := range results {
+		if ok[i] {
+			res = append(res, r)
+		}
+	}
+
+	return res, err
 }
 
 // forEach calls f concurrently for all items and returns all errors. The number of concurrent

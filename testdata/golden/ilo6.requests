@@ -40,7 +40,6 @@ GET /redfish/v1/Systems/1/Processors/1
 GET /redfish/v1/Systems/1/Processors/2
 GET /redfish/v1/Systems/1/Processors/3
 GET /redfish/v1/Systems/1/Processors/4
-GET /redfish/v1/Systems/1/SmartStorage/ArrayControllers/
 GET /redfish/v1/Systems/1/Storage
 GET /redfish/v1/Systems/1/Storage/DE00A000
 GET /redfish/v1/Systems/1/Storage/DE00B000

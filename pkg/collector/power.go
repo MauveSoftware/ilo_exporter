@@ -45,8 +45,17 @@ type PowerSupply struct {
 }
 
 func collectPower(ctx context.Context, s *scrape) error {
+	path := s.chassisPath + "/Power"
+	if s.topology != nil {
+		path = s.topology.Chassis.Power
+	}
+	if path == "" {
+		return nil
+	}
+
 	pwr := Power{}
-	if err := s.cl.Get(ctx, s.chassisPath+"/Power", &pwr); err != nil {
+	if err := s.cl.Get(ctx, path, &pwr); err != nil {
+		s.checkStale(err)
 		return fmt.Errorf("could not get power data: %w", err)
 	}
 

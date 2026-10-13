@@ -318,12 +318,12 @@ ilo_scrape_collector_success{collector="manager",host="ilo.test"} 1
 ilo_scrape_collector_success{collector="memory",host="ilo.test"} 1
 ilo_scrape_collector_success{collector="power",host="ilo.test"} 1
 ilo_scrape_collector_success{collector="processor",host="ilo.test"} 1
-ilo_scrape_collector_success{collector="storage",host="ilo.test"} 0
+ilo_scrape_collector_success{collector="storage",host="ilo.test"} 1
 ilo_scrape_collector_success{collector="system",host="ilo.test"} 1
 ilo_scrape_collector_success{collector="thermal",host="ilo.test"} 1
 # HELP ilo_scrape_redfish_requests Number of Redfish requests sent during the scrape
 # TYPE ilo_scrape_redfish_requests gauge
-ilo_scrape_redfish_requests{host="ilo.test"} 46
+ilo_scrape_redfish_requests{host="ilo.test"} 49
 # HELP ilo_storage_disk_capacity_byte Capacity of the disk in bytes
 # TYPE ilo_storage_disk_capacity_byte gauge
 ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=12:Port=2I:Box=1:Bay=1",media_type="SSD",model="MK000480GWSSC",name="480GB 6G SATA SSD",serial_number="S521NA0T605357"} 4.80103981056e+11
@@ -339,6 +339,9 @@ ilo_storage_disk_healthy{host="ilo.test",location="Slot=12:Port=2I:Box=1:Bay=2",
 # HELP ilo_system_info System Info
 # TYPE ilo_system_info gauge
 ilo_system_info{bios_version="U46 v2.34 (03/11/2025)",host="ilo.test",host_name="",model="ProLiant DL360 Gen10 Plus - SIMULATED",serial="MXQ2390RHW",sku="P28948-B21",uuid="39383250-3834-584D-5132-333930524857"} 1
+# HELP ilo_system_scrape_duration_second Scrape duration for the system module
+# TYPE ilo_system_scrape_duration_second gauge
+ilo_system_scrape_duration_second{host="ilo.test"} <duration>
 # HELP ilo_up 1 if the system resource of the iLO could be retrieved, 0 otherwise
 # TYPE ilo_up gauge
 ilo_up{host="ilo.test"} 1

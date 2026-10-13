@@ -70,8 +70,17 @@ func (f *Fan) Reading() float64 {
 }
 
 func collectThermal(ctx context.Context, s *scrape) error {
+	path := s.chassisPath + "/Thermal"
+	if s.topology != nil {
+		path = s.topology.Chassis.Thermal
+	}
+	if path == "" {
+		return nil
+	}
+
 	th := Thermal{}
-	if err := s.cl.Get(ctx, s.chassisPath+"/Thermal", &th); err != nil {
+	if err := s.cl.Get(ctx, path, &th); err != nil {
+		s.checkStale(err)
 		return fmt.Errorf("could not get thermal data: %w", err)
 	}
 

@@ -7,6 +7,8 @@ package collector
 import (
 	"context"
 	"fmt"
+
+	"github.com/MauveSoftware/ilo_exporter/pkg/redfish"
 )
 
 var (
@@ -23,6 +25,26 @@ type System struct {
 	Model        string `json:"Model"`
 	HostName     string `json:"HostName"`
 	BiosVersion  string `json:"BiosVersion"`
+
+	Memory     redfish.Link `json:"Memory"`
+	Processors redfish.Link `json:"Processors"`
+	Storage    redfish.Link `json:"Storage"`
+
+	Links struct {
+		Chassis   []redfish.Link `json:"Chassis"`
+		ManagedBy []redfish.Link `json:"ManagedBy"`
+	} `json:"Links"`
+
+	Oem struct {
+		Hpe systemOem `json:"Hpe"`
+		Hp  systemOem `json:"Hp"` // iLO 4
+	} `json:"Oem"`
+}
+
+type systemOem struct {
+	Links struct {
+		SmartStorage redfish.Link `json:"SmartStorage"`
+	} `json:"Links"`
 }
 
 // PowerUpValue returns 1 if the system is powered on, 0 otherwise
@@ -34,6 +56,15 @@ func (s *System) PowerUpValue() float64 {
 	return 0
 }
 
+// SmartStorageLink returns the link to the HPE SmartStorage API (iLO 4 and 5 only)
+func (s *System) SmartStorageLink() string {
+	if l := s.Oem.Hpe.Links.SmartStorage.ID; l != "" {
+		return l
+	}
+
+	return s.Oem.Hp.Links.SmartStorage.ID
+}
+
 func collectSystem(ctx context.Context, s *scrape) error {
 	sys := System{}
 	err := s.cl.Get(ctx, s.systemPath, &sys)
@@ -42,8 +73,24 @@ func collectSystem(ctx context.Context, s *scrape) error {
 	s.emit(systemInfoDesc, 1, s.host, sys.UUID, sys.SerialNumber, sys.SKU, sys.Model, sys.HostName, sys.BiosVersion)
 
 	if err != nil {
+		s.checkStale(err)
 		return fmt.Errorf("could not get system: %w", err)
 	}
 
+	s.system = &sys
+	if s.topology == nil && len(sys.Links.Chassis) > 0 {
+		s.chassisPath = sys.Links.Chassis[0].ID
+	}
+
 	return nil
+}
+
+// systemLink returns the link of the system resource or the default path relative to the system if the system
+// resource is unknown. If the system is known but does not contain the link, an empty string is returned.
+func (s *scrape) systemLink(link func(*System) string, defaultPath string) string {
+	if s.system == nil {
+		return s.systemPath + "/" + defaultPath
+	}
+
+	return link(s.system)
 }

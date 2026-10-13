@@ -32,8 +32,13 @@ type Processor struct {
 }
 
 func collectProcessors(ctx context.Context, s *scrape) error {
+	path := s.systemLink(func(sys *System) string { return sys.Processors.ID }, "Processors")
+	if path == "" {
+		return nil
+	}
+
 	procs := redfish.Collection{}
-	if err := s.cl.Get(ctx, s.systemPath+"/Processors", &procs); err != nil {
+	if err := s.cl.Get(ctx, path, &procs); err != nil {
 		return fmt.Errorf("could not get processor summary: %w", err)
 	}
 

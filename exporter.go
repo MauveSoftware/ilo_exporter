@@ -13,10 +13,13 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
+	"github.com/MauveSoftware/ilo_exporter/internal/lru"
 	"github.com/MauveSoftware/ilo_exporter/pkg/client"
 	"github.com/MauveSoftware/ilo_exporter/pkg/collector"
+	"github.com/MauveSoftware/ilo_exporter/pkg/topology"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel/attribute"
@@ -31,6 +34,12 @@ type exporter struct {
 	targets    *targetFilter
 	logger     *slog.Logger
 	logBodies  bool
+
+	// topologies caches the discovered topology per host (nil: discover on every scrape)
+	topologies *topology.Cache
+	// states contains the state of the last scrape per host, so only changes are logged
+	states   *lru.Cache[hostState]
+	statesMu sync.Mutex
 
 	// maxTimeout is the maximum duration of a scrape (0: unlimited)
 	maxTimeout time.Duration
@@ -107,19 +116,90 @@ func (e *exporter) handleMetricsRequest(w http.ResponseWriter, r *http.Request) 
 	}
 	cl := client.NewClient(host, e.username, e.password, tracer, opts...)
 
+	collectorOpts = append(collectorOpts, collector.WithTopology(func(ctx context.Context) (*topology.Topology, error) {
+		discover := func(ctx context.Context) (*topology.Topology, error) {
+			return topology.Discover(ctx, cl)
+		}
+
+		if e.topologies == nil {
+			return discover(ctx)
+		}
+
+		return e.topologies.Get(ctx, host, discover)
+	}))
+
+	col := collector.New(ctx, cl, tracer, collectorOpts...)
 	reg := prometheus.NewRegistry()
-	reg.MustRegister(collector.New(ctx, cl, tracer, collectorOpts...))
+	reg.MustRegister(col)
 
 	promhttp.HandlerFor(reg, promhttp.HandlerOpts{
 		ErrorLog:      slog.NewLogLogger(e.logger.Handler(), slog.LevelWarn),
 		ErrorHandling: promhttp.ContinueOnError,
 	}).ServeHTTP(w, r)
 
-	if n, err := cl.Failures(); n > 0 {
-		e.logger.Warn("Scrape incomplete", "host", host, "failed_requests", n, "err", err)
+	e.observe(host, col.Result(), cl.Requests())
+	return nil
+}
+
+// hostState is the state of the last scrape of a host
+type hostState struct {
+	up       bool
+	failed   string
+	firmware string
+	uuid     string
+}
+
+// observe logs changes of the state of a host and invalidates its topology if it changed
+func (e *exporter) observe(host string, res collector.Result, requests int64) {
+	cur := hostState{
+		up:       res.Up,
+		failed:   strings.Join(res.Failed, ","),
+		firmware: res.FirmwareVersion,
+		uuid:     res.SystemUUID,
 	}
 
-	return nil
+	key := topology.Key(host)
+	e.statesMu.Lock()
+	prev, known := e.states.Get(key)
+	if cur.firmware == "" {
+		cur.firmware = prev.firmware
+	}
+	if cur.uuid == "" {
+		cur.uuid = prev.uuid
+	}
+	e.states.Set(key, cur)
+	e.statesMu.Unlock()
+
+	e.logger.Debug("Scrape finished", "host", host, "up", res.Up, "failed", cur.failed, "requests", requests, "err", res.Err)
+
+	invalidate := res.StaleTopology
+	if known && prev.firmware != "" && prev.firmware != cur.firmware {
+		e.logger.Info("Firmware changed", "host", host, "from", prev.firmware, "to", cur.firmware)
+		invalidate = true
+	}
+	if known && prev.uuid != "" && prev.uuid != cur.uuid {
+		e.logger.Info("System changed", "host", host, "from", prev.uuid, "to", cur.uuid)
+		invalidate = true
+	}
+	if invalidate && e.topologies != nil {
+		e.topologies.Invalidate(host)
+	}
+
+	switch {
+	case !cur.up && (!known || prev.up):
+		e.logger.Warn("iLO down", "host", host, "err", res.Err)
+		return
+	case !cur.up:
+		return
+	case known && !prev.up:
+		e.logger.Info("iLO up", "host", host)
+	}
+
+	if cur.failed != "" && (!known || !prev.up || prev.failed != cur.failed) {
+		e.logger.Warn("Scrape incomplete", "host", host, "failed_collectors", cur.failed, "err", res.Err)
+	} else if cur.failed == "" && known && prev.up && prev.failed != "" {
+		e.logger.Info("Scrape complete", "host", host)
+	}
 }
 
 // scrapeContext limits the duration of a scrape to the scrape timeout sent by Prometheus (minus offset) and maxTimeout
