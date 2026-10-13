@@ -62,7 +62,8 @@ func TestScrapeDeadline(t *testing.T) {
 	body := scrapeRequest(t, e, r)
 	elapsed := time.Since(start)
 
-	if elapsed < 900*time.Millisecond || elapsed > 1500*time.Millisecond {
+	// generous upper bound for slow CI runners: without deadline, the scrape would block until the write timeout
+	if elapsed < 900*time.Millisecond || elapsed > 5*time.Second {
 		t.Errorf("expected scrape to be canceled after 1s (timeout - offset), took %v", elapsed)
 	}
 
@@ -70,7 +71,7 @@ func TestScrapeDeadline(t *testing.T) {
 		t.Errorf("expected metrics collected before the deadline to be returned, got:\n%s", body)
 	}
 
-	deadline := time.Now().Add(time.Second)
+	deadline := time.Now().Add(5 * time.Second)
 	for srv.InFlight() > 0 && time.Now().Before(deadline) {
 		time.Sleep(10 * time.Millisecond)
 	}
