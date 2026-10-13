@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"net"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/MauveSoftware/ilo_exporter/internal/lru"
@@ -31,6 +32,9 @@ type Topology struct {
 	// Expand is true if the service supports $expand=. (expansion of all subordinate resources but links)
 	Expand bool
 
+	// expandRejected is set if the service rejected $expand although advertised
+	expandRejected atomic.Bool
+
 	// SystemPath is the path of the computer system
 	SystemPath string
 
@@ -39,6 +43,16 @@ type Topology struct {
 
 	// Chassis contains the links of the chassis resource
 	Chassis ChassisLinks
+}
+
+// ExpandSupported returns true if $expand=. can be used
+func (t *Topology) ExpandSupported() bool {
+	return t.Expand && !t.expandRejected.Load()
+}
+
+// RejectExpand disables $expand for the host until the topology is discovered again
+func (t *Topology) RejectExpand() {
+	t.expandRejected.Store(true)
 }
 
 // ChassisLinks are links of a chassis resource. Empty links are not supported by the service.

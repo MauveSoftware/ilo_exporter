@@ -37,19 +37,15 @@ func collectProcessors(ctx context.Context, s *scrape) error {
 		return nil
 	}
 
-	procs := redfish.Collection{}
-	if err := s.cl.Get(ctx, path, &procs); err != nil {
+	col := rawCollection{}
+	if err := s.getExpanded(ctx, path, &col); err != nil {
 		return fmt.Errorf("could not get processor summary: %w", err)
 	}
 
-	s.emit(processorCountDesc, float64(len(procs.Members)), s.host)
+	s.emit(processorCountDesc, float64(len(col.Members)), s.host)
 
-	return forEach(ctx, procs.Members, func(ctx context.Context, l redfish.Link) error {
-		pr := Processor{}
-		if err := s.cl.Get(ctx, l.ID, &pr); err != nil {
-			return fmt.Errorf("could not get processor information from %s: %w", l.ID, err)
-		}
-
+	procs, err := resolve[Processor](ctx, s, col.Members)
+	for _, pr := range procs {
 		socket := pr.Socket
 		if socket == "" {
 			// e.g. GPUs listed as processors by iLO 6 have no socket
@@ -60,6 +56,11 @@ func collectProcessors(ctx context.Context, s *scrape) error {
 		s.emit(processorCoresDesc, pr.TotalCores, labels...)
 		s.emit(processorThreadsDesc, pr.TotalThreads, labels...)
 		s.emit(processorHealthyDesc, pr.Status.HealthValue(), labels...)
-		return nil
-	})
+	}
+
+	if err != nil {
+		return fmt.Errorf("could not get processor information: %w", err)
+	}
+
+	return nil
 }

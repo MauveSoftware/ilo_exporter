@@ -275,7 +275,7 @@ ilo_scrape_collector_success{collector="system",host="ilo.test"} 1
 ilo_scrape_collector_success{collector="thermal",host="ilo.test"} 1
 # HELP ilo_scrape_redfish_requests Number of Redfish requests sent during the scrape
 # TYPE ilo_scrape_redfish_requests gauge
-ilo_scrape_redfish_requests{host="ilo.test"} 44
+ilo_scrape_redfish_requests{host="ilo.test"} 8
 # HELP ilo_storage_disk_capacity_byte Capacity of the disk in bytes
 # TYPE ilo_storage_disk_capacity_byte gauge
 ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=14:Port=2:Box=1:Bay=1",media_type="SSD",model="MO001600PXVRU",name="HPE 1.60TB 22.5G SAS SSD",serial_number="5F90A0810UG3"} 1.600321314816e+12

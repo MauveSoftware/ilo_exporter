@@ -27,7 +27,8 @@ var (
 
 // Storage is a storage subsystem resource
 type Storage struct {
-	Drives []redfish.Link `json:"Drives"`
+	// Drives are references to drives or drives (if expanded)
+	Drives []json.RawMessage `json:"Drives"`
 }
 
 // DiskDrive is a drive resource (DMTF Drive or HPE SmartStorage DiskDrive)
@@ -157,13 +158,14 @@ func collectStorageControllers(ctx context.Context, s *scrape) ([]DiskDrive, err
 		return nil, fmt.Errorf("could not get storage controller summary: %w", err)
 	}
 
+	// typically there are less controllers than drives, so the drives are expanded with each controller
 	drives, err := collectAll(ctx, ctrls.Members, func(ctx context.Context, l redfish.Link) ([]DiskDrive, error) {
 		strg := Storage{}
-		if err := s.cl.Get(ctx, l.ID, &strg); err != nil {
+		if err := s.getExpanded(ctx, l.ID, &strg); err != nil {
 			return nil, fmt.Errorf("could not get storage controller %s: %w", l.ID, err)
 		}
 
-		return collectAll(ctx, strg.Drives, getDiskDrive(s))
+		return resolve[DiskDrive](ctx, s, strg.Drives)
 	})
 
 	return slices.Concat(drives...), err
@@ -180,41 +182,20 @@ func collectSmartStorage(ctx context.Context, s *scrape) ([]DiskDrive, error) {
 		return nil, nil
 	}
 
-	ctrls := redfish.Collection{}
-	if err := s.cl.Get(ctx, path, &ctrls); err != nil {
-		return nil, fmt.Errorf("could not get smart storage controller summary: %w", err)
+	ctrls, err := getMembers[SmartArrayController](ctx, s, path)
+	if err != nil && len(ctrls) == 0 {
+		return nil, fmt.Errorf("could not get smart storage controllers: %w", err)
 	}
 
-	drives, err := collectAll(ctx, ctrls.Members, func(ctx context.Context, l redfish.Link) ([]DiskDrive, error) {
-		ctrl := SmartArrayController{}
-		if err := s.cl.Get(ctx, l.ID, &ctrl); err != nil {
-			return nil, fmt.Errorf("could not get smart storage controller %s: %w", l.ID, err)
-		}
-
+	drives, drvErr := collectAll(ctx, ctrls, func(ctx context.Context, ctrl SmartArrayController) ([]DiskDrive, error) {
 		if ctrl.Links.PhysicalDrives.ID == "" {
 			return nil, nil
 		}
 
-		drives := redfish.Collection{}
-		if err := s.cl.Get(ctx, ctrl.Links.PhysicalDrives.ID, &drives); err != nil {
-			return nil, fmt.Errorf("could not get drives for controller %s: %w", l.ID, err)
-		}
-
-		return collectAll(ctx, drives.Members, getDiskDrive(s))
+		return getMembers[DiskDrive](ctx, s, ctrl.Links.PhysicalDrives.ID)
 	})
 
-	return slices.Concat(drives...), err
-}
-
-func getDiskDrive(s *scrape) func(ctx context.Context, l redfish.Link) (DiskDrive, error) {
-	return func(ctx context.Context, l redfish.Link) (DiskDrive, error) {
-		d := DiskDrive{}
-		if err := s.cl.Get(ctx, l.ID, &d); err != nil {
-			return d, fmt.Errorf("could not get drive information from %s: %w", l.ID, err)
-		}
-
-		return d, nil
-	}
+	return slices.Concat(drives...), errors.Join(err, drvErr)
 }
 
 func emitDiskDrive(s *scrape, d *DiskDrive) {

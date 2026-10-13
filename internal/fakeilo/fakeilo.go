@@ -34,13 +34,14 @@ type Server struct {
 	srv  *httptest.Server
 	root *os.Root
 
-	username string
-	password string
-	expand   bool
-	latency  time.Duration
-	status   map[string]int
-	block    map[string]bool
-	hidden   map[string]map[string]bool
+	username     string
+	password     string
+	expand       bool
+	expandStatus int
+	latency      time.Duration
+	status       map[string]int
+	block        map[string]bool
+	hidden       map[string]map[string]bool
 
 	mu          sync.Mutex
 	conns       int
@@ -67,6 +68,13 @@ func WithCredentials(username, password string) Option {
 func WithoutExpand() Option {
 	return func(s *Server) {
 		s.expand = false
+	}
+}
+
+// WithExpandStatus makes all requests using $expand fail with code, like services rejecting $expand
+func WithExpandStatus(code int) Option {
+	return func(s *Server) {
+		s.expandStatus = code
 	}
 }
 
@@ -290,6 +298,11 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if e := r.URL.Query().Get("$expand"); e != "" {
+		if s.expandStatus != 0 {
+			writeError(w, s.expandStatus, "Base.1.0.QueryNotSupported")
+			return
+		}
+
 		switch e {
 		case ".", ".($levels=1)":
 			if s.expand {

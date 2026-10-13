@@ -39,6 +39,9 @@
 - `-api.discovery-ttl` (default `1h`) and `-api.cache-max-hosts` (default `4096`): the capabilities and resource
   layout of an iLO are discovered once and cached (4 requests per iLO and hour). The cache is invalidated when a
   resource is not found, the firmware version changes or the IP address points to another system.
+- **Collections (memory, processors, drives) are retrieved with a single request using `$expand=.`** if supported
+  by the iLO (iLO 5, 6 and 7). This reduces the number of requests per scrape from about 45 to about 10 for a
+  typical server. `-api.expand=false` disables it. Paginated collections (`Members@odata.nextLink`) are supported.
 
 ### Changed
 

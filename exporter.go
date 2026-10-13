@@ -34,6 +34,7 @@ type exporter struct {
 	targets    *targetFilter
 	logger     *slog.Logger
 	logBodies  bool
+	noExpand   bool
 
 	// topologies caches the discovered topology per host (nil: discover on every scrape)
 	topologies *topology.Cache
@@ -127,6 +128,10 @@ func (e *exporter) handleMetricsRequest(w http.ResponseWriter, r *http.Request) 
 
 		return e.topologies.Get(ctx, host, discover)
 	}))
+
+	if e.noExpand {
+		collectorOpts = append(collectorOpts, collector.WithoutExpand())
+	}
 
 	col := collector.New(ctx, cl, tracer, collectorOpts...)
 	reg := prometheus.NewRegistry()

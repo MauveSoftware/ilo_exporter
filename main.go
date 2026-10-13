@@ -41,6 +41,7 @@ var (
 	maxConcurrentRequests    = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent to an iLO concurrently, across all scrapes of the iLO (0: unlimited)")
 	apiTimeout               = flag.Duration("api.timeout", 0, "Maximum duration of a scrape (0: limited by the scrape timeout sent by Prometheus and -web.write-timeout)")
 	idleConnTimeout          = flag.Duration("api.idle-conn-timeout", time.Minute, "Time after which idle connections to an iLO are closed")
+	expand                   = flag.Bool("api.expand", true, "Retrieve collections with a single request using $expand if supported by the iLO")
 	discoveryTTL             = flag.Duration("api.discovery-ttl", time.Hour, "Time after which the capabilities and resource layout of an iLO are discovered again (0: on every scrape)")
 	cacheMaxHosts            = flag.Int("api.cache-max-hosts", 4096, "Maximum number of iLOs to keep discovery results and state for")
 	insecureSkipVerify       = flag.Bool("api.insecure-skip-verify", true, "Skip verification of iLO certificates (ignored if -api.ca-file is set)")
@@ -142,6 +143,7 @@ func newExporterFromFlags(logger *slog.Logger) (*exporter, error) {
 		targets:       targets,
 		logger:        logger,
 		logBodies:     *logRedfishBodies,
+		noExpand:      !*expand,
 		maxTimeout:    maxTimeout,
 		timeoutOffset: *timeoutOffset,
 		states:        lru.New[hostState](*cacheMaxHosts),

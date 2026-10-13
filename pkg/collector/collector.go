@@ -100,6 +100,7 @@ type Collector struct {
 	tracer   trace.Tracer
 	enabled  []subCollector
 	topology func(context.Context) (*topology.Topology, error)
+	noExpand bool
 	result   Result
 }
 
@@ -147,6 +148,13 @@ func WithTopology(f func(context.Context) (*topology.Topology, error)) Option {
 	}
 }
 
+// WithoutExpand disables the use of $expand
+func WithoutExpand() Option {
+	return func(c *Collector) {
+		c.noExpand = true
+	}
+}
+
 // New returns a new collector. All requests are bound to ctx.
 func New(ctx context.Context, cl client.Client, tracer trace.Tracer, opts ...Option) *Collector {
 	c := &Collector{
@@ -189,6 +197,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		host:        c.cl.HostName(),
 		systemPath:  "Systems/1",
 		chassisPath: "Chassis/1",
+		expand:      !c.noExpand,
 	}
 
 	// the topology and system resource are retrieved first: if this fails because the iLO is unreachable
@@ -318,6 +327,9 @@ type scrape struct {
 	topology    *topology.Topology
 	systemPath  string
 	chassisPath string
+
+	// expand enables $expand if supported by the service
+	expand bool
 
 	// system is the system resource (nil if it could not be retrieved), set before the sub collectors run
 	system *System

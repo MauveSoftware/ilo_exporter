@@ -99,23 +99,19 @@ func collectMemory(ctx context.Context, s *scrape) error {
 		return nil
 	}
 
-	mem := redfish.Collection{}
-	if err := s.cl.Get(ctx, path, &mem); err != nil {
-		return fmt.Errorf("could not get memory summary: %w", err)
-	}
-
-	return forEach(ctx, mem.Members, func(ctx context.Context, l redfish.Link) error {
-		d := MemoryDIMM{}
-		if err := s.cl.Get(ctx, l.ID, &d); err != nil {
-			return fmt.Errorf("could not get memory information from %s: %w", l.ID, err)
-		}
-
+	dimms, err := getMembers[MemoryDIMM](ctx, s, path)
+	for _, d := range dimms {
 		if !d.IsValid() {
-			return nil
+			continue
 		}
 
 		s.emit(dimmHealthyDesc, d.HealthValue(), s.host, d.Name)
 		s.emit(dimmSizeDesc, float64(d.SizeMB()<<20), s.host, d.Name)
-		return nil
-	})
+	}
+
+	if err != nil {
+		return fmt.Errorf("could not get memory information: %w", err)
+	}
+
+	return nil
 }
