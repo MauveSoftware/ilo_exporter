@@ -1142,3 +1142,94 @@ groups:
             Severity: warning
             dashboard: iLO
           isPaused: false
+        - uid: b19f3886-321c-4b43-8020-91dc000ed267
+          title: iLO Up
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: k2I1C4hVz
+              model:
+                datasource:
+                    type: prometheus
+                    uid: k2I1C4hVz
+                editorMode: code
+                exemplar: false
+                expr: ilo_up[10m]
+                instant: true
+                interval: ""
+                intervalMs: 5000
+                legendFormat: __auto
+                maxDataPoints: 43200
+                range: false
+                refId: A
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: A
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: max
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: "-100"
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: "-100"
+                expression: B
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          noDataState: NoData
+          execErrState: Error
+          for: 10m
+          annotations:
+            description: '{{ $values.B.Labels.host }} iLO could not be scraped (unreachable or credentials rejected) in the last 10 minutes'
+            summary: '{{ $values.B.Labels.host }} iLO is down'
+          labels:
+            Severity: warning
+            dashboard: iLO
+          isPaused: false

@@ -59,6 +59,7 @@
   expensive especially for directory (LDAP/AD) accounts. Sessions are created on first use, renewed when expired
   and deleted on shutdown or when the host is evicted from the cache (`-api.cache-max-hosts`). Session
   authentication is required for iLOs with basic authentication disabled.
+- Example alert rule `iLO Up` based on `ilo_up`. The `Power Up` alert no longer fires for unreachable iLOs.
 
 ### Changed
 
