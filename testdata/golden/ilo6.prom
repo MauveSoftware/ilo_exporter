@@ -239,7 +239,8 @@ ilo_power_supply_healthy{host="ilo.test",serial="5YCHT0B4DKC1IF"} 1
 ilo_power_up{host="ilo.test"} 1
 # HELP ilo_processor_core_count Number of cores of processor
 # TYPE ilo_processor_core_count gauge
-ilo_processor_core_count{host="ilo.test",model="900-21010-0320-030",socket=""} 0
+ilo_processor_core_count{host="ilo.test",model="900-21010-0320-030",socket="3"} 0
+ilo_processor_core_count{host="ilo.test",model="900-21010-0320-030",socket="4"} 0
 ilo_processor_core_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 1"} 32
 ilo_processor_core_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 2"} 32
 # HELP ilo_processor_count Number of processors
@@ -247,12 +248,14 @@ ilo_processor_core_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",sock
 ilo_processor_count{host="ilo.test"} 4
 # HELP ilo_processor_healthy Health status of processor
 # TYPE ilo_processor_healthy gauge
-ilo_processor_healthy{host="ilo.test",model="900-21010-0320-030",socket=""} 1
+ilo_processor_healthy{host="ilo.test",model="900-21010-0320-030",socket="3"} 1
+ilo_processor_healthy{host="ilo.test",model="900-21010-0320-030",socket="4"} 1
 ilo_processor_healthy{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 1"} 1
 ilo_processor_healthy{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 2"} 1
 # HELP ilo_processor_thread_count Number of threads of processor
 # TYPE ilo_processor_thread_count gauge
-ilo_processor_thread_count{host="ilo.test",model="900-21010-0320-030",socket=""} 0
+ilo_processor_thread_count{host="ilo.test",model="900-21010-0320-030",socket="3"} 0
+ilo_processor_thread_count{host="ilo.test",model="900-21010-0320-030",socket="4"} 0
 ilo_processor_thread_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 1"} 64
 ilo_processor_thread_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 2"} 64
 # HELP ilo_storage_disk_capacity_byte Capacity of the disk in bytes

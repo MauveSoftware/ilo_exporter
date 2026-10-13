@@ -23,6 +23,7 @@ var (
 
 // Processor is a processor resource
 type Processor struct {
+	ID           string         `json:"Id"`
 	Socket       string         `json:"Socket"`
 	Model        string         `json:"Model"`
 	TotalCores   float64        `json:"TotalCores"`
@@ -44,7 +45,13 @@ func collectProcessors(ctx context.Context, s *scrape) error {
 			return fmt.Errorf("could not get processor information from %s: %w", l.ID, err)
 		}
 
-		labels := []string{s.host, pr.Socket, strings.Trim(pr.Model, " ")}
+		socket := pr.Socket
+		if socket == "" {
+			// e.g. GPUs listed as processors by iLO 6 have no socket
+			socket = pr.ID
+		}
+
+		labels := []string{s.host, socket, strings.Trim(pr.Model, " ")}
 		s.emit(processorCoresDesc, pr.TotalCores, labels...)
 		s.emit(processorThreadsDesc, pr.TotalThreads, labels...)
 		s.emit(processorHealthyDesc, pr.Status.HealthValue(), labels...)
