@@ -85,7 +85,7 @@ func collectThermal(ctx context.Context, s *scrape) error {
 	}
 
 	for _, f := range th.Fans {
-		if f.Status.State == "UnavailableOffline" || f.Status.State == "Offline" {
+		if f.Status.IsAbsent() || f.Status.State == "UnavailableOffline" || f.Status.State == "Offline" {
 			continue
 		}
 

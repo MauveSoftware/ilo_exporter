@@ -26,6 +26,11 @@ type System struct {
 	HostName     string `json:"HostName"`
 	BiosVersion  string `json:"BiosVersion"`
 
+	MemorySummary struct {
+		TotalSystemMemoryGiB *float64       `json:"TotalSystemMemoryGiB"`
+		Status               redfish.Status `json:"Status"`
+	} `json:"MemorySummary"`
+
 	Memory     redfish.Link `json:"Memory"`
 	Processors redfish.Link `json:"Processors"`
 	Storage    redfish.Link `json:"Storage"`
@@ -67,14 +72,19 @@ func (s *System) SmartStorageLink() string {
 
 func collectSystem(ctx context.Context, s *scrape) error {
 	sys := System{}
-	err := s.cl.Get(ctx, s.systemPath, &sys)
+	if err := s.cl.Get(ctx, s.systemPath, &sys); err != nil {
+		s.checkStale(err)
+		return fmt.Errorf("could not get system: %w", err)
+	}
 
 	s.emit(powerUpDesc, sys.PowerUpValue(), s.host)
 	s.emit(systemInfoDesc, 1, s.host, sys.UUID, sys.SerialNumber, sys.SKU, sys.Model, sys.HostName, sys.BiosVersion)
 
-	if err != nil {
-		s.checkStale(err)
-		return fmt.Errorf("could not get system: %w", err)
+	if v := sys.MemorySummary.TotalSystemMemoryGiB; v != nil {
+		s.emit(memoryTotalDesc, *v*(1<<30), s.host)
+	}
+	if st := sys.MemorySummary.Status; st.HealthRollup != "" {
+		s.emit(memoryHealthyDesc, redfish.HealthValue(st.HealthRollup), s.host)
 	}
 
 	s.system = &sys

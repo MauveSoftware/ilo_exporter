@@ -14,8 +14,8 @@ import (
 const memoryPrefix = prefix + "memory_"
 
 var (
-	memoryHealthyDesc = newDesc(memoryPrefix+"healthy", "Health status of the memory", "host")        //nolint:unused // described, but not collected yet
-	memoryTotalDesc   = newDesc(memoryPrefix+"total_byte", "Total memory installed in bytes", "host") //nolint:unused // described, but not collected yet
+	memoryHealthyDesc = newDesc(memoryPrefix+"healthy", "Health status of the memory", "host")
+	memoryTotalDesc   = newDesc(memoryPrefix+"total_byte", "Total memory installed in bytes", "host")
 	dimmHealthyDesc   = newDesc(memoryPrefix+"dimm_healthy", "Health status of processor", "host", "name")
 	dimmSizeDesc      = newDesc(memoryPrefix+"dimm_byte", "DIMM size in bytes", "host", "name")
 )
@@ -37,7 +37,7 @@ type MemoryOem struct {
 
 // HPEMemStatus contains the HPE specific status of a memory resource
 type HPEMemStatus struct {
-	DIMMStatus string `json:"DIMMStatus"` // e.g. "GoodInUse"
+	DIMMStatus string `json:"DIMMStatus"` // e.g. "GoodInUse", "NotPresent"
 }
 
 // HealthValue returns 1 if the DIMM is healthy, 0 otherwise
@@ -65,6 +65,11 @@ func (m *MemoryDIMM) legacyHealthValue() float64 {
 func (m *MemoryDIMM) IsValid() bool {
 	if m.isLegacy() {
 		return m.StatusLegacy != "Unknown"
+	}
+
+	if m.StatusCurrent.IsAbsent() || m.Oem.HPE.DIMMStatus == "NotPresent" {
+		// empty slot
+		return false
 	}
 
 	return len(m.StatusCurrent.State) > 0 || len(m.Oem.HPE.DIMMStatus) > 0

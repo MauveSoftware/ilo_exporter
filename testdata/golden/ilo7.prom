@@ -150,70 +150,44 @@ ilo_manager_scrape_duration_second{host="ilo.test"} <duration>
 # TYPE ilo_memory_dimm_byte gauge
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm1"} 1.7179869184e+10
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm10"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm11"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm12"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm13"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm14"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm15"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm16"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm2"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm3"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm4"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm5"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm6"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm7"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm8"} 0
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm9"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm1"} 1.7179869184e+10
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm10"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm11"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm12"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm13"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm14"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm15"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm16"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm2"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm3"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm4"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm5"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm6"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm7"} 1.7179869184e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm8"} 0
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm9"} 0
 # HELP ilo_memory_dimm_healthy Health status of processor
 # TYPE ilo_memory_dimm_healthy gauge
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm1"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm10"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm11"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm12"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm13"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm14"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm15"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm16"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm2"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm3"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm4"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm5"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm6"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm7"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm8"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm9"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm1"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm10"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm11"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm12"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm13"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm14"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm15"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm16"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm2"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm3"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm4"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm5"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm6"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm7"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm8"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm9"} 1
+# HELP ilo_memory_healthy Health status of the memory
+# TYPE ilo_memory_healthy gauge
+ilo_memory_healthy{host="ilo.test"} 1
+# HELP ilo_memory_total_byte Total memory installed in bytes
+# TYPE ilo_memory_total_byte gauge
+ilo_memory_total_byte{host="ilo.test"} 2.74877906944e+11
 # HELP ilo_power_average_watt Average power consumption in watt
 # TYPE ilo_power_average_watt gauge
 ilo_power_average_watt{host="ilo.test",id="0"} 223

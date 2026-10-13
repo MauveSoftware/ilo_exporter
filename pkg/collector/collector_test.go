@@ -143,3 +143,19 @@ func TestDriveCapacity(t *testing.T) {
 		t.Errorf("DMTF capacity: got %v, want %v", got, 480103981056)
 	}
 }
+
+func TestAbsentDIMM(t *testing.T) {
+	for _, in := range []string{
+		`{"Name": "proc1dimm2", "Status": {"Health": "OK", "State": "Absent"}, "Oem": {"Hpe": {"DIMMStatus": "NotPresent"}}, "CapacityMiB": 0}`,
+		`{"Name": "proc1dimm2", "Oem": {"Hpe": {"DIMMStatus": "NotPresent"}}}`,
+	} {
+		d := MemoryDIMM{}
+		if err := json.Unmarshal([]byte(in), &d); err != nil {
+			t.Fatal(err)
+		}
+
+		if d.IsValid() {
+			t.Errorf("expected empty slot to be invalid: %s", in)
+		}
+	}
+}

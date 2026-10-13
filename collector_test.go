@@ -68,7 +68,7 @@ func TestCollectParameter(t *testing.T) {
 		t.Errorf("got requests:\n%s\nwant:\n%s", strings.Join(got, "\n"), strings.Join(want, "\n"))
 	}
 
-	if strings.Contains(body, "ilo_memory_") || strings.Contains(body, "ilo_system_scrape_duration_second") {
+	if strings.Contains(body, "ilo_memory_dimm_") || strings.Contains(body, "ilo_system_scrape_duration_second") {
 		t.Errorf("expected no metrics of disabled collectors, got:\n%s", body)
 	}
 	if !strings.Contains(body, "ilo_power_current_watt") || !strings.Contains(body, "ilo_manager_info") {
@@ -80,5 +80,27 @@ func TestCollectParameter(t *testing.T) {
 	e.ServeHTTP(w, r)
 	if w.Code != http.StatusBadRequest {
 		t.Errorf("expected status 400 for unknown collector, got %d", w.Code)
+	}
+}
+
+func TestSystemFailure(t *testing.T) {
+	srv := fakeilo.New(t, mockupDir("ilo5"), fakeilo.WithStatus("/redfish/v1/Systems/1", http.StatusInternalServerError))
+
+	body := scrape(t, newTestExporter(t), srv.Host())
+
+	for _, unwanted := range []string{"ilo_power_up", "ilo_system_info"} {
+		if strings.Contains(body, unwanted) {
+			t.Errorf("expected no %s if the system could not be retrieved, got:\n%s", unwanted, body)
+		}
+	}
+
+	// other resources are still collected, since the iLO is reachable
+	for _, want := range []string{
+		`ilo_up{host="` + srv.Host() + `"} 0`,
+		`ilo_power_current_watt`,
+	} {
+		if !strings.Contains(body, want) {
+			t.Errorf("expected %s, got:\n%s", want, body)
+		}
 	}
 }

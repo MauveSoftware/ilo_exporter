@@ -42,10 +42,16 @@ func collectProcessors(ctx context.Context, s *scrape) error {
 		return fmt.Errorf("could not get processor summary: %w", err)
 	}
 
-	s.emit(processorCountDesc, float64(len(col.Members)), s.host)
-
 	procs, err := resolve[Processor](ctx, s, col.Members)
+
+	count := len(col.Members)
 	for _, pr := range procs {
+		if pr.Status.IsAbsent() {
+			// empty socket
+			count--
+			continue
+		}
+
 		socket := pr.Socket
 		if socket == "" {
 			// e.g. GPUs listed as processors by iLO 6 have no socket
@@ -57,6 +63,8 @@ func collectProcessors(ctx context.Context, s *scrape) error {
 		s.emit(processorThreadsDesc, pr.TotalThreads, labels...)
 		s.emit(processorHealthyDesc, pr.Status.HealthValue(), labels...)
 	}
+
+	s.emit(processorCountDesc, float64(count), s.host)
 
 	if err != nil {
 		return fmt.Errorf("could not get processor information: %w", err)

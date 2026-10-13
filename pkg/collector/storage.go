@@ -199,6 +199,11 @@ func collectSmartStorage(ctx context.Context, s *scrape) ([]DiskDrive, error) {
 }
 
 func emitDiskDrive(s *scrape, d *DiskDrive) {
+	if d.Status.IsAbsent() {
+		// empty bay
+		return
+	}
+
 	labels := []string{s.host, d.GetLocation(), d.Model, d.MediaType, d.Name, d.SerialNumber}
 	s.emit(diskCapacityDesc, d.CapacityBytes(), labels...)
 	s.emit(diskHealthyDesc, d.Status.HealthValue(), labels...)

@@ -12,6 +12,13 @@
 - SmartStorage drives were not collected on iLO 5 firmware returning controller links without trailing slash.
 - Drives of iLO 5 Smart Array controllers reported by both the DMTF storage model and the SmartStorage API are
   only reported once (from the DMTF storage model).
+- Empty DIMM slots, empty drive bays, absent fans and empty CPU sockets are no longer reported (empty DIMM slots
+  were reported with `ilo_memory_dimm_byte` 0 and `ilo_memory_dimm_healthy` 1). `ilo_processor_count` does not
+  count empty sockets.
+- `ilo_power_up` (0) and `ilo_system_info` (with empty labels) were reported when the system resource could not be
+  retrieved, e.g. for unreachable hosts. They are now omitted, `ilo_up` is 0 instead.
+- `ilo_memory_healthy` and `ilo_memory_total_byte` were described but never reported. They are now reported based
+  on the memory summary of the system resource.
 - `SIGINT` (Ctrl-C) did not stop the exporter, `SIGTERM` did not shut it down gracefully and pending traces were not flushed.
 - `API_USERNAME`/`API_PASSWORD` overwrote both credentials when only one of `-api.username`/`-api.password` was set.
 - The version reported by release binaries and container images is now set at build time.

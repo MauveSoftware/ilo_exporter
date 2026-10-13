@@ -21,13 +21,24 @@ type Collection struct {
 
 // Status describes the status and health of a resource
 type Status struct {
-	Health string `json:"Health"`
-	State  string `json:"State"`
+	Health       string `json:"Health"`
+	HealthRollup string `json:"HealthRollup"`
+	State        string `json:"State"`
+}
+
+// IsAbsent returns true if the resource is not present (e.g. an empty slot or bay)
+func (s *Status) IsAbsent() bool {
+	return s.State == "Absent"
 }
 
 // HealthValue returns 1 if the resource is healthy, 0 otherwise
 func (s *Status) HealthValue() float64 {
-	if strings.ToUpper(s.Health) == "OK" {
+	return HealthValue(s.Health)
+}
+
+// HealthValue returns 1 if health is OK, 0 otherwise
+func HealthValue(health string) float64 {
+	if strings.ToUpper(health) == "OK" {
 		return 1
 	}
 
