@@ -54,7 +54,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	p := "Managers/1"
 
 	m := &manager{}
-	err := c.cl.Get(ctx, p, &m)
+	err := c.cl.Get(ctx, p, m)
 	if err != nil {
 		logrus.Error(err)
 		return

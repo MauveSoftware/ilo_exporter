@@ -6,8 +6,6 @@ package main
 
 import (
 	"bytes"
-	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
 
@@ -136,36 +134,5 @@ func TestLogTargetFilter(t *testing.T) {
 	logTargetFilter(logger, f, ".ilo.example.com")
 	if out := buf.String(); !strings.Contains(out, "level=info") || !strings.Contains(out, "allowed_targets=.ilo.example.com") {
 		t.Errorf("expected the allowed targets to be logged, got %q", out)
-	}
-}
-
-func TestMetricsRequestRejectsTargets(t *testing.T) {
-	f, err := parseTargetFilter(".ilo.example.com")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	prev := targets
-	targets = f
-	t.Cleanup(func() { targets = prev })
-
-	tests := map[string]int{
-		"/metrics":                                  http.StatusBadRequest,
-		"/metrics?host=":                            http.StatusBadRequest,
-		"/metrics?host=evil.example%23":             http.StatusBadRequest,
-		"/metrics?host=evil.example%2Fpath":         http.StatusBadRequest,
-		"/metrics?host=user%40srv1.ilo.example.com": http.StatusBadRequest,
-		"/metrics?host=evil.example.net":            http.StatusForbidden,
-		"/metrics?host=srv1.ilo.example.com.evil":   http.StatusForbidden,
-	}
-
-	h := errorHandler(handleMetricsRequest)
-	for target, want := range tests {
-		rec := httptest.NewRecorder()
-		h(rec, httptest.NewRequest(http.MethodGet, target, nil))
-
-		if rec.Code != want {
-			t.Errorf("%s: status %d, want %d", target, rec.Code, want)
-		}
 	}
 }

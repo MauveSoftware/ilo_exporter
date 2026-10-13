@@ -7,6 +7,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel"
@@ -23,7 +24,7 @@ import (
 
 var (
 	tracer = otel.GetTracerProvider().Tracer(
-		"github.com/czerwonk/ilo_exporter",
+		"github.com/MauveSoftware/ilo_exporter",
 		trace.WithSchemaURL(semconv.SchemaURL),
 	)
 )
@@ -65,7 +66,7 @@ func initTracingToStdOut(ctx context.Context) (func(), error) {
 	)
 	otel.SetTracerProvider(tp)
 
-	return shutdownTraceProvider(ctx, tp.Shutdown), nil
+	return shutdownTraceProvider(tp.Shutdown), nil
 }
 
 func initTracingToCollector(ctx context.Context) (func(), error) {
@@ -89,11 +90,15 @@ func initTracingToCollector(ctx context.Context) (func(), error) {
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.TraceContext{})
 
-	return shutdownTraceProvider(ctx, tp.Shutdown), nil
+	return shutdownTraceProvider(tp.Shutdown), nil
 }
 
-func shutdownTraceProvider(ctx context.Context, shutdownFunc func(ctx context.Context) error) func() {
+func shutdownTraceProvider(shutdownFunc func(ctx context.Context) error) func() {
 	return func() {
+		// the context passed to initTracing is already canceled on shutdown, so use a new one to flush pending spans
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
 		if err := shutdownFunc(ctx); err != nil {
 			log.Errorf("failed to shutdown TracerProvider: %v", err)
 		}

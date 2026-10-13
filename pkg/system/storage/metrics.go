@@ -35,6 +35,7 @@ func init() {
 func Describe(ch chan<- *prometheus.Desc) {
 	ch <- diskDriveCapacityDesc
 	ch <- diskDriveHealthyDesc
+	ch <- diskDriveFailurePredicted
 }
 
 // Collect collects metrics for storage controllers

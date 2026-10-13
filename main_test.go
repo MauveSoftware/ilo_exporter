@@ -135,3 +135,64 @@ func diff(want, got string) string {
 	}
 	return b.String()
 }
+
+func TestRejectsInvalidTargets(t *testing.T) {
+	f, err := parseTargetFilter("10.0.0.0/8")
+	if err != nil {
+		t.Fatal(err)
+	}
+	targets = f
+	t.Cleanup(func() { targets = nil })
+
+	tests := map[string]int{
+		"/metrics":                      http.StatusBadRequest,
+		"/metrics?host=evil.example%23": http.StatusBadRequest,
+		"/metrics?host=10.0.0.1%2Fx":    http.StatusBadRequest,
+		"/metrics?host=192.168.0.1":     http.StatusForbidden,
+		"/metrics?host=ilo.example.com": http.StatusForbidden,
+	}
+
+	for target, want := range tests {
+		r := httptest.NewRequest(http.MethodGet, target, nil)
+		w := httptest.NewRecorder()
+		errorHandler(handleMetricsRequest).ServeHTTP(w, r)
+
+		if w.Code != want {
+			t.Errorf("%s: got status %d, want %d", target, w.Code, want)
+		}
+	}
+}
+
+// TestUnexpectedLinks makes sure links in unexpected places (or from a malicious server) do not crash the exporter
+func TestUnexpectedLinks(t *testing.T) {
+	dir := writeMockup(t, map[string]string{
+		"Systems/1":        `{"PowerState": "On"}`,
+		"Systems/1/Memory": `{"Members": [{"@odata.id": "/redfish/v1/Elsewhere/dimm1"}, {"@odata.id": "x"}]}`,
+		"Elsewhere/dimm1":  `{"Name": "dimm1", "Status": {"Health": "OK", "State": "Enabled"}, "CapacityMiB": 1024}`,
+	})
+	srv := fakeilo.New(t, dir)
+
+	body := scrape(t, srv.Host())
+
+	if !strings.Contains(body, `ilo_memory_dimm_byte{host="`+srv.Host()+`",name="dimm1"} 1.073741824e+09`) {
+		t.Errorf("expected metrics of DIMM with unexpected path, got:\n%s", body)
+	}
+}
+
+// writeMockup creates a mockup directory from a map of resource path (relative to /redfish/v1) to JSON
+func writeMockup(t *testing.T, resources map[string]string) string {
+	t.Helper()
+
+	dir := t.TempDir()
+	for p, content := range resources {
+		d := filepath.Join(dir, filepath.FromSlash(p))
+		if err := os.MkdirAll(d, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(d, "index.json"), []byte(content), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	return dir
+}

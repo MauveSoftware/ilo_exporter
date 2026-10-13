@@ -22,6 +22,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// maxResponseSize limits the size of a response body read from the API
+const maxResponseSize = 32 << 20
+
 // APIClient communicates with the API and parses the results
 type APIClient struct {
 	url      string
@@ -93,7 +96,7 @@ func (cl *APIClient) HostName() string {
 }
 
 // Get retrieves the ressource from the API and unmashals the json retrieved
-func (cl *APIClient) Get(ctx context.Context, path string, obj interface{}) error {
+func (cl *APIClient) Get(ctx context.Context, path string, obj any) error {
 	path = strings.Replace(path, "/redfish/v1/", "", 1)
 
 	b, err := cl.get(ctx, path)
@@ -134,7 +137,8 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 	}
 
 	req.SetBasicAuth(cl.username, cl.password)
-	req.Header.Add("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("OData-Version", "4.0")
 
 	resp, err := cl.client.Do(req)
 	if err != nil {
@@ -142,16 +146,30 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
-	defer func() { _ = resp.Body.Close() }()
+	defer func() {
+		// the connection can only be reused if the body was read completely
+		_, _ = io.Copy(io.Discard, io.LimitReader(resp.Body, 64<<10))
+		_ = resp.Body.Close()
+	}()
 
 	if resp.StatusCode >= 300 {
+		err := fmt.Errorf("%s", resp.Status)
 		span.RecordError(err)
 		span.SetStatus(codes.Error, resp.Status)
-		return nil, fmt.Errorf("%s", resp.Status)
+		return nil, err
 	}
 
-	b, err := io.ReadAll(resp.Body)
+	b, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseSize+1))
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+		return nil, err
+	}
+
+	if len(b) > maxResponseSize {
+		err := fmt.Errorf("response of %s exceeds %d bytes", uri, maxResponseSize)
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
 		return nil, err
 	}
 
