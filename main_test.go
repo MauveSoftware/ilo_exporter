@@ -14,8 +14,10 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/MauveSoftware/ilo_exporter/internal/fakeilo"
+	"github.com/MauveSoftware/ilo_exporter/pkg/client"
 	"github.com/prometheus/common/promslog"
 )
 
@@ -35,9 +37,50 @@ const (
 
 func TestMain(m *testing.M) {
 	flag.Parse()
-	*username = testUser
-	*password = testPassword
 	os.Exit(m.Run())
+}
+
+type testOption func(*exporter, *client.TransportConfig)
+
+func withTransport(f func(*client.TransportConfig)) testOption {
+	return func(_ *exporter, cfg *client.TransportConfig) {
+		f(cfg)
+	}
+}
+
+func withExporter(f func(*exporter)) testOption {
+	return func(e *exporter, _ *client.TransportConfig) {
+		f(e)
+	}
+}
+
+func newTestExporter(t *testing.T, opts ...testOption) *exporter {
+	t.Helper()
+
+	cfg := client.TransportConfig{
+		MaxConnsPerHost:    4,
+		IdleConnTimeout:    time.Minute,
+		InsecureSkipVerify: true,
+	}
+	e := &exporter{
+		username:      testUser,
+		password:      testPassword,
+		logger:        promslog.NewNopLogger(),
+		timeoutOffset: 500 * time.Millisecond,
+	}
+
+	for _, o := range opts {
+		o(e, &cfg)
+	}
+
+	tr, err := client.NewTransport(cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(tr.CloseIdleConnections)
+	e.httpClient = &http.Client{Transport: tr}
+
+	return e
 }
 
 func TestGolden(t *testing.T) {
@@ -45,7 +88,7 @@ func TestGolden(t *testing.T) {
 		t.Run(gen, func(t *testing.T) {
 			srv := fakeilo.New(t, mockupDir(gen), fakeilo.WithCredentials(testUser, testPassword))
 
-			body := scrape(t, srv.Host())
+			body := scrape(t, newTestExporter(t), srv.Host())
 
 			checkGolden(t, gen+".prom", normalizeMetrics(body, srv.Host()))
 			checkGolden(t, gen+".requests", strings.Join(srv.Requests(), "\n")+"\n")
@@ -57,12 +100,18 @@ func mockupDir(gen string) string {
 	return filepath.Join("testdata", "mockups", gen)
 }
 
-func scrape(t *testing.T, host string) string {
+func scrape(t *testing.T, e *exporter, host string) string {
 	t.Helper()
 
 	r := httptest.NewRequest(http.MethodGet, "/metrics?host="+host, nil)
+	return scrapeRequest(t, e, r)
+}
+
+func scrapeRequest(t *testing.T, e *exporter, r *http.Request) string {
+	t.Helper()
+
 	w := httptest.NewRecorder()
-	errorHandler(handleMetricsRequest).ServeHTTP(w, r)
+	e.ServeHTTP(w, r)
 
 	if w.Code != http.StatusOK {
 		t.Fatalf("unexpected status %d: %s", w.Code, w.Body.String())
@@ -140,8 +189,7 @@ func TestRejectsInvalidTargets(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	targets = f
-	t.Cleanup(func() { targets = nil })
+	e := newTestExporter(t, withExporter(func(e *exporter) { e.targets = f }))
 
 	tests := map[string]int{
 		"/metrics":                      http.StatusBadRequest,
@@ -154,7 +202,7 @@ func TestRejectsInvalidTargets(t *testing.T) {
 	for target, want := range tests {
 		r := httptest.NewRequest(http.MethodGet, target, nil)
 		w := httptest.NewRecorder()
-		errorHandler(handleMetricsRequest).ServeHTTP(w, r)
+		e.ServeHTTP(w, r)
 
 		if w.Code != want {
 			t.Errorf("%s: got status %d, want %d", target, w.Code, want)
@@ -171,7 +219,7 @@ func TestUnexpectedLinks(t *testing.T) {
 	})
 	srv := fakeilo.New(t, dir)
 
-	body := scrape(t, srv.Host())
+	body := scrape(t, newTestExporter(t), srv.Host())
 
 	if !strings.Contains(body, `ilo_memory_dimm_byte{host="`+srv.Host()+`",name="dimm1"} 1.073741824e+09`) {
 		t.Errorf("expected metrics of DIMM with unexpected path, got:\n%s", body)
@@ -198,14 +246,14 @@ func writeMockup(t *testing.T, resources map[string]string) string {
 
 func TestDefaultLogging(t *testing.T) {
 	var buf bytes.Buffer
-	logger = promslog.New(&promslog.Config{Writer: &buf})
-	t.Cleanup(func() { logger = promslog.NewNopLogger() })
+	e := newTestExporter(t, withExporter(func(e *exporter) {
+		e.logger = promslog.New(&promslog.Config{Writer: &buf})
+	}))
 
 	srv := fakeilo.New(t, mockupDir("ilo7"), fakeilo.WithCredentials(testUser, testPassword))
-	scrape(t, srv.Host())
+	scrape(t, e, srv.Host())
 
 	out := buf.String()
-	t.Log(out)
 	if strings.Contains(out, "GET") || strings.Contains(out, "@odata") {
 		t.Errorf("requests or responses logged at default level:\n%s", out)
 	}

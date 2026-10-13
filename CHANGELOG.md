@@ -13,12 +13,24 @@
 
 - `-log.level` (`debug`, `info`, `warn`, `error`; default `info`) and `-log.format` (`logfmt`, `json`).
 - `-log.redfish-bodies` logs every Redfish response body at debug level.
+- `-api.timeout` limits the duration of a scrape. Scrapes are also limited by the scrape timeout sent by Prometheus
+  (`X-Prometheus-Scrape-Timeout-Seconds`) minus `-web.timeout-offset` (default `500ms`) and by `-web.write-timeout`.
+  When the limit is reached, pending Redfish requests are canceled and the metrics collected so far are returned.
+  Previously, requests continued after Prometheus had given up on the scrape.
+- `-api.insecure-skip-verify` (default `true`, as before) and `-api.ca-file` to verify iLO certificates.
+- `-api.idle-conn-timeout` (default `1m`) closes idle connections to an iLO.
 
 ### Changed
 
 - Logging is quiet by default: Redfish requests are only logged at debug level and response bodies only with
   `-log.redfish-bodies` (previously every request and response body was logged at info level).
   Failed scrapes are summarized in a single warning per scrape instead of one error per failed request.
+- **Connections to an iLO are reused across scrapes** (HTTP keep-alive), avoiding a TLS handshake per request
+  and per scrape. Connections are no longer leaked after a scrape.
+- **`-api.max-concurrent-requests` now limits the requests per iLO across all concurrent scrapes**, e.g. when
+  scraped by multiple Prometheus servers. Previously the limit applied per scrape. `0` means unlimited
+  (previously `0` blocked all requests).
+- HTTP proxy environment variables are still ignored and HTTP/1.1 is still used for Redfish requests.
 - Logging uses `log/slog` (Prometheus `promslog` format) instead of logrus.
 - The binary in release archives is named `ilo_exporter` (was `ilo5_exporter`), matching the container image.
 

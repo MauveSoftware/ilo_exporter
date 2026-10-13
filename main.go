@@ -12,6 +12,7 @@ import (
 	"html"
 	"log"
 	"log/slog"
+	"math"
 	"net"
 	"net/http"
 	"os"
@@ -19,15 +20,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/MauveSoftware/ilo_exporter/pkg/chassis"
 	"github.com/MauveSoftware/ilo_exporter/pkg/client"
-	"github.com/MauveSoftware/ilo_exporter/pkg/manager"
-	"github.com/MauveSoftware/ilo_exporter/pkg/system"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/trace"
-
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/promslog"
 )
 
@@ -39,26 +32,24 @@ var (
 	listenAddress            = flag.String("web.listen-address", ":9545", "Address on which to expose metrics and web interface.")
 	metricsPath              = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
 	writeTimeout             = flag.Duration("web.write-timeout", 2*time.Minute, "Maximum duration for writing a response incl. collecting metrics from the API (0 disables the timeout)")
+	timeoutOffset            = flag.Duration("web.timeout-offset", 500*time.Millisecond, "Offset to subtract from the scrape timeout sent by Prometheus, leaving time to send the response")
+	allowedTargets           = flag.String("web.allowed-targets", "", "Comma separated list of host names, domain suffixes (.example.com), IP addresses and CIDR prefixes which may be scraped (empty: all hosts, the configured credentials are sent to every requested host)")
 	username                 = flag.String("api.username", "", "Username")
 	password                 = flag.String("api.password", "", "Password")
-	maxConcurrentRequests    = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent against API concurrently")
+	maxConcurrentRequests    = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent to an iLO concurrently, across all scrapes of the iLO (0: unlimited)")
+	apiTimeout               = flag.Duration("api.timeout", 0, "Maximum duration of a scrape (0: limited by the scrape timeout sent by Prometheus and -web.write-timeout)")
+	idleConnTimeout          = flag.Duration("api.idle-conn-timeout", time.Minute, "Time after which idle connections to an iLO are closed")
+	insecureSkipVerify       = flag.Bool("api.insecure-skip-verify", true, "Skip verification of iLO certificates (ignored if -api.ca-file is set)")
+	caFile                   = flag.String("api.ca-file", "", "PEM file with CA certificates to verify iLO certificates with")
 	tlsEnabled               = flag.Bool("tls.enabled", false, "Enables TLS")
 	tlsCertChainPath         = flag.String("tls.cert-file", "", "Path to TLS cert file")
 	tlsKeyPath               = flag.String("tls.key-file", "", "Path to TLS key file")
 	tracingEnabled           = flag.Bool("tracing.enabled", false, "Enables tracing using OpenTelemetry")
 	tracingProvider          = flag.String("tracing.provider", "", "Sets the tracing provider (stdout or collector)")
 	tracingCollectorEndpoint = flag.String("tracing.collector.grpc-endpoint", "", "Sets the gRPC endpoint of the OpenTelemetry collector")
-	allowedTargets           = flag.String("web.allowed-targets", "", "Comma separated list of host names, domain suffixes (.example.com), IP addresses and CIDR prefixes which may be scraped (empty: all hosts, the configured credentials are sent to every requested host)")
 	logRedfishBodies         = flag.Bool("log.redfish-bodies", false, "Log the body of every Redfish response (requires -log.level=debug)")
 	logLevel                 = promslog.NewLevel()
 	logFormat                = promslog.NewFormat()
-)
-
-var (
-	targets *targetFilter
-	logger  = promslog.NewNopLogger()
-	// errorLog receives errors of the Prometheus HTTP handler
-	errorLog promhttp.Logger
 )
 
 func init() {
@@ -104,19 +95,55 @@ func main() {
 		os.Exit(0)
 	}
 
-	logger = promslog.New(&promslog.Config{Level: logLevel, Format: logFormat})
-	errorLog = slog.NewLogLogger(logger.Handler(), slog.LevelWarn)
+	logger := promslog.New(&promslog.Config{Level: logLevel, Format: logFormat})
 
-	var err error
-	targets, err = parseTargetFilter(*allowedTargets)
+	e, err := newExporterFromFlags(logger)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	os.Exit(run())
+	os.Exit(run(e, logger))
 }
 
-func run() int {
+func newExporterFromFlags(logger *slog.Logger) (*exporter, error) {
+	targets, err := parseTargetFilter(*allowedTargets)
+	if err != nil {
+		return nil, err
+	}
+
+	maxConns := int(min(*maxConcurrentRequests, math.MaxInt32))
+	tr, err := client.NewTransport(client.TransportConfig{
+		MaxConnsPerHost:    maxConns,
+		IdleConnTimeout:    *idleConnTimeout,
+		InsecureSkipVerify: *insecureSkipVerify && *caFile == "",
+		CAFile:             *caFile,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	maxTimeout := *apiTimeout
+	if *writeTimeout > 0 {
+		// leave some time to write the response
+		limit := *writeTimeout - *timeoutOffset
+		if maxTimeout <= 0 || limit < maxTimeout {
+			maxTimeout = limit
+		}
+	}
+
+	return &exporter{
+		username:      *username,
+		password:      *password,
+		httpClient:    &http.Client{Transport: tr},
+		targets:       targets,
+		logger:        logger,
+		logBodies:     *logRedfishBodies,
+		maxTimeout:    maxTimeout,
+		timeoutOffset: *timeoutOffset,
+	}, nil
+}
+
+func run(e *exporter, logger *slog.Logger) int {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
@@ -127,7 +154,7 @@ func run() int {
 	}
 	defer shutdownTracing()
 
-	if err := startServer(ctx); err != nil {
+	if err := startServer(ctx, e, logger); err != nil {
 		logger.Error("Server failed", "err", err)
 		return 1
 	}
@@ -143,10 +170,12 @@ func printVersion() {
 	fmt.Println("Metric exporter for HP iLO")
 }
 
-func startServer(ctx context.Context) error {
+func startServer(ctx context.Context, e *exporter, logger *slog.Logger) error {
 	logger.Info("Starting iLO exporter", "version", version)
-	logTargetFilter(logger, targets, *allowedTargets)
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	logTargetFilter(logger, e.targets, *allowedTargets)
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte(`<html>
 			<head><title>iLO Exporter (Version ` + version + `)</title></head>
 			<body>
@@ -162,11 +191,12 @@ func startServer(ctx context.Context) error {
 			logger.Debug("Failed to write response", "err", err)
 		}
 	})
-	http.HandleFunc(*metricsPath, errorHandler(handleMetricsRequest))
+	mux.Handle(*metricsPath, e)
 
 	logger.Info("Listening", "address", *listenAddress, "path", *metricsPath, "tls", *tlsEnabled)
 	srv := &http.Server{
 		Addr:              *listenAddress,
+		Handler:           mux,
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       10 * time.Second,
 		WriteTimeout:      *writeTimeout,
@@ -196,82 +226,6 @@ func startServer(ctx context.Context) error {
 
 	if err := srv.Shutdown(shutdownCtx); err != nil && !errors.Is(err, context.DeadlineExceeded) {
 		return err
-	}
-
-	return nil
-}
-
-// httpError is an error with a HTTP status code to respond with
-type httpError struct {
-	code int
-	err  error
-}
-
-func (e *httpError) Error() string {
-	return e.err.Error()
-}
-
-func errorHandler(f func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		err := f(w, r)
-		if err == nil {
-			return
-		}
-
-		code := http.StatusInternalServerError
-		var he *httpError
-		if errors.As(err, &he) {
-			code = he.code
-		}
-
-		if code < http.StatusInternalServerError {
-			logger.Debug("Rejected request", "remote", r.RemoteAddr, "err", err)
-		} else {
-			logger.Error("Request failed", "remote", r.RemoteAddr, "err", err)
-		}
-
-		http.Error(w, err.Error(), code)
-	}
-}
-
-func handleMetricsRequest(w http.ResponseWriter, r *http.Request) error {
-	host, err := parseTarget(r.URL.Query().Get("host"))
-	if err != nil {
-		return &httpError{code: http.StatusBadRequest, err: err}
-	}
-
-	if !targets.allows(host) {
-		return &httpError{code: http.StatusForbidden, err: fmt.Errorf("host %s is not allowed", host)}
-	}
-
-	ctx, span := tracer.Start(r.Context(), "HandleMetricsRequest", trace.WithAttributes(
-		attribute.String("host", host),
-	))
-	defer span.End()
-
-	reg := prometheus.NewRegistry()
-
-	opts := []client.ClientOption{
-		client.WithMaxConcurrentRequests(*maxConcurrentRequests),
-		client.WithInsecure(),
-		client.WithLogger(logger.With("host", host)),
-	}
-	if *logRedfishBodies {
-		opts = append(opts, client.WithResponseLogging())
-	}
-
-	cl := client.NewClient(host, *username, *password, tracer, opts...)
-	reg.MustRegister(system.NewCollector(ctx, cl, tracer))
-	reg.MustRegister(manager.NewCollector(ctx, cl, tracer))
-	reg.MustRegister(chassis.NewCollector(ctx, cl, tracer))
-
-	promhttp.HandlerFor(reg, promhttp.HandlerOpts{
-		ErrorLog:      errorLog,
-		ErrorHandling: promhttp.ContinueOnError,
-	}).ServeHTTP(w, r)
-
-	if n, err := cl.Failures(); n > 0 {
-		logger.Warn("Scrape incomplete", "host", host, "failed_requests", n, "err", err)
 	}
 
 	return nil
