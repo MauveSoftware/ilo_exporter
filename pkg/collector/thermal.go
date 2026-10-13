@@ -6,6 +6,7 @@ package collector
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/MauveSoftware/ilo_exporter/pkg/redfish"
@@ -75,7 +76,7 @@ func collectThermal(ctx context.Context, s *scrape) error {
 		path = s.topology.Chassis.Thermal
 	}
 	if path == "" {
-		return nil
+		return collectThermalSubsystem(ctx, s)
 	}
 
 	th := Thermal{}
@@ -103,6 +104,109 @@ func collectThermal(ctx context.Context, s *scrape) error {
 		s.emit(tempCriticalThresholdDesc, t.UpperThresholdCritical, s.host, t.Name)
 		s.emit(tempFatalThresholdDesc, t.UpperThresholdFatal, s.host, t.Name)
 		s.emit(tempHealthyDesc, t.Status.HealthValue(), s.host, t.Name)
+	}
+
+	return nil
+}
+
+// ThermalSubsystem is the thermal subsystem of a chassis (Redfish 2020.4 and later)
+type ThermalSubsystem struct {
+	Fans redfish.Link `json:"Fans"`
+}
+
+// SubsystemFan is a fan of the thermal subsystem
+type SubsystemFan struct {
+	Name         string `json:"Name"`
+	SpeedPercent struct {
+		Reading float64 `json:"Reading"`
+	} `json:"SpeedPercent"`
+	Status redfish.Status `json:"Status"`
+}
+
+// Sensor is a sensor of a chassis (Redfish 2018.3 and later)
+type Sensor struct {
+	Name         string  `json:"Name"`
+	Reading      float64 `json:"Reading"`
+	ReadingType  string  `json:"ReadingType"`
+	ReadingUnits string  `json:"ReadingUnits"`
+	Thresholds   struct {
+		UpperCritical struct {
+			Reading float64 `json:"Reading"`
+		} `json:"UpperCritical"`
+		UpperFatal struct {
+			Reading float64 `json:"Reading"`
+		} `json:"UpperFatal"`
+	} `json:"Thresholds"`
+	Status redfish.Status `json:"Status"`
+}
+
+// isTemperature returns true for temperature sensors. iLO 6 and 7 only provide temperature sensors
+// and do not set the reading type.
+func (s *Sensor) isTemperature() bool {
+	if s.ReadingType != "" {
+		return s.ReadingType == "Temperature"
+	}
+
+	return s.ReadingUnits == "" || s.ReadingUnits == "Cel"
+}
+
+// collectThermalSubsystem collects fan and temperature metrics using the resources replacing the deprecated
+// thermal resource. The thermal resource is preferred, since it contains all metrics in a single resource.
+// Values not provided are reported as 0 like for the thermal resource, so the metrics do not depend on the
+// resources they were retrieved from.
+func collectThermalSubsystem(ctx context.Context, s *scrape) error {
+	links := s.topology.Chassis
+
+	var errs []error
+	if links.ThermalSubsystem != "" {
+		errs = append(errs, collectSubsystemFans(ctx, s, links.ThermalSubsystem))
+	}
+
+	if links.Sensors != "" {
+		sensors, err := getMembers[Sensor](ctx, s, links.Sensors)
+		for _, t := range sensors {
+			if !t.isTemperature() || t.Status.IsAbsent() || t.Status.State == "Offline" {
+				continue
+			}
+
+			s.emit(tempCurrentDesc, t.Reading, s.host, t.Name)
+			s.emit(tempCriticalThresholdDesc, t.Thresholds.UpperCritical.Reading, s.host, t.Name)
+			s.emit(tempFatalThresholdDesc, t.Thresholds.UpperFatal.Reading, s.host, t.Name)
+			s.emit(tempHealthyDesc, t.Status.HealthValue(), s.host, t.Name)
+		}
+
+		if err != nil {
+			errs = append(errs, fmt.Errorf("could not get sensors: %w", err))
+		}
+	}
+
+	return errors.Join(errs...)
+}
+
+func collectSubsystemFans(ctx context.Context, s *scrape, path string) error {
+	ts := ThermalSubsystem{}
+	if err := s.cl.Get(ctx, path, &ts); err != nil {
+		s.checkStale(err)
+		return fmt.Errorf("could not get thermal subsystem: %w", err)
+	}
+
+	if ts.Fans.ID == "" {
+		return nil
+	}
+
+	fans, err := getMembers[SubsystemFan](ctx, s, ts.Fans.ID)
+	for _, f := range fans {
+		if f.Status.IsAbsent() || f.Status.State == "UnavailableOffline" || f.Status.State == "Offline" {
+			continue
+		}
+
+		s.emit(fanHealthyDesc, f.Status.HealthValue(), s.host, f.Name)
+		s.emit(fanEnabledDesc, f.Status.EnabledValue(), s.host, f.Name)
+		s.emit(fanCurrentDesc, f.SpeedPercent.Reading, s.host, f.Name)
+	}
+
+	if err != nil {
+		return fmt.Errorf("could not get fans: %w", err)
 	}
 
 	return nil

@@ -49,6 +49,11 @@
 - **Collections (memory, processors, drives) are retrieved with a single request using `$expand=.`** if supported
   by the iLO (iLO 5, 6 and 7). This reduces the number of requests per scrape from about 45 to about 10 for a
   typical server. `-api.expand=false` disables it. Paginated collections (`Members@odata.nextLink`) are supported.
+- Support for iLOs without the deprecated `Power` and `Thermal` resources of the chassis: fans, temperatures, power
+  supplies and power (capacity and current consumption) are collected from `ThermalSubsystem`, `Sensors`,
+  `PowerSubsystem` and `EnvironmentMetrics` instead, using the same metric names and labels. Average, minimum and
+  maximum power consumption are not available from these resources. As long as an iLO provides the deprecated
+  resources (iLO 5, 6 and 7 up to at least v1.25), they are used since they contain all metrics in two requests.
 
 ### Changed
 
