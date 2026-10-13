@@ -13,10 +13,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/MauveSoftware/ilo_exporter/pkg/chassis"
 	"github.com/MauveSoftware/ilo_exporter/pkg/client"
-	"github.com/MauveSoftware/ilo_exporter/pkg/manager"
-	"github.com/MauveSoftware/ilo_exporter/pkg/system"
+	"github.com/MauveSoftware/ilo_exporter/pkg/collector"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel/attribute"
@@ -98,9 +96,7 @@ func (e *exporter) handleMetricsRequest(w http.ResponseWriter, r *http.Request) 
 	cl := client.NewClient(host, e.username, e.password, tracer, opts...)
 
 	reg := prometheus.NewRegistry()
-	reg.MustRegister(system.NewCollector(ctx, cl, tracer))
-	reg.MustRegister(manager.NewCollector(ctx, cl, tracer))
-	reg.MustRegister(chassis.NewCollector(ctx, cl, tracer))
+	reg.MustRegister(collector.New(ctx, cl, tracer))
 
 	promhttp.HandlerFor(reg, promhttp.HandlerOpts{
 		ErrorLog:      slog.NewLogLogger(e.logger.Handler(), slog.LevelWarn),

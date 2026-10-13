@@ -2,17 +2,30 @@
 //
 // SPDX-License-Identifier: MIT
 
-package common
+// Package redfish contains types shared by Redfish resources
+package redfish
 
 import (
 	"strings"
 )
 
+// Link is a reference to a resource
+type Link struct {
+	ID string `json:"@odata.id"`
+}
+
+// Collection is a resource collection
+type Collection struct {
+	Members []Link `json:"Members"`
+}
+
+// Status describes the status and health of a resource
 type Status struct {
 	Health string `json:"Health"`
 	State  string `json:"State"`
 }
 
+// HealthValue returns 1 if the resource is healthy, 0 otherwise
 func (s *Status) HealthValue() float64 {
 	if strings.ToUpper(s.Health) == "OK" {
 		return 1
@@ -21,6 +34,7 @@ func (s *Status) HealthValue() float64 {
 	return 0
 }
 
+// EnabledValue returns 1 if the resource is enabled, 0 otherwise
 func (s *Status) EnabledValue() float64 {
 	if s.State == "Enabled" {
 		return 1
