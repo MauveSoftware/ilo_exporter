@@ -1,0 +1,125 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Chassis.Chassis",
+    "@odata.etag": "W/\"FB6FD7B7\"",
+    "@odata.id": "/redfish/v1/Chassis/1",
+    "@odata.type": "#Chassis.v1_25_1.Chassis",
+    "Id": "1",
+    "AssetTag": "",
+    "ChassisType": "RackMount",
+    "EnvironmentalClass": "A2",
+    "Links": {
+        "ManagedBy": [
+            {
+                "@odata.id": "/redfish/v1/Managers/1"
+            }
+        ],
+        "ComputerSystems": [
+            {
+                "@odata.id": "/redfish/v1/Systems/1"
+            }
+        ]
+    },
+    "LocationIndicatorActive": false,
+    "Manufacturer": "HPE",
+    "Model": "ProLiant DL380a Gen11",
+    "Name": "Computer System Chassis",
+    "NetworkAdapters": {
+        "@odata.id": "/redfish/v1/Chassis/1/NetworkAdapters"
+    },
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeServerChassis.HpeServerChassis",
+            "@odata.type": "#HpeServerChassis.v2_4_0.HpeServerChassis",
+            "Actions": {
+                "#HpeServerChassis.DisableMCTPOnServer": {
+                    "target": "/redfish/v1/Chassis/1/Actions/Oem/Hpe/HpeServerChassis.DisableMCTPOnServer"
+                },
+                "#HpeServerChassis.FactoryResetMCTP": {
+                    "target": "/redfish/v1/Chassis/1/Actions/Oem/Hpe/HpeServerChassis.FactoryResetMCTP"
+                }
+            },
+            "ElConfigOverride": false,
+            "Firmware": {
+                "PlatformDefinitionTable": {
+                    "Current": {
+                        "VersionString": "11.7.0 Build 23"
+                    }
+                },
+                "SystemProgrammableLogicDevice": {
+                    "Current": {
+                        "VersionString": "0x16"
+                    }
+                }
+            },
+            "Links": {
+                "Devices": {
+                    "@odata.id": "/redfish/v1/Chassis/1/Devices"
+                }
+            },
+            "MCTPEnabledOnServer": true,
+            "SmartStorageBattery": [
+                {
+                    "ChargeLevelPercent": 96,
+                    "FirmwareVersion": "0.70",
+                    "Index": 1,
+                    "MaximumCapWatts": 12,
+                    "Model": "P02381-B21",
+                    "ProductName": "HPE Smart Stor Hybridcap",
+                    "RemainingChargeTimeSeconds": 8,
+                    "SerialNumber": "6WSQB0GB2IL0JD",
+                    "SparePartNumber": "P07474-001",
+                    "Status": {
+                        "Health": "OK",
+                        "State": "Enabled"
+                    }
+                }
+            ],
+            "SystemMaintenanceSwitches": {
+                "Sw1": "Off",
+                "Sw10": "Off",
+                "Sw11": "Off",
+                "Sw12": "Off",
+                "Sw2": "Off",
+                "Sw3": "Off",
+                "Sw4": "Off",
+                "Sw5": "Off",
+                "Sw6": "Off",
+                "Sw7": "Off",
+                "Sw8": "Off",
+                "Sw9": "Off"
+            },
+            "TelcoModeEnabled": null
+        }
+    },
+    "PCIeDevices": {
+        "@odata.id": "/redfish/v1/Chassis/1/PCIeDevices"
+    },
+    "PCIeSlots": {
+        "@odata.id": "/redfish/v1/Chassis/1/PCIeSlots"
+    },
+    "PhysicalSecurity": {
+        "IntrusionSensor": "Normal"
+    },
+    "Power": {
+        "@odata.id": "/redfish/v1/Chassis/1/Power"
+    },
+    "PowerState": "On",
+    "PowerSubsystem": {
+        "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem"
+    },
+    "SKU": "P54903-B21",
+    "Sensors": {
+        "@odata.id": "/redfish/v1/Chassis/1/Sensors"
+    },
+    "SerialNumber": "2M2D2J00L4",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thermal": {
+        "@odata.id": "/redfish/v1/Chassis/1/Thermal"
+    },
+    "ThermalSubsystem": {
+        "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem"
+    }
+}

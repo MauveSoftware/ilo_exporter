@@ -1,0 +1,29 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"358034966\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/30",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "30",
+    "Name": "72-OCP 2 Zone",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 9,
+            "LocationYmm": 12
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 31,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {
+            "Reading": 90
+        },
+        "UpperFatal": {}
+    }
+}

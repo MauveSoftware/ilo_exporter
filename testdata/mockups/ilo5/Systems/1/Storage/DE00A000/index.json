@@ -1,0 +1,64 @@
+{
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000",
+    "@odata.type": "#Storage.v1_15_0.Storage",
+    "Actions": {
+        "#Storage.ResetToDefaults": {
+            "target": "/redfish/v1/Systems/1/Storage/DE00A000/Actions/Storage.ResetToDefaults",
+            "ResetType@Redfish.AllowableValues": [
+                "ResetAll",
+                "PreserveVolumes"
+            ]
+        },
+        "#Storage.SetEncryptionKey": {
+            "target": "/redfish/v1/Systems/1/Storage/DE00A000/Actions/Storage.SetEncryptionKey",
+            "CurrentEncryptionKey@Redfish.AllowablePattern": "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!-/:-@[-`{-~])[!-~]{8,32}$",
+            "EncryptionKey@Redfish.AllowablePattern": "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!-/:-@[-`{-~])[!-~]{8,32}$",
+            "EncryptionKeyIdentifier@Redfish.AllowablePattern": "^[ -~]{0,32}$"
+        }
+    },
+    "Id": "DE00A000",
+    "Name": "HPE SR416i-a Gen10+",
+    "Status": {
+        "HealthRollup": "OK",
+        "State": "Enabled"
+    },
+    "AutoVolumeCreate": "NonRAID",
+    "@Redfish.WriteableProperties": [
+        "EncryptionMode",
+        "HotspareActivationPolicy"
+    ],
+    "EncryptionMode": "Disabled",
+    "EncryptionMode@Redfish.AllowableValues": [
+        "Disabled",
+        "UseExternalKey"
+    ],
+    "HotspareActivationPolicy": "OnDriveFailure",
+    "HotspareActivationPolicy@Redfish.AllowableValues": [
+        "OnDriveFailure",
+        "OnDrivePredictedFailure"
+    ],
+    "Controllers": {
+        "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Controllers"
+    },
+    "Drives@odata.count": 2,
+    "Drives": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2556"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2557"
+        }
+    ],
+    "Volumes": {
+        "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Volumes"
+    },
+    "Links": {
+        "Enclosures@odata.count": 1,
+        "Enclosures": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/DE00A000"
+            }
+        ]
+    },
+    "@odata.etag": "\"192E3F76\""
+}

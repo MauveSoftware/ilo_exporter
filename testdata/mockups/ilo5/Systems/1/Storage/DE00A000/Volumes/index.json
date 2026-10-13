@@ -1,0 +1,25 @@
+{
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Volumes",
+    "@odata.type": "#VolumeCollection.VolumeCollection",
+    "Name": "SR Volume Collection",
+    "Members@odata.count": 1,
+    "Members": [],
+    "@Redfish.CollectionCapabilities": {
+        "@odata.type": "#CollectionCapabilities.v1_2_0.CollectionCapabilities",
+        "MaxMembers": 64,
+        "Capabilities": [
+            {
+                "CapabilitiesObject": {
+                    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Volumes/Capabilities"
+                },
+                "UseCase": "VolumeCreation",
+                "Links": {
+                    "TargetCollection": {
+                        "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Volumes"
+                    }
+                }
+            }
+        ]
+    },
+    "@odata.etag": "\"85B12AB5\""
+}

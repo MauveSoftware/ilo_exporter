@@ -1,0 +1,29 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#PowerSupply.PowerSupply",
+    "@odata.etag": "W/\"9669E9A3\"",
+    "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies/3",
+    "@odata.type": "#PowerSupply.v1_6_0.PowerSupply",
+    "Id": "3",
+    "FirmwareVersion": "1.02",
+    "Manufacturer": "DELTA",
+    "Model": "P44712-B21",
+    "Name": "HpeServerPowerSupply",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+            "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+            "PowerSupplyStatus": {},
+            "iPDU": {
+                "iPDUStatus": {}
+            }
+        }
+    },
+    "PowerCapacityWatts": 2200,
+    "PowerSupplyType": "AC",
+    "SerialNumber": "5YCHT0B4DKC1IE",
+    "SparePartNumber": "P47163-001",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    }
+}

@@ -1,0 +1,61 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Memory.Memory",
+    "@odata.etag": "W/\"1235915338\"",
+    "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm5",
+    "@odata.type": "#Memory.v1_14_0.Memory",
+    "Id": "proc2dimm5",
+    "BaseModuleType": "RDIMM",
+    "BusWidthBits": 80,
+    "CacheSizeMiB": 0,
+    "CapacityMiB": 16384,
+    "DataWidthBits": 64,
+    "DeviceLocator": "PROC 2 DIMM 5",
+    "ErrorCorrection": "MultiBitECC",
+    "LogicalSizeMiB": 0,
+    "Manufacturer": "Samsung",
+    "MemoryDeviceType": "DDR5",
+    "MemoryLocation": {
+        "Channel": 6,
+        "MemoryController": 14,
+        "Slot": 5,
+        "Socket": 2
+    },
+    "MemoryMedia": [
+        "DRAM"
+    ],
+    "MemoryType": "DRAM",
+    "Name": "proc2dimm5",
+    "NonVolatileSizeMiB": 0,
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeMemoryExt.HpeMemoryExt",
+            "@odata.type": "#HpeMemoryExt.v2_5_0.HpeMemoryExt",
+            "Attributes": [
+                "HpeSmartMemory"
+            ],
+            "BaseModuleType": "RDIMM",
+            "DIMMManufacturingDate": "2510",
+            "DIMMStatus": "GoodInUse",
+            "MaxOperatingSpeedMTs": 6400,
+            "MinimumVoltageVoltsX10": 11,
+            "PartNumber": "P69719-0A1",
+            "VendorName": "Samsung"
+        }
+    },
+    "OperatingMemoryModes": [
+        "Volatile"
+    ],
+    "OperatingSpeedMhz": 6400,
+    "PartNumber": "M321R2GA3EB2-CCPKC",
+    "PersistentRegionSizeLimitMiB": 0,
+    "RankCount": 1,
+    "SecurityCapabilities": {},
+    "SerialNumber": "015C83B9",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "VendorID": "52736",
+    "VolatileRegionSizeLimitMiB": 16384,
+    "VolatileSizeMiB": 16384
+}

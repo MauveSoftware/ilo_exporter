@@ -1,0 +1,29 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"2690492535\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/31",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "31",
+    "Name": "73-Sys Exhaust 1",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 10,
+            "LocationYmm": 15
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 35,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {
+            "Reading": 90
+        },
+        "UpperFatal": {}
+    }
+}

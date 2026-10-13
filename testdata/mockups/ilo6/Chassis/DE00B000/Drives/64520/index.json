@@ -1,0 +1,26 @@
+{
+    "@odata.etag": "\"1c7ff647\"",
+    "@odata.id": "/redfish/v1/Chassis/DE00B000/Drives/64520",
+    "@odata.type": "#Drive.v1_17_0.Drive",
+    "Id": "64520",
+    "Name": "Empty Bay",
+    "Status": {
+        "State": "Absent",
+        "Health": "OK"
+    },
+    "Links": {
+        "Storage": {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DE00B000"
+        },
+        "Chassis": {
+            "@odata.id": "/redfish/v1/Chassis/DE00B000"
+        }
+    },
+    "PhysicalLocation": {
+        "PartLocation": {
+            "ServiceLabel": "Slot=18:Port=2:Box=1:Bay=8",
+            "LocationType": "Bay",
+            "LocationOrdinalValue": 8
+        }
+    }
+}

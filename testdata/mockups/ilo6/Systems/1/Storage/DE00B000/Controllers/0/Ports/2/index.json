@@ -1,0 +1,30 @@
+{
+    "@odata.etag": "\"f5758a75\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00B000/Controllers/0/Ports/2",
+    "@odata.type": "#Port.v1_9_0.Port",
+    "Id": "2",
+    "PortId": "2",
+    "Name": "Port 2",
+    "ActiveWidth": 4,
+    "CurrentSpeedGbps": 64.0,
+    "Links": {
+        "ConnectedPorts": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/DE00B000/Switches/1/Ports/4"
+            }
+        ]
+    },
+    "Location": {
+        "PartLocation": {
+            "ServiceLabel": "Slot=18:Port=2",
+            "LocationType": "Connector",
+            "LocationOrdinalValue": 2
+        }
+    },
+    "MaxSpeedGbps": 128.0,
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "Width": 8
+}

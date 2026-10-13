@@ -1,0 +1,63 @@
+{
+    "@odata.etag": "\"beced39d\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000",
+    "@odata.type": "#Storage.v1_15_0.Storage",
+    "@Redfish.WriteableProperties": [
+        "AutoVolumeCreate",
+        "EncryptionMode"
+    ],
+    "Id": "DE00A000",
+    "Name": "HPE MR216i-o Gen11",
+    "Actions": {
+        "#Storage.ResetToDefaults": {
+            "ResetType@Redfish.AllowableValues": [
+                "ResetAll",
+                "PreserveVolumes"
+            ],
+            "target": "/redfish/v1/Systems/1/Storage/DE00A000/Actions/Storage.ResetToDefaults"
+        },
+        "#Storage.SetEncryptionKey": {
+            "EncryptionKey@Redfish.AllowablePattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-!#$%&'()*+,./:;<=>?@^_{|}~`])\\S{8,32}$",
+            "CurrentEncryptionKey@Redfish.AllowablePattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-!#$%&'()*+,./:;<=>?@^_{|}~`])\\S{8,32}$",
+            "EncryptionKeyIdentifier@Redfish.AllowablePattern": "^.{0,255}$",
+            "target": "/redfish/v1/Systems/1/Storage/DE00A000/Actions/Storage.SetEncryptionKey"
+        }
+    },
+    "Status": {
+        "State": "Enabled",
+        "HealthRollup": "OK"
+    },
+    "AutoVolumeCreate@Redfish.AllowableValues": [
+        "Disabled",
+        "NonRAID"
+    ],
+    "AutoVolumeCreate": "Disabled",
+    "EncryptionMode@Redfish.AllowableValues": [
+        "Disabled",
+        "UseExternalKey"
+    ],
+    "EncryptionMode": "Disabled",
+    "Controllers": {
+        "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Controllers"
+    },
+    "Drives@odata.count": 2,
+    "Drives": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/0"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/1"
+        }
+    ],
+    "Links": {
+        "Enclosures@odata.count": 1,
+        "Enclosures": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/DE00A000"
+            }
+        ]
+    },
+    "Volumes": {
+        "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Volumes"
+    }
+}

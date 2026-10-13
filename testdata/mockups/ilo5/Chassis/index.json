@@ -1,0 +1,17 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#ChassisCollection.ChassisCollection",
+    "@odata.etag": "W/\"570254F2\"",
+    "@odata.id": "/redfish/v1/Chassis",
+    "@odata.type": "#ChassisCollection.ChassisCollection",
+    "Description": "Computer System Chassis View",
+    "Name": "Computer System Chassis",
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000"
+        }
+    ],
+    "Members@odata.count": 2
+}

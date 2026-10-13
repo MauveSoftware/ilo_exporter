@@ -1,0 +1,1228 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Thermal.Thermal",
+    "@odata.etag": "W/\"C53181F5\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Thermal",
+    "@odata.type": "#Thermal.v1_7_1.Thermal",
+    "Id": "Thermal",
+    "Fans": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Fans/0",
+            "MemberId": "0",
+            "Name": "Fan 1",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerFan.HpeServerFan",
+                    "@odata.type": "#HpeServerFan.v2_0_0.HpeServerFan",
+                    "HotPluggable": true,
+                    "Location": "System",
+                    "Redundant": true
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "Reading": 26,
+            "ReadingUnits": "Percent",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Fans/1",
+            "MemberId": "1",
+            "Name": "Fan 2",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerFan.HpeServerFan",
+                    "@odata.type": "#HpeServerFan.v2_0_0.HpeServerFan",
+                    "HotPluggable": true,
+                    "Location": "System",
+                    "Redundant": true
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "Reading": 26,
+            "ReadingUnits": "Percent",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Fans/2",
+            "MemberId": "2",
+            "Name": "Fan 3",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerFan.HpeServerFan",
+                    "@odata.type": "#HpeServerFan.v2_0_0.HpeServerFan",
+                    "HotPluggable": true,
+                    "Location": "System",
+                    "Redundant": true
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "Reading": 26,
+            "ReadingUnits": "Percent",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Fans/3",
+            "MemberId": "3",
+            "Name": "Fan 4",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerFan.HpeServerFan",
+                    "@odata.type": "#HpeServerFan.v2_0_0.HpeServerFan",
+                    "HotPluggable": true,
+                    "Location": "System",
+                    "Redundant": true
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "Reading": 26,
+            "ReadingUnits": "Percent",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Fans/4",
+            "MemberId": "4",
+            "Name": "Fan 5",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerFan.HpeServerFan",
+                    "@odata.type": "#HpeServerFan.v2_0_0.HpeServerFan",
+                    "HotPluggable": true,
+                    "Location": "System",
+                    "Redundant": true
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "Reading": 26,
+            "ReadingUnits": "Percent",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Fans/5",
+            "MemberId": "5",
+            "Name": "Fan 6",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerFan.HpeServerFan",
+                    "@odata.type": "#HpeServerFan.v2_0_0.HpeServerFan",
+                    "HotPluggable": true,
+                    "Location": "System",
+                    "Redundant": true
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "Reading": 26,
+            "ReadingUnits": "Percent",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Fans/6",
+            "MemberId": "6",
+            "Name": "Fan 7",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerFan.HpeServerFan",
+                    "@odata.type": "#HpeServerFan.v2_0_0.HpeServerFan",
+                    "HotPluggable": true,
+                    "Location": "System",
+                    "Redundant": true
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "Reading": 26,
+            "ReadingUnits": "Percent",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        }
+    ],
+    "Name": "Thermal",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeThermalExt.HpeThermalExt",
+            "@odata.type": "#HpeThermalExt.v2_0_0.HpeThermalExt",
+            "Actions": {},
+            "FanPercentMinimum": 0,
+            "ThermalConfiguration": "OptimalCooling"
+        }
+    },
+    "Temperatures": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/0",
+            "MemberId": "0",
+            "Name": "01-Inlet Ambient",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "CriticalTempUserThreshold": 0,
+                    "LocationXmm": 14,
+                    "LocationYmm": 0,
+                    "WarningTempUserThreshold": 0
+                }
+            },
+            "PhysicalContext": "Intake",
+            "ReadingCelsius": 21,
+            "SensorNumber": 1,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 42,
+            "UpperThresholdFatal": 47
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/1",
+            "MemberId": "1",
+            "Name": "02-CPU 1",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 11,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "CPU",
+            "ReadingCelsius": 40,
+            "SensorNumber": 2,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 70,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/2",
+            "MemberId": "2",
+            "Name": "03-CPU 2",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 4,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "CPU",
+            "ReadingCelsius": 40,
+            "SensorNumber": 3,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 70,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/3",
+            "MemberId": "3",
+            "Name": "04-P1 DIMM 1-8",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 8,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "Memory",
+            "ReadingCelsius": 28,
+            "SensorNumber": 4,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 85,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/4",
+            "MemberId": "4",
+            "Name": "05-P1 PMM 1-8",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 9,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "Memory",
+            "ReadingCelsius": 0,
+            "SensorNumber": 5,
+            "Status": {
+                "State": "Absent"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/5",
+            "MemberId": "5",
+            "Name": "06-P1 DIMM 9-16",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 14,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "Memory",
+            "ReadingCelsius": 27,
+            "SensorNumber": 6,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 85,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/6",
+            "MemberId": "6",
+            "Name": "07-P1 PMM 9-16",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 15,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "Memory",
+            "ReadingCelsius": 0,
+            "SensorNumber": 7,
+            "Status": {
+                "State": "Absent"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/7",
+            "MemberId": "7",
+            "Name": "08-P2 DIMM 1-8",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 0,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "Memory",
+            "ReadingCelsius": 28,
+            "SensorNumber": 8,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 85,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/8",
+            "MemberId": "8",
+            "Name": "09-P2 PMM 1-8",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 2,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "Memory",
+            "ReadingCelsius": 0,
+            "SensorNumber": 9,
+            "Status": {
+                "State": "Absent"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/9",
+            "MemberId": "9",
+            "Name": "10-P2 DIMM 9-16",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 6,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "Memory",
+            "ReadingCelsius": 28,
+            "SensorNumber": 10,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 85,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/10",
+            "MemberId": "10",
+            "Name": "11-P2 PMM 9-16",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 7,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "Memory",
+            "ReadingCelsius": 0,
+            "SensorNumber": 11,
+            "Status": {
+                "State": "Absent"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/11",
+            "MemberId": "11",
+            "Name": "12-VR P1",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 11,
+                    "LocationYmm": 3
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 30,
+            "SensorNumber": 12,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 110,
+            "UpperThresholdFatal": 115
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/12",
+            "MemberId": "12",
+            "Name": "13-VR P2",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 4,
+                    "LocationYmm": 3
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 33,
+            "SensorNumber": 13,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 110,
+            "UpperThresholdFatal": 115
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/13",
+            "MemberId": "13",
+            "Name": "14-VR P1 Mem 1",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 9,
+                    "LocationYmm": 1
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 28,
+            "SensorNumber": 14,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 110,
+            "UpperThresholdFatal": 115
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/14",
+            "MemberId": "14",
+            "Name": "15-VR P1 Mem 2",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 14,
+                    "LocationYmm": 1
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 27,
+            "SensorNumber": 15,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 110,
+            "UpperThresholdFatal": 115
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/15",
+            "MemberId": "15",
+            "Name": "16-VR P2 Mem 1",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 1,
+                    "LocationYmm": 1
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 27,
+            "SensorNumber": 16,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 110,
+            "UpperThresholdFatal": 115
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/16",
+            "MemberId": "16",
+            "Name": "17-VR P2 Mem 2",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 6,
+                    "LocationYmm": 1
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 27,
+            "SensorNumber": 17,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 110,
+            "UpperThresholdFatal": 115
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/17",
+            "MemberId": "17",
+            "Name": "18-Chipset",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 13,
+                    "LocationYmm": 10
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 37,
+            "SensorNumber": 18,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 100,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/18",
+            "MemberId": "18",
+            "Name": "19-BMC",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 14,
+                    "LocationYmm": 12
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 63,
+            "SensorNumber": 19,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 110,
+            "UpperThresholdFatal": 115
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/19",
+            "MemberId": "19",
+            "Name": "20-HD Max",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 11,
+                    "LocationYmm": 0
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 40,
+            "SensorNumber": 20,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 60,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/20",
+            "MemberId": "20",
+            "Name": "21-Exp Bay Drive",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 6,
+                    "LocationYmm": 1
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 0,
+            "SensorNumber": 21,
+            "Status": {
+                "State": "Absent"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/21",
+            "MemberId": "21",
+            "Name": "22-Stor Batt",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 2,
+                    "LocationYmm": 0
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 23,
+            "SensorNumber": 22,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 60,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/22",
+            "MemberId": "22",
+            "Name": "23-E-Fuse",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 2,
+                    "LocationYmm": 8
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 34,
+            "SensorNumber": 23,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 100,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/23",
+            "MemberId": "23",
+            "Name": "24-P/S 1",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 1,
+                    "LocationYmm": 12
+                }
+            },
+            "PhysicalContext": "PowerSupply",
+            "ReadingCelsius": 40,
+            "SensorNumber": 24,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/24",
+            "MemberId": "24",
+            "Name": "25-P/S 1 Inlet",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 1,
+                    "LocationYmm": 11
+                }
+            },
+            "PhysicalContext": "PowerSupply",
+            "ReadingCelsius": 29,
+            "SensorNumber": 25,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/25",
+            "MemberId": "25",
+            "Name": "26-P/S 2",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 3,
+                    "LocationYmm": 12
+                }
+            },
+            "PhysicalContext": "PowerSupply",
+            "ReadingCelsius": 40,
+            "SensorNumber": 26,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/26",
+            "MemberId": "26",
+            "Name": "27-P/S 2 Inlet",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 3,
+                    "LocationYmm": 11
+                }
+            },
+            "PhysicalContext": "PowerSupply",
+            "ReadingCelsius": 32,
+            "SensorNumber": 27,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/27",
+            "MemberId": "27",
+            "Name": "31-HD Cntlr Zone",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 8,
+                    "LocationYmm": 8
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 36,
+            "SensorNumber": 28,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 90,
+            "UpperThresholdFatal": 95
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/28",
+            "MemberId": "28",
+            "Name": "32-Board Inlet",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 8,
+                    "LocationYmm": 0
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 23,
+            "SensorNumber": 29,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 60,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/29",
+            "MemberId": "29",
+            "Name": "33-BMC Zone",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 14,
+                    "LocationYmm": 13
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 36,
+            "SensorNumber": 30,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 90,
+            "UpperThresholdFatal": 95
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/30",
+            "MemberId": "30",
+            "Name": "34-P/S 2 Zone",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 4,
+                    "LocationYmm": 8
+                }
+            },
+            "PhysicalContext": "PowerSupply",
+            "ReadingCelsius": 30,
+            "SensorNumber": 31,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 90,
+            "UpperThresholdFatal": 95
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/31",
+            "MemberId": "31",
+            "Name": "35-I/O Zone",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 8,
+                    "LocationYmm": 11
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 33,
+            "SensorNumber": 32,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 90,
+            "UpperThresholdFatal": 95
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/32",
+            "MemberId": "32",
+            "Name": "36-Battery Zone",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 6,
+                    "LocationYmm": 11
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 33,
+            "SensorNumber": 33,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 90,
+            "UpperThresholdFatal": 95
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/33",
+            "MemberId": "33",
+            "Name": "38-PCI 1 Zone",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 12,
+                    "LocationYmm": 11
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 35,
+            "SensorNumber": 34,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 90,
+            "UpperThresholdFatal": 95
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/34",
+            "MemberId": "34",
+            "Name": "39-PCI 2",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 11,
+                    "LocationYmm": 11
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 0,
+            "SensorNumber": 35,
+            "Status": {
+                "State": "Absent"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/35",
+            "MemberId": "35",
+            "Name": "40-PCI 2 Zone",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 11,
+                    "LocationYmm": 11
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 36,
+            "SensorNumber": 36,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 90,
+            "UpperThresholdFatal": 95
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/36",
+            "MemberId": "36",
+            "Name": "41-PCI 3",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 6,
+                    "LocationYmm": 11
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 0,
+            "SensorNumber": 37,
+            "Status": {
+                "State": "Absent"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/37",
+            "MemberId": "37",
+            "Name": "42-PCI 3 Zone",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 6,
+                    "LocationYmm": 11
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 0,
+            "SensorNumber": 38,
+            "Status": {
+                "State": "Absent"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/38",
+            "MemberId": "38",
+            "Name": "43-ExpBayBoot",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 12,
+                    "LocationYmm": 11
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 0,
+            "SensorNumber": 39,
+            "Status": {
+                "State": "Absent"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/39",
+            "MemberId": "39",
+            "Name": "46-AHCI HD Max",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 11,
+                    "LocationYmm": 0
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 0,
+            "SensorNumber": 40,
+            "Status": {
+                "State": "Absent"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/40",
+            "MemberId": "40",
+            "Name": "50-CPU 1 PkgTmp",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 11,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "CPU",
+            "ReadingCelsius": 31,
+            "SensorNumber": 41,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/41",
+            "MemberId": "41",
+            "Name": "51-CPU 2 PkgTmp",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 4,
+                    "LocationYmm": 4
+                }
+            },
+            "PhysicalContext": "CPU",
+            "ReadingCelsius": 33,
+            "SensorNumber": 42,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/42",
+            "MemberId": "42",
+            "Name": "29.1-LOM Card-CORE",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 8,
+                    "LocationYmm": 12,
+                    "MainSensorName": "29-LOM Card"
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 44,
+            "SensorNumber": 43,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": null,
+            "UpperThresholdFatal": null,
+            "UpperThresholdNonCritical": 110
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/43",
+            "MemberId": "43",
+            "Name": "30.1-HD Controller-Add-in card",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 7,
+                    "LocationYmm": 8,
+                    "MainSensorName": "30-HD Controller"
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 33,
+            "SensorNumber": 44,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 75,
+            "UpperThresholdFatal": 80,
+            "UpperThresholdNonCritical": 70
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/44",
+            "MemberId": "44",
+            "Name": "30.2-HD Controller-I/O controlle",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 7,
+                    "LocationYmm": 8,
+                    "MainSensorName": "30-HD Controller"
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 47,
+            "SensorNumber": 44,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 102,
+            "UpperThresholdFatal": 105,
+            "UpperThresholdNonCritical": 97
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/45",
+            "MemberId": "45",
+            "Name": "30.3-HD Controller-I/O controlle",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 7,
+                    "LocationYmm": 8,
+                    "MainSensorName": "30-HD Controller"
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 37,
+            "SensorNumber": 44,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 75,
+            "UpperThresholdFatal": 80,
+            "UpperThresholdNonCritical": 70
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/46",
+            "MemberId": "46",
+            "Name": "30.4-HD Controller-Add-in card",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 7,
+                    "LocationYmm": 8,
+                    "MainSensorName": "30-HD Controller"
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 36,
+            "SensorNumber": 44,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 80,
+            "UpperThresholdFatal": 85,
+            "UpperThresholdNonCritical": 75
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Thermal#Temperatures/47",
+            "MemberId": "47",
+            "Name": "37.1-PCI 1-I/O module",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+                    "@odata.type": "#HpeSeaOfSensors.v2_0_0.HpeSeaOfSensors",
+                    "LocationXmm": 12,
+                    "LocationYmm": 11,
+                    "MainSensorName": "37-PCI 1"
+                }
+            },
+            "PhysicalContext": "SystemBoard",
+            "ReadingCelsius": 59,
+            "SensorNumber": 45,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 105,
+            "UpperThresholdFatal": 115,
+            "UpperThresholdNonCritical": 100
+        }
+    ]
+}

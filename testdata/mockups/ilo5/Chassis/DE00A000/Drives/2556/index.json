@@ -1,0 +1,74 @@
+{
+    "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2556",
+    "@odata.type": "#Drive.v1_18_0.Drive",
+    "@Redfish.WriteableProperties": [
+        "LocationIndicatorActive",
+        "HotspareType"
+    ],
+    "Id": "2556",
+    "Name": "480GB 6G SATA SSD",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK",
+        "Conditions": []
+    },
+    "LocationIndicatorActive": false,
+    "Model": "MK000480GWSSC",
+    "Revision": "HPG3",
+    "SlotCapableProtocols": [
+        "SAS",
+        "SATA",
+        "NVMe"
+    ],
+    "FirmwareVersion": "HPG3",
+    "Protocol": "SATA",
+    "MediaType": "SSD",
+    "CapacityBytes": 480103981056,
+    "BlockSizeBytes": 512,
+    "SerialNumber": "S521NA0T605357",
+    "FailurePredicted": false,
+    "PredictedMediaLifeLeftPercent": 99.0,
+    "StatusIndicator": "OK",
+    "Identifiers": [
+        {
+            "DurableName": "31402EC013A3F46F",
+            "DurableNameFormat": "NAA"
+        }
+    ],
+    "DriveFormFactor": "Drive2_5",
+    "PhysicalLocation": {
+        "PartLocation": {
+            "LocationType": "Bay",
+            "ServiceLabel": "Slot=12:Port=2I:Box=1:Bay=1",
+            "LocationOrdinalValue": 1
+        }
+    },
+    "HotspareType": "None",
+    "HotspareType@Redfish.AllowableValues": [
+        "None"
+    ],
+    "EncryptionAbility": "None",
+    "WriteCacheEnabled": false,
+    "CapableSpeedGbs": 6.0,
+    "NegotiatedSpeedGbs": 6.0,
+    "Operations": [],
+    "Multipath": false,
+    "Links": {
+        "Volumes@odata.count": 1,
+        "Volumes": [
+            {
+                "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Volumes/1"
+            }
+        ],
+        "Storage": {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000"
+        },
+        "Chassis": {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000"
+        }
+    },
+    "Metrics": {
+        "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2556/Metrics"
+    },
+    "@odata.etag": "\"823E21AA\""
+}

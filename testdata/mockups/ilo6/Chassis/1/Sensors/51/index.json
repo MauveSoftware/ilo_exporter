@@ -1,0 +1,34 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"B50A5A5B\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/51",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "51",
+    "Description": "31-OCP 1",
+    "Name": "31.1-OCP 1-I/O controller",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 13,
+            "LocationYmm": 12
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 87.0,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {
+            "Reading": 105
+        },
+        "UpperCritical": {
+            "Reading": 110
+        },
+        "UpperFatal": {
+            "Reading": 115
+        }
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives",
+    "@odata.type": "#DriveCollection.DriveCollection",
+    "Name": "Drive Collection",
+    "Members@odata.count": 8,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2556"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2557"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2558"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2559"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2816"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2817"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2818"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2819"
+        }
+    ],
+    "@odata.etag": "\"6F1B4CED\""
+}

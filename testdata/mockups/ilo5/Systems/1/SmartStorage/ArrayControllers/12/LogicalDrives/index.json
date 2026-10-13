@@ -1,0 +1,14 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#HpeSmartStorageLogicalDriveCollection.HpeSmartStorageLogicalDriveCollection",
+    "@odata.etag": "W/\"AA6D42B0\"",
+    "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers/12/LogicalDrives",
+    "@odata.type": "#HpeSmartStorageLogicalDriveCollection.HpeSmartStorageLogicalDriveCollection",
+    "Description": "HPE Smart Storage Logical Drives View",
+    "Name": "HpeSmartStorageLogicalDrives",
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers/12/LogicalDrives/1"
+        }
+    ],
+    "Members@odata.count": 1
+}

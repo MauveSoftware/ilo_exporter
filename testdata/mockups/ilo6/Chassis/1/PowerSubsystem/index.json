@@ -1,0 +1,42 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#PowerSubsystem.PowerSubsystem",
+    "@odata.etag": "W/\"6009B164\"",
+    "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem",
+    "@odata.type": "#PowerSubsystem.v1_1_2.PowerSubsystem",
+    "Id": "PowerSubsystem",
+    "CapacityWatts": 8800.0,
+    "Name": "PowerSubsystem",
+    "PowerSupplies": {
+        "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem/PowerSupplies"
+    },
+    "PowerSupplyRedundancy": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem#PowerSupplyRedundancy/0",
+            "MaxSupportedInGroup": 2,
+            "MinNeededInGroup": 2,
+            "RedundancyGroup": [
+                {},
+                {}
+            ],
+            "RedundancyType": "Failover",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/PowerSubsystem#PowerSupplyRedundancy/1",
+            "MaxSupportedInGroup": 2,
+            "MinNeededInGroup": 2,
+            "RedundancyGroup": [
+                {},
+                {}
+            ],
+            "RedundancyType": "Failover",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        }
+    ]
+}

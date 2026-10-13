@@ -1,0 +1,66 @@
+{
+    "@odata.etag": "\"4445d444\"",
+    "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/1",
+    "@odata.type": "#Drive.v1_17_0.Drive",
+    "Id": "1",
+    "Name": "HPE 1.60TB 22.5G SAS SSD",
+    "Status": {
+        "State": "StandbyOffline",
+        "Health": "OK"
+    },
+    "Links": {
+        "Storage": {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000"
+        },
+        "Chassis": {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000"
+        },
+        "Volumes@odata.count": 0,
+        "Volumes": []
+    },
+    "PhysicalLocation": {
+        "PartLocation": {
+            "ServiceLabel": "Slot=14:Port=2:Box=1:Bay=2",
+            "LocationType": "Bay",
+            "LocationOrdinalValue": 2
+        }
+    },
+    "Actions": {
+        "#Drive.SecureErase": {
+            "target": "/redfish/v1/Chassis/DE00A000/Drives/1/Actions/Drive.SecureErase"
+        }
+    },
+    "BlockSizeBytes": 512,
+    "CapableSpeedGbs": 22.5,
+    "CapacityBytes": 1600321314816,
+    "EncryptionAbility": "SelfEncryptingDrive",
+    "EncryptionStatus": "Unencrypted",
+    "FailurePredicted": false,
+    "Identifiers": [
+        {
+            "DurableName": "58CE38EE236E38A0",
+            "DurableNameFormat": "NAA"
+        }
+    ],
+    "MediaType": "SSD",
+    "Manufacturer": "HPE",
+    "Model": "MO001600PXVRU",
+    "Multipath": false,
+    "NegotiatedSpeedGbs": 12.0,
+    "Operations": [],
+    "PredictedMediaLifeLeftPercent": 100.0,
+    "Protocol": "SAS",
+    "Revision": "HPD2",
+    "SerialNumber": "5F90A08R0UG3",
+    "StatusIndicator": "OK",
+    "@Redfish.WriteableProperties": [
+        "HotspareType",
+        "LocationIndicatorActive"
+    ],
+    "HotspareType": "None",
+    "LocationIndicatorActive": false,
+    "WriteCacheEnabled": false,
+    "HotspareType@Redfish.AllowableValues": [
+        "Global"
+    ]
+}

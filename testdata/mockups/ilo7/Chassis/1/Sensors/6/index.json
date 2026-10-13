@@ -1,0 +1,29 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"2011199524\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/6",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "6",
+    "Name": "07-P2 DIMM 9-16",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 7,
+            "LocationYmm": 8
+        }
+    },
+    "PhysicalContext": "Memory",
+    "Reading": 26,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {
+            "Reading": 89
+        },
+        "UpperFatal": {}
+    }
+}

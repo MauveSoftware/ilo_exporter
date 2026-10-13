@@ -1,0 +1,320 @@
+# HELP ilo_chassis_fan_current_percent Current power in percent
+# TYPE ilo_chassis_fan_current_percent gauge
+ilo_chassis_fan_current_percent{host="ilo.test",name="Fan 1"} 26
+ilo_chassis_fan_current_percent{host="ilo.test",name="Fan 2"} 26
+ilo_chassis_fan_current_percent{host="ilo.test",name="Fan 3"} 26
+ilo_chassis_fan_current_percent{host="ilo.test",name="Fan 4"} 26
+ilo_chassis_fan_current_percent{host="ilo.test",name="Fan 5"} 26
+ilo_chassis_fan_current_percent{host="ilo.test",name="Fan 6"} 26
+ilo_chassis_fan_current_percent{host="ilo.test",name="Fan 7"} 26
+# HELP ilo_chassis_fan_enabled Status of the fan
+# TYPE ilo_chassis_fan_enabled gauge
+ilo_chassis_fan_enabled{host="ilo.test",name="Fan 1"} 1
+ilo_chassis_fan_enabled{host="ilo.test",name="Fan 2"} 1
+ilo_chassis_fan_enabled{host="ilo.test",name="Fan 3"} 1
+ilo_chassis_fan_enabled{host="ilo.test",name="Fan 4"} 1
+ilo_chassis_fan_enabled{host="ilo.test",name="Fan 5"} 1
+ilo_chassis_fan_enabled{host="ilo.test",name="Fan 6"} 1
+ilo_chassis_fan_enabled{host="ilo.test",name="Fan 7"} 1
+# HELP ilo_chassis_fan_healthy Health status of the fan
+# TYPE ilo_chassis_fan_healthy gauge
+ilo_chassis_fan_healthy{host="ilo.test",name="Fan 1"} 1
+ilo_chassis_fan_healthy{host="ilo.test",name="Fan 2"} 1
+ilo_chassis_fan_healthy{host="ilo.test",name="Fan 3"} 1
+ilo_chassis_fan_healthy{host="ilo.test",name="Fan 4"} 1
+ilo_chassis_fan_healthy{host="ilo.test",name="Fan 5"} 1
+ilo_chassis_fan_healthy{host="ilo.test",name="Fan 6"} 1
+ilo_chassis_fan_healthy{host="ilo.test",name="Fan 7"} 1
+# HELP ilo_chassis_scrape_duration_second Scrape duration for the chassis module
+# TYPE ilo_chassis_scrape_duration_second gauge
+ilo_chassis_scrape_duration_second{host="ilo.test"} <duration>
+# HELP ilo_chassis_temperature_critical Critcal temperature threshold in degree celsius
+# TYPE ilo_chassis_temperature_critical gauge
+ilo_chassis_temperature_critical{host="ilo.test",name="01-Inlet Ambient"} 42
+ilo_chassis_temperature_critical{host="ilo.test",name="02-CPU 1"} 70
+ilo_chassis_temperature_critical{host="ilo.test",name="03-CPU 2"} 70
+ilo_chassis_temperature_critical{host="ilo.test",name="04-P1 DIMM 1-8"} 85
+ilo_chassis_temperature_critical{host="ilo.test",name="06-P1 DIMM 9-16"} 85
+ilo_chassis_temperature_critical{host="ilo.test",name="08-P2 DIMM 1-8"} 85
+ilo_chassis_temperature_critical{host="ilo.test",name="10-P2 DIMM 9-16"} 85
+ilo_chassis_temperature_critical{host="ilo.test",name="12-VR P1"} 110
+ilo_chassis_temperature_critical{host="ilo.test",name="13-VR P2"} 110
+ilo_chassis_temperature_critical{host="ilo.test",name="14-VR P1 Mem 1"} 110
+ilo_chassis_temperature_critical{host="ilo.test",name="15-VR P1 Mem 2"} 110
+ilo_chassis_temperature_critical{host="ilo.test",name="16-VR P2 Mem 1"} 110
+ilo_chassis_temperature_critical{host="ilo.test",name="17-VR P2 Mem 2"} 110
+ilo_chassis_temperature_critical{host="ilo.test",name="18-Chipset"} 100
+ilo_chassis_temperature_critical{host="ilo.test",name="19-BMC"} 110
+ilo_chassis_temperature_critical{host="ilo.test",name="20-HD Max"} 60
+ilo_chassis_temperature_critical{host="ilo.test",name="22-Stor Batt"} 60
+ilo_chassis_temperature_critical{host="ilo.test",name="23-E-Fuse"} 100
+ilo_chassis_temperature_critical{host="ilo.test",name="24-P/S 1"} 0
+ilo_chassis_temperature_critical{host="ilo.test",name="25-P/S 1 Inlet"} 0
+ilo_chassis_temperature_critical{host="ilo.test",name="26-P/S 2"} 0
+ilo_chassis_temperature_critical{host="ilo.test",name="27-P/S 2 Inlet"} 0
+ilo_chassis_temperature_critical{host="ilo.test",name="29.1-LOM Card-CORE"} 0
+ilo_chassis_temperature_critical{host="ilo.test",name="30.1-HD Controller-Add-in card"} 75
+ilo_chassis_temperature_critical{host="ilo.test",name="30.2-HD Controller-I/O controlle"} 102
+ilo_chassis_temperature_critical{host="ilo.test",name="30.3-HD Controller-I/O controlle"} 75
+ilo_chassis_temperature_critical{host="ilo.test",name="30.4-HD Controller-Add-in card"} 80
+ilo_chassis_temperature_critical{host="ilo.test",name="31-HD Cntlr Zone"} 90
+ilo_chassis_temperature_critical{host="ilo.test",name="32-Board Inlet"} 60
+ilo_chassis_temperature_critical{host="ilo.test",name="33-BMC Zone"} 90
+ilo_chassis_temperature_critical{host="ilo.test",name="34-P/S 2 Zone"} 90
+ilo_chassis_temperature_critical{host="ilo.test",name="35-I/O Zone"} 90
+ilo_chassis_temperature_critical{host="ilo.test",name="36-Battery Zone"} 90
+ilo_chassis_temperature_critical{host="ilo.test",name="37.1-PCI 1-I/O module"} 105
+ilo_chassis_temperature_critical{host="ilo.test",name="38-PCI 1 Zone"} 90
+ilo_chassis_temperature_critical{host="ilo.test",name="40-PCI 2 Zone"} 90
+ilo_chassis_temperature_critical{host="ilo.test",name="50-CPU 1 PkgTmp"} 0
+ilo_chassis_temperature_critical{host="ilo.test",name="51-CPU 2 PkgTmp"} 0
+# HELP ilo_chassis_temperature_current Current temperature in degree celsius
+# TYPE ilo_chassis_temperature_current gauge
+ilo_chassis_temperature_current{host="ilo.test",name="01-Inlet Ambient"} 21
+ilo_chassis_temperature_current{host="ilo.test",name="02-CPU 1"} 40
+ilo_chassis_temperature_current{host="ilo.test",name="03-CPU 2"} 40
+ilo_chassis_temperature_current{host="ilo.test",name="04-P1 DIMM 1-8"} 28
+ilo_chassis_temperature_current{host="ilo.test",name="06-P1 DIMM 9-16"} 27
+ilo_chassis_temperature_current{host="ilo.test",name="08-P2 DIMM 1-8"} 28
+ilo_chassis_temperature_current{host="ilo.test",name="10-P2 DIMM 9-16"} 28
+ilo_chassis_temperature_current{host="ilo.test",name="12-VR P1"} 30
+ilo_chassis_temperature_current{host="ilo.test",name="13-VR P2"} 33
+ilo_chassis_temperature_current{host="ilo.test",name="14-VR P1 Mem 1"} 28
+ilo_chassis_temperature_current{host="ilo.test",name="15-VR P1 Mem 2"} 27
+ilo_chassis_temperature_current{host="ilo.test",name="16-VR P2 Mem 1"} 27
+ilo_chassis_temperature_current{host="ilo.test",name="17-VR P2 Mem 2"} 27
+ilo_chassis_temperature_current{host="ilo.test",name="18-Chipset"} 37
+ilo_chassis_temperature_current{host="ilo.test",name="19-BMC"} 63
+ilo_chassis_temperature_current{host="ilo.test",name="20-HD Max"} 40
+ilo_chassis_temperature_current{host="ilo.test",name="22-Stor Batt"} 23
+ilo_chassis_temperature_current{host="ilo.test",name="23-E-Fuse"} 34
+ilo_chassis_temperature_current{host="ilo.test",name="24-P/S 1"} 40
+ilo_chassis_temperature_current{host="ilo.test",name="25-P/S 1 Inlet"} 29
+ilo_chassis_temperature_current{host="ilo.test",name="26-P/S 2"} 40
+ilo_chassis_temperature_current{host="ilo.test",name="27-P/S 2 Inlet"} 32
+ilo_chassis_temperature_current{host="ilo.test",name="29.1-LOM Card-CORE"} 44
+ilo_chassis_temperature_current{host="ilo.test",name="30.1-HD Controller-Add-in card"} 33
+ilo_chassis_temperature_current{host="ilo.test",name="30.2-HD Controller-I/O controlle"} 47
+ilo_chassis_temperature_current{host="ilo.test",name="30.3-HD Controller-I/O controlle"} 37
+ilo_chassis_temperature_current{host="ilo.test",name="30.4-HD Controller-Add-in card"} 36
+ilo_chassis_temperature_current{host="ilo.test",name="31-HD Cntlr Zone"} 36
+ilo_chassis_temperature_current{host="ilo.test",name="32-Board Inlet"} 23
+ilo_chassis_temperature_current{host="ilo.test",name="33-BMC Zone"} 36
+ilo_chassis_temperature_current{host="ilo.test",name="34-P/S 2 Zone"} 30
+ilo_chassis_temperature_current{host="ilo.test",name="35-I/O Zone"} 33
+ilo_chassis_temperature_current{host="ilo.test",name="36-Battery Zone"} 33
+ilo_chassis_temperature_current{host="ilo.test",name="37.1-PCI 1-I/O module"} 59
+ilo_chassis_temperature_current{host="ilo.test",name="38-PCI 1 Zone"} 35
+ilo_chassis_temperature_current{host="ilo.test",name="40-PCI 2 Zone"} 36
+ilo_chassis_temperature_current{host="ilo.test",name="50-CPU 1 PkgTmp"} 31
+ilo_chassis_temperature_current{host="ilo.test",name="51-CPU 2 PkgTmp"} 33
+# HELP ilo_chassis_temperature_fatal Fatal temperature threshold in degree celsius
+# TYPE ilo_chassis_temperature_fatal gauge
+ilo_chassis_temperature_fatal{host="ilo.test",name="01-Inlet Ambient"} 47
+ilo_chassis_temperature_fatal{host="ilo.test",name="02-CPU 1"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="03-CPU 2"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="04-P1 DIMM 1-8"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="06-P1 DIMM 9-16"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="08-P2 DIMM 1-8"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="10-P2 DIMM 9-16"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="12-VR P1"} 115
+ilo_chassis_temperature_fatal{host="ilo.test",name="13-VR P2"} 115
+ilo_chassis_temperature_fatal{host="ilo.test",name="14-VR P1 Mem 1"} 115
+ilo_chassis_temperature_fatal{host="ilo.test",name="15-VR P1 Mem 2"} 115
+ilo_chassis_temperature_fatal{host="ilo.test",name="16-VR P2 Mem 1"} 115
+ilo_chassis_temperature_fatal{host="ilo.test",name="17-VR P2 Mem 2"} 115
+ilo_chassis_temperature_fatal{host="ilo.test",name="18-Chipset"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="19-BMC"} 115
+ilo_chassis_temperature_fatal{host="ilo.test",name="20-HD Max"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="22-Stor Batt"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="23-E-Fuse"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="24-P/S 1"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="25-P/S 1 Inlet"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="26-P/S 2"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="27-P/S 2 Inlet"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="29.1-LOM Card-CORE"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="30.1-HD Controller-Add-in card"} 80
+ilo_chassis_temperature_fatal{host="ilo.test",name="30.2-HD Controller-I/O controlle"} 105
+ilo_chassis_temperature_fatal{host="ilo.test",name="30.3-HD Controller-I/O controlle"} 80
+ilo_chassis_temperature_fatal{host="ilo.test",name="30.4-HD Controller-Add-in card"} 85
+ilo_chassis_temperature_fatal{host="ilo.test",name="31-HD Cntlr Zone"} 95
+ilo_chassis_temperature_fatal{host="ilo.test",name="32-Board Inlet"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="33-BMC Zone"} 95
+ilo_chassis_temperature_fatal{host="ilo.test",name="34-P/S 2 Zone"} 95
+ilo_chassis_temperature_fatal{host="ilo.test",name="35-I/O Zone"} 95
+ilo_chassis_temperature_fatal{host="ilo.test",name="36-Battery Zone"} 95
+ilo_chassis_temperature_fatal{host="ilo.test",name="37.1-PCI 1-I/O module"} 115
+ilo_chassis_temperature_fatal{host="ilo.test",name="38-PCI 1 Zone"} 95
+ilo_chassis_temperature_fatal{host="ilo.test",name="40-PCI 2 Zone"} 95
+ilo_chassis_temperature_fatal{host="ilo.test",name="50-CPU 1 PkgTmp"} 0
+ilo_chassis_temperature_fatal{host="ilo.test",name="51-CPU 2 PkgTmp"} 0
+# HELP ilo_chassis_temperature_healthy Health status of the temperature sensor
+# TYPE ilo_chassis_temperature_healthy gauge
+ilo_chassis_temperature_healthy{host="ilo.test",name="01-Inlet Ambient"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="02-CPU 1"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="03-CPU 2"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="04-P1 DIMM 1-8"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="06-P1 DIMM 9-16"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="08-P2 DIMM 1-8"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="10-P2 DIMM 9-16"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="12-VR P1"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="13-VR P2"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="14-VR P1 Mem 1"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="15-VR P1 Mem 2"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="16-VR P2 Mem 1"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="17-VR P2 Mem 2"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="18-Chipset"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="19-BMC"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="20-HD Max"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="22-Stor Batt"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="23-E-Fuse"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="24-P/S 1"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="25-P/S 1 Inlet"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="26-P/S 2"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="27-P/S 2 Inlet"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="29.1-LOM Card-CORE"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="30.1-HD Controller-Add-in card"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="30.2-HD Controller-I/O controlle"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="30.3-HD Controller-I/O controlle"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="30.4-HD Controller-Add-in card"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="31-HD Cntlr Zone"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="32-Board Inlet"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="33-BMC Zone"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="34-P/S 2 Zone"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="35-I/O Zone"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="36-Battery Zone"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="37.1-PCI 1-I/O module"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="38-PCI 1 Zone"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="40-PCI 2 Zone"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="50-CPU 1 PkgTmp"} 1
+ilo_chassis_temperature_healthy{host="ilo.test",name="51-CPU 2 PkgTmp"} 1
+# HELP ilo_manager_info System Info
+# TYPE ilo_manager_info gauge
+ilo_manager_info{firmware_version="iLO 5 v3.11",host="ilo.test"} 1
+# HELP ilo_manager_scrape_duration_second Scrape duration for the manager module
+# TYPE ilo_manager_scrape_duration_second gauge
+ilo_manager_scrape_duration_second{host="ilo.test"} <duration>
+# HELP ilo_memory_dimm_byte DIMM size in bytes
+# TYPE ilo_memory_dimm_byte gauge
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm1"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm10"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm11"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm12"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm13"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm14"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm15"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm16"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm2"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm3"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm4"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm5"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm6"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm7"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm8"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm9"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm1"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm10"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm11"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm12"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm13"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm14"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm15"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm16"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm2"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm3"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm4"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm5"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm6"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm7"} 1.7179869184e+10
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm8"} 0
+ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm9"} 0
+# HELP ilo_memory_dimm_healthy Health status of processor
+# TYPE ilo_memory_dimm_healthy gauge
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm1"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm10"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm11"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm12"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm13"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm14"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm15"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm16"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm2"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm3"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm4"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm5"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm6"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm7"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm8"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm9"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm1"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm10"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm11"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm12"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm13"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm14"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm15"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm16"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm2"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm3"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm4"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm5"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm6"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm7"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm8"} 1
+ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm9"} 1
+# HELP ilo_power_average_watt Average power consumption in watt
+# TYPE ilo_power_average_watt gauge
+ilo_power_average_watt{host="ilo.test",id="0"} 151
+# HELP ilo_power_capacity_watt Power capacity in watt
+# TYPE ilo_power_capacity_watt gauge
+ilo_power_capacity_watt{host="ilo.test",id="0"} 1600
+# HELP ilo_power_current_watt Current power consumption in watt
+# TYPE ilo_power_current_watt gauge
+ilo_power_current_watt{host="ilo.test",id="0"} 150
+# HELP ilo_power_max_watt Maximum power consumption in watt
+# TYPE ilo_power_max_watt gauge
+ilo_power_max_watt{host="ilo.test",id="0"} 179
+# HELP ilo_power_min_watt Minimum power consumption in watt
+# TYPE ilo_power_min_watt gauge
+ilo_power_min_watt{host="ilo.test",id="0"} 150
+# HELP ilo_power_supply_enabled Status of the power supply
+# TYPE ilo_power_supply_enabled gauge
+ilo_power_supply_enabled{host="ilo.test",serial="5WBYE0F4DGX2JS"} 1
+ilo_power_supply_enabled{host="ilo.test",serial="5WBYE0F4DGX2K2"} 1
+# HELP ilo_power_supply_healthy Health status of the power supply
+# TYPE ilo_power_supply_healthy gauge
+ilo_power_supply_healthy{host="ilo.test",serial="5WBYE0F4DGX2JS"} 1
+ilo_power_supply_healthy{host="ilo.test",serial="5WBYE0F4DGX2K2"} 1
+# HELP ilo_power_up Power status
+# TYPE ilo_power_up gauge
+ilo_power_up{host="ilo.test"} 1
+# HELP ilo_processor_core_count Number of cores of processor
+# TYPE ilo_processor_core_count gauge
+ilo_processor_core_count{host="ilo.test",model="Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz",socket="Proc 1"} 12
+ilo_processor_core_count{host="ilo.test",model="Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz",socket="Proc 2"} 12
+# HELP ilo_processor_count Number of processors
+# TYPE ilo_processor_count gauge
+ilo_processor_count{host="ilo.test"} 2
+# HELP ilo_processor_healthy Health status of processor
+# TYPE ilo_processor_healthy gauge
+ilo_processor_healthy{host="ilo.test",model="Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz",socket="Proc 1"} 1
+ilo_processor_healthy{host="ilo.test",model="Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz",socket="Proc 2"} 1
+# HELP ilo_processor_thread_count Number of threads of processor
+# TYPE ilo_processor_thread_count gauge
+ilo_processor_thread_count{host="ilo.test",model="Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz",socket="Proc 1"} 24
+ilo_processor_thread_count{host="ilo.test",model="Intel(R) Xeon(R) Silver 4310 CPU @ 2.10GHz",socket="Proc 2"} 24
+# HELP ilo_storage_disk_capacity_byte Capacity of the disk in bytes
+# TYPE ilo_storage_disk_capacity_byte gauge
+ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=12:Port=2I:Box=1:Bay=1",media_type="SSD",model="MK000480GWSSC",name="480GB 6G SATA SSD",serial_number="S521NA0T605357"} 4.80103981056e+11
+ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=12:Port=2I:Box=1:Bay=2",media_type="SSD",model="MK000480GWSSC",name="480GB 6G SATA SSD",serial_number="S521NA0T605338"} 4.80103981056e+11
+# HELP ilo_storage_disk_failure_predicted Failure of disk is predicted
+# TYPE ilo_storage_disk_failure_predicted gauge
+ilo_storage_disk_failure_predicted{host="ilo.test",location="Slot=12:Port=2I:Box=1:Bay=1",media_type="SSD",model="MK000480GWSSC",name="480GB 6G SATA SSD",serial_number="S521NA0T605357"} 0
+ilo_storage_disk_failure_predicted{host="ilo.test",location="Slot=12:Port=2I:Box=1:Bay=2",media_type="SSD",model="MK000480GWSSC",name="480GB 6G SATA SSD",serial_number="S521NA0T605338"} 0
+# HELP ilo_storage_disk_healthy Health status of the disk
+# TYPE ilo_storage_disk_healthy gauge
+ilo_storage_disk_healthy{host="ilo.test",location="Slot=12:Port=2I:Box=1:Bay=1",media_type="SSD",model="MK000480GWSSC",name="480GB 6G SATA SSD",serial_number="S521NA0T605357"} 1
+ilo_storage_disk_healthy{host="ilo.test",location="Slot=12:Port=2I:Box=1:Bay=2",media_type="SSD",model="MK000480GWSSC",name="480GB 6G SATA SSD",serial_number="S521NA0T605338"} 1
+# HELP ilo_system_info System Info
+# TYPE ilo_system_info gauge
+ilo_system_info{bios_version="U46 v2.34 (03/11/2025)",host="ilo.test",host_name="",model="ProLiant DL360 Gen10 Plus - SIMULATED",serial="MXQ2390RHW",sku="P28948-B21",uuid="39383250-3834-584D-5132-333930524857"} 1

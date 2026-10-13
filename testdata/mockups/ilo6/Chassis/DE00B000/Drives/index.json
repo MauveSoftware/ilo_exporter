@@ -1,0 +1,21 @@
+{
+    "@odata.etag": "\"eda9b472\"",
+    "@odata.id": "/redfish/v1/Chassis/DE00B000/Drives",
+    "@odata.type": "#DriveCollection.DriveCollection",
+    "Name": "Drive Collection",
+    "Members@odata.count": 4,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00B000/Drives/2"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00B000/Drives/3"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00B000/Drives/4"
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/DE00B000/Drives/64520"
+        }
+    ]
+}

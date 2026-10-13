@@ -1,0 +1,29 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"FE5217DC\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/46",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "46",
+    "Name": "61-Board Inlet",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 8,
+            "LocationYmm": 8
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 37.0,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {
+            "Reading": 65
+        },
+        "UpperFatal": {}
+    }
+}

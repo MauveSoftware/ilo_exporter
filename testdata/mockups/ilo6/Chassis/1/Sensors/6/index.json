@@ -1,0 +1,26 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"1F9F47FA\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/6",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "6",
+    "Name": "07-P1 PMM 7-12",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 14,
+            "LocationYmm": 10
+        }
+    },
+    "PhysicalContext": "Memory",
+    "Reading": 0.0,
+    "Status": {
+        "State": "Absent"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

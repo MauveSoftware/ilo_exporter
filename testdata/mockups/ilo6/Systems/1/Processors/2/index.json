@@ -1,0 +1,139 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Processor.Processor",
+    "@odata.etag": "W/\"7AF9A804\"",
+    "@odata.id": "/redfish/v1/Systems/1/Processors/2",
+    "@odata.type": "#Processor.v1_8_2.Processor",
+    "Id": "2",
+    "InstructionSet": "x86-64",
+    "Manufacturer": "Intel(R) Corporation",
+    "MaxSpeedMHz": 4000,
+    "Model": "INTEL(R) XEON(R) GOLD 6530",
+    "Name": "Processors",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeProcessorExt.HpeProcessorExt",
+            "@odata.type": "#HpeProcessorExt.v2_2_1.HpeProcessorExt",
+            "AssetTag": "UNKNOWN",
+            "Cache": [
+                {
+                    "Associativity": "12waySetAssociative",
+                    "CacheSpeedns": 0,
+                    "CurrentSRAMType": [
+                        "Synchronous"
+                    ],
+                    "EccType": "SingleBitECC",
+                    "InstalledSizeKB": 2560,
+                    "Location": "Internal",
+                    "MaximumSizeKB": 2560,
+                    "Name": "L1-Cache",
+                    "Policy": "WriteBack",
+                    "Socketed": false,
+                    "SupportedSRAMType": [
+                        "Synchronous"
+                    ],
+                    "SystemCacheType": "Unified"
+                },
+                {
+                    "Associativity": "16waySetAssociative",
+                    "CacheSpeedns": 0,
+                    "CurrentSRAMType": [
+                        "Synchronous"
+                    ],
+                    "EccType": "SingleBitECC",
+                    "InstalledSizeKB": 65536,
+                    "Location": "Internal",
+                    "MaximumSizeKB": 65536,
+                    "Name": "L2-Cache",
+                    "Policy": "Varies",
+                    "Socketed": false,
+                    "SupportedSRAMType": [
+                        "Synchronous"
+                    ],
+                    "SystemCacheType": "Unified"
+                },
+                {
+                    "Associativity": "20waySetAssociative",
+                    "CacheSpeedns": 0,
+                    "CurrentSRAMType": [
+                        "Synchronous"
+                    ],
+                    "EccType": "SingleBitECC",
+                    "InstalledSizeKB": 163840,
+                    "Location": "Internal",
+                    "MaximumSizeKB": 163840,
+                    "Name": "L3-Cache",
+                    "Policy": "Varies",
+                    "Socketed": false,
+                    "SupportedSRAMType": [
+                        "Synchronous"
+                    ],
+                    "SystemCacheType": "Unified"
+                }
+            ],
+            "Characteristics": [
+                "64Bit",
+                "MultiCore",
+                "HwThread",
+                "ExecuteProtection",
+                "EnhancedVirtualization",
+                "PowerPerfControl"
+            ],
+            "ConfigStatus": {
+                "Populated": true,
+                "State": "Enabled"
+            },
+            "CoresEnabled": 32,
+            "ExternalClockMHz": 100,
+            "MicrocodePatches": [
+                {
+                    "CpuId": "0x000806F1",
+                    "Date": "2022-03-27T00:00:00Z",
+                    "PatchId": "0x800003C0"
+                },
+                {
+                    "CpuId": "0x000806F8",
+                    "Date": "2024-07-30T00:00:00Z",
+                    "PatchId": "0x2C0003E0"
+                },
+                {
+                    "CpuId": "0x000806F3",
+                    "Date": "2022-08-12T00:00:00Z",
+                    "PatchId": "0x8D000520"
+                },
+                {
+                    "CpuId": "0x000806F8",
+                    "Date": "2024-07-30T00:00:00Z",
+                    "PatchId": "0x2B000620"
+                },
+                {
+                    "CpuId": "0x000C06F2",
+                    "Date": "2024-07-30T00:00:00Z",
+                    "PatchId": "0x21000291"
+                }
+            ],
+            "PartNumber": "",
+            "RatedSpeedMHz": 2100,
+            "SerialNumber": "",
+            "VoltageVoltsX10": 16
+        }
+    },
+    "PartNumber": "",
+    "ProcessorArchitecture": "x86",
+    "ProcessorId": {
+        "EffectiveFamily": "179",
+        "EffectiveModel": "15",
+        "IdentificationRegisters": "0x06f2000cfbffbfeb",
+        "MicrocodeInfo": null,
+        "Step": "2",
+        "VendorId": "Intel(R) Corporation"
+    },
+    "ProcessorType": "CPU",
+    "SerialNumber": "",
+    "Socket": "Proc 2",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "TotalCores": 32,
+    "TotalThreads": 64
+}

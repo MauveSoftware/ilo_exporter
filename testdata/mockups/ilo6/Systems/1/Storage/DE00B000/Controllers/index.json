@@ -1,0 +1,12 @@
+{
+    "@odata.etag": "\"51582062\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00B000/Controllers",
+    "@odata.type": "#StorageControllerCollection.StorageControllerCollection",
+    "Name": "Storage Controller Collection",
+    "Members@odata.count": 1,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DE00B000/Controllers/0"
+        }
+    ]
+}

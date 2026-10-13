@@ -1,0 +1,59 @@
+{
+    "@odata.etag": "\"3c658ec\"",
+    "@odata.id": "/redfish/v1/Chassis/DE00B000/Drives/3",
+    "@odata.type": "#Drive.v1_17_0.Drive",
+    "Id": "3",
+    "Name": "1.60TB 64G NVMe SSD",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "Links": {
+        "Storage": {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DE00B000"
+        },
+        "Chassis": {
+            "@odata.id": "/redfish/v1/Chassis/DE00B000"
+        },
+        "Volumes@odata.count": 1,
+        "Volumes": [
+            {
+                "@odata.id": "/redfish/v1/Systems/1/Storage/DE00B000/Volumes/239"
+            }
+        ]
+    },
+    "PhysicalLocation": {
+        "PartLocation": {
+            "ServiceLabel": "Slot=18:Port=1:Box=1:Bay=6",
+            "LocationType": "Bay",
+            "LocationOrdinalValue": 6
+        }
+    },
+    "BlockSizeBytes": 512,
+    "CapableSpeedGbs": 64.0,
+    "CapacityBytes": 1600321314816,
+    "EncryptionAbility": "None",
+    "FailurePredicted": false,
+    "Identifiers": [
+        {
+            "DurableName": "73:C8:2B:03:E3:8E:E3:8C",
+            "DurableNameFormat": "EUI"
+        }
+    ],
+    "MediaType": "SSD",
+    "Model": "MO001600KXVYH",
+    "Multipath": false,
+    "NegotiatedSpeedGbs": 64.0,
+    "Operations": [],
+    "PredictedMediaLifeLeftPercent": 100.0,
+    "Protocol": "NVMe",
+    "Revision": "HPK1",
+    "SerialNumber": "8E10A08401C3",
+    "StatusIndicator": "OK",
+    "@Redfish.WriteableProperties": [
+        "LocationIndicatorActive"
+    ],
+    "HotspareType": "None",
+    "LocationIndicatorActive": false,
+    "WriteCacheEnabled": false
+}

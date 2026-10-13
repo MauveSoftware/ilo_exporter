@@ -1,0 +1,45 @@
+{
+    "@odata.etag": "\"3752ed32\"",
+    "@odata.id": "/redfish/v1/Chassis/DE00B000",
+    "@odata.type": "#Chassis.v1_23_0.Chassis",
+    "Id": "DE00B000",
+    "Name": "8 SFF 24G x4NVMe/SAS UBM6 BC BP",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "ChassisType": "StorageEnclosure",
+    "Drives": {
+        "@odata.id": "/redfish/v1/Chassis/DE00B000/Drives"
+    },
+    "Links": {
+        "ContainedBy": {
+            "@odata.id": "/redfish/v1/Chassis/1"
+        },
+        "Switches@odata.count": 1,
+        "Switches": [
+            {
+                "@odata.id": "/redfish/v1/Fabrics/DE00B000/Switches/1"
+            }
+        ],
+        "Storage@odata.count": 1,
+        "Storage": [
+            {
+                "@odata.id": "/redfish/v1/Systems/1/Storage/DE00B000"
+            }
+        ]
+    },
+    "Location": {
+        "PartLocation": {
+            "ServiceLabel": "Slot=18:Port=1:Box=1",
+            "LocationType": "Backplane",
+            "LocationOrdinalValue": 1
+        }
+    },
+    "Manufacturer": "HPE",
+    "Model": "8 SFF 24G x4NVMe/SAS UBM6 BC BP",
+    "PartNumber": "P20881-002",
+    "SparePartNumber": "P39780-001",
+    "SerialNumber": "",
+    "Version": "0C"
+}

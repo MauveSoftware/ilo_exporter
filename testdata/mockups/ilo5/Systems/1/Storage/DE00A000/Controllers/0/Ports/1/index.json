@@ -1,0 +1,26 @@
+{
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Controllers/0/Ports/1",
+    "@odata.type": "#Port.v1_9_0.Port",
+    "Id": "1",
+    "Name": "Port=2I",
+    "Location": {
+        "PartLocation": {
+            "LocationType": "Connector",
+            "ServiceLabel": "Slot=12:Port=2I",
+            "LocationOrdinalValue": 2
+        }
+    },
+    "MaxSpeedGbps": 180.0,
+    "CurrentSpeedGbps": 12.0,
+    "PortId": "2I",
+    "PortProtocol": "MultiProtocol",
+    "PortType": "BidirectionalPort",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled",
+        "Conditions": []
+    },
+    "Width": 8,
+    "ActiveWidth": 2,
+    "@odata.etag": "\"F1091CF6\""
+}
