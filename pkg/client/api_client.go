@@ -51,8 +51,7 @@ func IsFatal(err error) bool {
 type APIClient struct {
 	url        string
 	hostName   string
-	username   string
-	password   string
+	auth       Authenticator
 	tracer     trace.Tracer
 	client     *http.Client
 	logger     *slog.Logger
@@ -71,6 +70,13 @@ type ClientOption func(*APIClient)
 func WithHTTPClient(c *http.Client) ClientOption {
 	return func(cl *APIClient) {
 		cl.client = c
+	}
+}
+
+// WithAuthenticator sets the authenticator (default: basic authentication)
+func WithAuthenticator(a Authenticator) ClientOption {
+	return func(cl *APIClient) {
+		cl.auth = a
 	}
 }
 
@@ -93,8 +99,7 @@ func NewClient(hostName, username, password string, tracer trace.Tracer, opts ..
 	cl := &APIClient{
 		url:      fmt.Sprintf("https://%s/redfish/v1/", hostName),
 		hostName: hostName,
-		username: username,
-		password: password,
+		auth:     &BasicAuth{Username: username, Password: password},
 		client:   http.DefaultClient,
 		tracer:   tracer,
 		logger:   slog.New(slog.DiscardHandler),
@@ -184,27 +189,12 @@ func (cl *APIClient) do(ctx context.Context, uri string) ([]byte, error) {
 		return nil, fmt.Errorf("GET %s: %w", uri, context.Cause(ctx))
 	}
 
-	cl.logger.Debug("GET", "uri", uri)
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, uri, nil)
+	resp, err := cl.send(ctx, uri)
 	if err != nil {
 		return nil, err
 	}
-
-	req.SetBasicAuth(cl.username, cl.password)
-	req.Header.Set("Accept", "application/json")
-	req.Header.Set("OData-Version", "4.0")
-
-	cl.requests.Add(1)
-	resp, err := cl.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		// the connection can only be reused if the body was read completely
-		_, _ = io.Copy(io.Discard, io.LimitReader(resp.Body, 64<<10))
-		_ = resp.Body.Close()
-	}()
+	// the connection can only be reused if the body was read completely
+	defer drainAndClose(resp)
 
 	if resp.StatusCode >= 300 {
 		return nil, &HTTPError{StatusCode: resp.StatusCode, URL: uri}
@@ -224,4 +214,35 @@ func (cl *APIClient) do(ctx context.Context, uri string) ([]byte, error) {
 	}
 
 	return b, nil
+}
+
+// send sends a GET request. A request rejected with 401 is retried once if the authenticator renewed its credentials.
+func (cl *APIClient) send(ctx context.Context, uri string) (*http.Response, error) {
+	for attempt := 0; ; attempt++ {
+		cl.logger.Debug("GET", "uri", uri)
+
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, uri, nil)
+		if err != nil {
+			return nil, err
+		}
+
+		if err := cl.auth.Apply(ctx, req); err != nil {
+			return nil, err
+		}
+		req.Header.Set("Accept", "application/json")
+		req.Header.Set("OData-Version", "4.0")
+
+		cl.requests.Add(1)
+		resp, err := cl.client.Do(req)
+		if err != nil {
+			return nil, err
+		}
+
+		if resp.StatusCode == http.StatusUnauthorized && attempt == 0 && cl.auth.Unauthorized(req) {
+			drainAndClose(resp)
+			continue
+		}
+
+		return resp, nil
+	}
 }

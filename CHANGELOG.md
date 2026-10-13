@@ -54,6 +54,11 @@
   `PowerSubsystem` and `EnvironmentMetrics` instead, using the same metric names and labels. Average, minimum and
   maximum power consumption are not available from these resources. As long as an iLO provides the deprecated
   resources (iLO 5, 6 and 7 up to at least v1.25), they are used since they contain all metrics in two requests.
+- `-api.auth=session` authenticates using one Redfish session per iLO instead of HTTP basic authentication
+  (default `basic`). With basic authentication iLO creates and deletes a session for every request, which is
+  expensive especially for directory (LDAP/AD) accounts. Sessions are created on first use, renewed when expired
+  and deleted on shutdown or when the host is evicted from the cache (`-api.cache-max-hosts`). Session
+  authentication is required for iLOs with basic authentication disabled.
 
 ### Changed
 

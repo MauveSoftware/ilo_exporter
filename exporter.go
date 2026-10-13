@@ -42,6 +42,11 @@ type exporter struct {
 	states   *lru.Cache[hostState]
 	statesMu sync.Mutex
 
+	// sessions contains the session per host if session authentication is used (nil: basic authentication)
+	sessions   *lru.Cache[*client.SessionAuth]
+	sessionsMu sync.Mutex
+	logouts    sync.WaitGroup
+
 	// maxTimeout is the maximum duration of a scrape (0: unlimited)
 	maxTimeout time.Duration
 	// timeoutOffset is subtracted from the scrape timeout sent by Prometheus
@@ -112,6 +117,9 @@ func (e *exporter) handleMetricsRequest(w http.ResponseWriter, r *http.Request) 
 		client.WithHTTPClient(e.httpClient),
 		client.WithLogger(e.logger.With("host", host)),
 	}
+	if e.sessions != nil {
+		opts = append(opts, client.WithAuthenticator(e.session(host)))
+	}
 	if e.logBodies {
 		opts = append(opts, client.WithResponseLogging())
 	}
@@ -144,6 +152,58 @@ func (e *exporter) handleMetricsRequest(w http.ResponseWriter, r *http.Request) 
 
 	e.observe(host, col.Result(), cl.Requests())
 	return nil
+}
+
+// enableSessions enables session authentication, keeping sessions for at most maxHosts hosts
+func (e *exporter) enableSessions(maxHosts int) {
+	e.sessions = lru.New(maxHosts, lru.WithEvictCallback(func(_ string, a *client.SessionAuth) {
+		// called with the cache locked, so the session is deleted asynchronously
+		e.logouts.Go(func() {
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+
+			if err := a.Close(ctx); err != nil {
+				e.logger.Debug("Could not delete session", "err", err)
+			}
+		})
+	}))
+}
+
+// session returns the session authenticator of a host
+func (e *exporter) session(host string) *client.SessionAuth {
+	key := topology.Key(host)
+
+	e.sessionsMu.Lock()
+	defer e.sessionsMu.Unlock()
+
+	if a, found := e.sessions.Get(key); found {
+		return a
+	}
+
+	a := client.NewSessionAuth(host, e.username, e.password, e.httpClient, e.logger.With("host", host))
+	e.sessions.Set(key, a)
+	return a
+}
+
+// close releases resources held on the iLOs (sessions)
+func (e *exporter) close(ctx context.Context) {
+	if e.sessions == nil {
+		return
+	}
+
+	e.sessions.Purge()
+
+	done := make(chan struct{})
+	go func() {
+		e.logouts.Wait()
+		close(done)
+	}()
+
+	select {
+	case <-done:
+	case <-ctx.Done():
+		e.logger.Warn("Could not delete all sessions", "err", ctx.Err())
+	}
 }
 
 // hostState is the state of the last scrape of a host
