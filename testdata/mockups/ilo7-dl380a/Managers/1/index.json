@@ -1,0 +1,333 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Manager.Manager",
+    "@odata.etag": "W/\"3246203602\"",
+    "@odata.id": "/redfish/v1/Managers/1",
+    "@odata.type": "#Manager.v1_19_1.Manager",
+    "Id": "1",
+    "Actions": {
+        "#Manager.Reset": {
+            "ResetType@Redfish.AllowableValues": [
+                "ForceRestart",
+                "GracefulRestart"
+            ],
+            "target": "/redfish/v1/Managers/1/Actions/Manager.Reset"
+        }
+    },
+    "CommandShell": {
+        "ConnectTypesSupported": [
+            "SSH",
+            "Oem"
+        ],
+        "MaxConcurrentSessions": 9,
+        "ServiceEnabled": true
+    },
+    "DateTime": "2025-07-16T23:25:43Z",
+    "DateTimeLocalOffset": "+00:00",
+    "DedicatedNetworkPorts": {
+        "@odata.id": "/redfish/v1/Managers/1/DedicatedNetworkPorts"
+    },
+    "EthernetInterfaces": {
+        "@odata.id": "/redfish/v1/Managers/1/EthernetInterfaces"
+    },
+    "FirmwareVersion": "1.13.01 May 13 2025",
+    "GraphicalConsole": {
+        "ConnectTypesSupported": [
+            "KVMIP"
+        ],
+        "MaxConcurrentSessions": 24,
+        "ServiceEnabled": true
+    },
+    "HostInterfaces": {
+        "@odata.id": "/redfish/v1/Managers/1/HostInterfaces"
+    },
+    "Links": {
+        "ManagerInChassis": {
+            "@odata.id": "/redfish/v1/Chassis/1"
+        },
+        "ManagerForServers": [
+            {
+                "@odata.id": "/redfish/v1/Systems/1"
+            }
+        ],
+        "ManagerForChassis": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/1"
+            }
+        ]
+    },
+    "LogServices": {
+        "@odata.id": "/redfish/v1/Managers/1/LogServices"
+    },
+    "ManagerType": "BMC",
+    "Model": "iLO 7",
+    "Name": "Manager",
+    "NetworkProtocol": {
+        "@odata.id": "/redfish/v1/Managers/1/NetworkProtocol"
+    },
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeiLO.HpeiLO",
+            "@odata.type": "#HpeiLO.v2_15_0.HpeiLO",
+            "Actions": {
+                "#HpeiLO.ClearHotKeys": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.ClearHotKeys"
+                },
+                "#HpeiLO.ClearNVRAM": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.ClearNVRAM"
+                },
+                "#HpeiLO.ClearRestApiState": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.ClearRestApiState"
+                },
+                "#HpeiLO.DisableCloudConnect": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.DisableCloudConnect"
+                },
+                "#HpeiLO.DisableiLOFunctionality": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.DisableiLOFunctionality"
+                },
+                "#HpeiLO.EnableCloudConnect": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.EnableCloudConnect"
+                },
+                "#HpeiLO.RequestFirmwareAndOsRecovery": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.RequestFirmwareAndOsRecovery"
+                },
+                "#HpeiLO.ResetToFactoryDefaults": {
+                    "ResetType@Redfish.AllowableValues": [
+                        "Default"
+                    ],
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.ResetToFactoryDefaults"
+                },
+                "#HpeiLO.RetryCloudConnect": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.RetryCloudConnect"
+                }
+            },
+            "ClearRestApiStatus": "DataPresent",
+            "CloudConnect": {
+                "CloudConnectStatus": "NotEnabled",
+                "ConnectionType": "Direct",
+                "ExtendedStatusInfo": {
+                    "NetworkConfig": "NotTested",
+                    "WebConnectivity": "NotTested",
+                    "iLOConfigForCloudConnect": "NotTested"
+                },
+                "FailReason": "NotTested",
+                "InsightInfo": {
+                    "TextEn": "",
+                    "TextJa": "",
+                    "TextZh": ""
+                },
+                "WorkspaceId": ""
+            },
+            "ConfigurationLimitations": "None",
+            "ConfigurationSettings": "Current",
+            "Firmware": {
+                "Current": {
+                    "BuildNumber": 1,
+                    "BuildNumberString": "1",
+                    "Date": "May 13 2025",
+                    "DebugBuild": false,
+                    "MajorVersion": 1,
+                    "MinorVersion": 13,
+                    "ReleaseBuild": true,
+                    "VersionString": "1.13.01 May 13 2025"
+                }
+            },
+            "FrontPanelUSB": {
+                "State": "Ready"
+            },
+            "IdleConnectionTimeoutMinutes": 30,
+            "IntegratedRemoteConsole": {
+                "HotKeys": [
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-T"
+                    },
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-U"
+                    },
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-V"
+                    },
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-W"
+                    },
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-X"
+                    },
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-Y"
+                    }
+                ],
+                "LockKey": {
+                    "CustomKeySequence": [
+                        "NONE",
+                        "NONE",
+                        "NONE",
+                        "NONE",
+                        "NONE"
+                    ],
+                    "LockOption": "Disabled"
+                },
+                "TrustedCertificateRequired": false
+            },
+            "License": {
+                "LicenseKey": "XXXXX-XXXXX-XXXXX-XXXXX-R69J6",
+                "LicenseString": "iLO Advanced",
+                "LicenseType": "Perpetual"
+            },
+            "Links": {
+                "DateTimeService": {
+                    "@odata.id": "/redfish/v1/Managers/1/DateTime"
+                },
+                "LicenseService": {
+                    "@odata.id": "/redfish/v1/Managers/1/LicenseService"
+                },
+                "SNMPService": {
+                    "@odata.id": "/redfish/v1/Managers/1/SnmpService"
+                },
+                "ActiveHealthSystem": {
+                    "@odata.id": "/redfish/v1/Managers/1/ActiveHealthSystem"
+                },
+                "SecurityService": {
+                    "@odata.id": "/redfish/v1/Managers/1/SecurityService"
+                },
+                "BackupRestoreService": {
+                    "@odata.id": "/redfish/v1/Managers/1/BackupRestoreService"
+                },
+                "RemoteSupport": {
+                    "@odata.id": "/redfish/v1/Managers/1/RemoteSupportService"
+                },
+                "GUIService": {
+                    "@odata.id": "/redfish/v1/Managers/1/GUIService"
+                },
+                "VSPLogLocation": {
+                    "extref": "/sol.log.gz"
+                },
+                "Thumbnail": {
+                    "extref": "/images/thumbnail.bmp"
+                }
+            },
+            "MulticastConfig": {
+                "IPv6MulticastScope": "Site",
+                "MulticastAnnouncementInterval": 600,
+                "MulticastDiscovery": "Enabled",
+                "MulticastTimeToLive": 5
+            },
+            "PersistentMouseKeyboardEnabled": false,
+            "PhysicalMonitorHealthStatusEnabled": true,
+            "RemoteConsoleThumbnailEnabled": true,
+            "SerialCLISpeed": 115200,
+            "SerialCLIStatus": "Enabled",
+            "SerialCLIUART": "Present",
+            "VSPDlLoggingEnabled": false,
+            "VSPLogDownloadEnabled": false,
+            "VideoPresenceDetectOverride": true,
+            "VideoPresenceDetectOverrideSupported": true,
+            "VirtualNICEnabled": true,
+            "WebGuiEnabled": true,
+            "iLOCPLDSpecVersion": "0x29",
+            "iLOFunctionalityEnabled": true,
+            "iLOFunctionalityRequired": false,
+            "iLOIPduringPOSTEnabled": true,
+            "iLORBSUEnabled": true,
+            "iLOSelfTestResults": [
+                {
+                    "Notes": "",
+                    "SelfTestName": "EmbeddedFlash",
+                    "Status": "OK"
+                },
+                {
+                    "Notes": "",
+                    "SelfTestName": "EEPROM",
+                    "Status": "OK"
+                },
+                {
+                    "Notes": "",
+                    "SelfTestName": "HostRom",
+                    "Status": "OK"
+                },
+                {
+                    "Notes": "",
+                    "SelfTestName": "SupportedHost",
+                    "Status": "OK"
+                },
+                {
+                    "Notes": "HPE ProLiant Compute DL380a Gen12 System Programmable Logic Device 0x10",
+                    "SelfTestName": "CPLDPAL0",
+                    "Status": "Informational"
+                },
+                {
+                    "Notes": "",
+                    "SelfTestName": "ASICFuses",
+                    "Status": "OK"
+                }
+            ],
+            "iLOServicePort": {
+                "MassStorageAuthenticationRequired": false,
+                "USBEthernetAdaptersEnabled": true,
+                "USBFlashDriveEnabled": true,
+                "iLOServicePortEnabled": true
+            }
+        }
+    },
+    "SerialConsole": {
+        "ConnectTypesSupported": [
+            "SSH",
+            "IPMI",
+            "Oem"
+        ],
+        "MaxConcurrentSessions": 13,
+        "ServiceEnabled": true
+    },
+    "SerialInterfaces": {
+        "@odata.id": "/redfish/v1/Managers/1/SerialInterfaces"
+    },
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "UUID": "5f8dccfb-0605-58a8-8b20-79c2be74df39",
+    "VirtualMedia": {
+        "@odata.id": "/redfish/v1/Managers/1/VirtualMedia"
+    }
+}

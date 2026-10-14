@@ -1,0 +1,36 @@
+{
+    "@odata.etag": "W/\"5867b5b8\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000",
+    "@odata.type": "#Storage.v1_15_0.Storage",
+    "Id": "DE010000",
+    "Name": "HPE NS204i-u Gen11 Boot Controller",
+    "Actions": {
+        "#Storage.ResetToDefaults": {
+            "target": "/redfish/v1/Systems/1/Storage/DE010000/Actions/Storage.ResetToDefaults",
+            "ResetType@Redfish.AllowableValues": [
+                "ResetAll",
+                "PreserveVolumes"
+            ]
+        }
+    },
+    "Status": {
+        "State": "Enabled",
+        "HealthRollup": "OK"
+    },
+    "AutoVolumeCreate": "RAID1",
+    "Drives@odata.count": 2,
+    "Drives": [
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000/Drives/1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000/Drives/2"
+        }
+    ],
+    "Volumes": {
+        "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000/Volumes"
+    },
+    "Controllers": {
+        "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000/Controllers"
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"3209854603\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/19",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "19",
+    "Name": "26-P/S 3 Inlet",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 1,
+            "LocationYmm": 14
+        }
+    },
+    "PhysicalContext": "PowerSupply",
+    "Reading": 33,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

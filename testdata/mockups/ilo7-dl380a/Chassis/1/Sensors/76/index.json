@@ -1,0 +1,31 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"2534740147\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/76",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "76",
+    "Name": "88-Board Inlet",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 7,
+            "LocationYmm": 7
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 25,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {
+            "Reading": 90
+        },
+        "UpperFatal": {
+            "Reading": 95
+        }
+    }
+}

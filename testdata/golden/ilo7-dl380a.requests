@@ -1,0 +1,12 @@
+GET /redfish/v1/Chassis/1/Power
+GET /redfish/v1/Chassis/1/Thermal
+GET /redfish/v1/Managers/1
+GET /redfish/v1/Systems/1
+GET /redfish/v1/Systems/1/Memory?$expand=.
+GET /redfish/v1/Systems/1/Processors?$expand=.
+GET /redfish/v1/Systems/1/Storage
+GET /redfish/v1/Systems/1/Storage/DA000000?$expand=.
+GET /redfish/v1/Systems/1/Storage/DA000001?$expand=.
+GET /redfish/v1/Systems/1/Storage/DA000002?$expand=.
+GET /redfish/v1/Systems/1/Storage/DA000003?$expand=.
+GET /redfish/v1/Systems/1/Storage/DE010000?$expand=.

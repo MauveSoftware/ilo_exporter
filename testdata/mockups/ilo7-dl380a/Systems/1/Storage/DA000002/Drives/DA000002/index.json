@@ -1,0 +1,72 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Drive.Drive",
+    "@odata.etag": "W/\"994283769\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DA000002/Drives/DA000002/",
+    "@odata.type": "#Drive.v1_16_0.Drive",
+    "Id": "DA000002",
+    "Actions": {
+        "#Drive.Reset": {
+            "ResetValue@Redfish.AllowableValues": [
+                "ForceOff",
+                "ForceOn",
+                "PowerCycle"
+            ],
+            "target": "/redfish/v1/Systems/1/Storage/DA000002/Drives/DA000002/Actions/Drive.Reset/"
+        }
+    },
+    "CapacityBytes": 3200631791616,
+    "EncryptionStatus": "Unencrypted",
+    "FailurePredicted": false,
+    "Identifiers": [
+        {
+            "DurableName": "8C:E3:8E:E3:06:D0:C7:C5",
+            "DurableNameFormat": "EUI"
+        }
+    ],
+    "Location": [
+        {
+            "Info": "1:2",
+            "InfoFormat": "Box:Bay"
+        }
+    ],
+    "LocationIndicatorActive": false,
+    "Manufacturer": "Kioxia",
+    "MediaType": "SSD",
+    "Model": "MV003200LXUJK",
+    "Name": "Kioxia 3.00TB 128G NVME SSD",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeiLODriveExt.HpeiLODriveExt",
+            "@odata.type": "#HpeiLODriveExt.v2_0_1.HpeiLODriveExt",
+            "CurrentTemperatureCelsius": 22,
+            "DriveStatus": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "HealthUpdated": "Dynamic",
+            "NVMeId": "1e0f_MV003200LXUJK_1FC0A0BT0C93",
+            "PowerOnHours": 628,
+            "TemperatureStatus": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "WearStatus": "OK"
+        }
+    },
+    "Operations": [],
+    "PhysicalLocation": {
+        "PartLocation": {
+            "LocationOrdinalValue": 2,
+            "LocationType": "Bay",
+            "ServiceLabel": "Embedded:Port=10A:Box=1:Bay=2"
+        }
+    },
+    "PredictedMediaLifeLeftPercent": 100,
+    "Protocol": "NVMe",
+    "Revision": "HPK6",
+    "SerialNumber": "1FC0A0BT0C93",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    }
+}

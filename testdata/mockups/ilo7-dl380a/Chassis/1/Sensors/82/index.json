@@ -1,0 +1,33 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"1182596630\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/82",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "82",
+    "Name": "64.1-PCI 25-I/O module",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 14,
+            "LocationYmm": 2
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 43,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {
+            "Reading": 100
+        },
+        "UpperCritical": {
+            "Reading": 105
+        },
+        "UpperFatal": {
+            "Reading": 115
+        }
+    }
+}

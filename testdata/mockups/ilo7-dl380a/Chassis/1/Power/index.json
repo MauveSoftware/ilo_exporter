@@ -1,0 +1,366 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Power.Power",
+    "@odata.etag": "W/\"1057222023\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Power",
+    "@odata.type": "#Power.v1_7_1.Power",
+    "Id": "Power",
+    "Name": "PowerMetrics",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpePowerMetricsExt.HpePowerMetricsExt",
+            "@odata.type": "#HpePowerMetricsExt.v2_6_0.HpePowerMetricsExt",
+            "BrownoutRecoveryEnabled": true,
+            "Domains": [
+                {
+                    "DomainName": "System",
+                    "HighEfficiencyMode": "Balanced",
+                    "PowerSupplies": [
+                        {
+                            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/0"
+                        },
+                        {
+                            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/1"
+                        }
+                    ],
+                    "PowerSupplyRedundancy": "Redundant",
+                    "Status": {
+                        "Health": "OK"
+                    }
+                },
+                {
+                    "DomainName": "GPU1",
+                    "HighEfficiencyMode": "Balanced",
+                    "PowerSupplies": [
+                        {
+                            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/2"
+                        },
+                        {
+                            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/4"
+                        },
+                        {
+                            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/6"
+                        }
+                    ],
+                    "Status": {
+                        "Health": "OK"
+                    }
+                },
+                {
+                    "DomainName": "GPU2",
+                    "HighEfficiencyMode": "Balanced",
+                    "PowerSupplies": [
+                        {
+                            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/3"
+                        },
+                        {
+                            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/5"
+                        },
+                        {
+                            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/7"
+                        }
+                    ],
+                    "Status": {
+                        "Health": "OK"
+                    }
+                }
+            ],
+            "HasCpuPowerMetering": true,
+            "HasDimmPowerMetering": true,
+            "HasFanPowerMetering": true,
+            "HasGpuPowerMetering": true,
+            "HasPowerMetering": true,
+            "Links": {
+                "PowerMeter": {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power/PowerMeter"
+                },
+                "FastPowerMeter": {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power/FastPowerMeter"
+                },
+                "SlowPowerMeter": {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power/SlowPowerMeter"
+                }
+            },
+            "MinimumSafelyAchievableCap": null,
+            "MinimumSafelyAchievableCapValid": false,
+            "PowerMetric": {
+                "AmbTemp": 16,
+                "Cap": 0,
+                "CpuCapLim": 0,
+                "CpuMax": 0,
+                "CpuPwrSavLim": 100,
+                "CpuWatts": 176,
+                "DimmWatts": 36,
+                "GpuWatts": 0,
+                "PrMode": "dyn",
+                "PunCap": false,
+                "UnachCap": false
+            },
+            "SNMPPowerThresholdAlert": {
+                "DurationInMin": 0,
+                "ThresholdWatts": 0,
+                "Trigger": "Disabled"
+            }
+        }
+    },
+    "PowerControl": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerControl/0",
+            "MemberId": "0",
+            "PowerCapacityWatts": 12000,
+            "PowerConsumedWatts": 968,
+            "PowerLimit": {
+                "LimitInWatts": null
+            },
+            "PowerMetrics": {
+                "AverageConsumedWatts": 967,
+                "IntervalInMin": 20,
+                "MaxConsumedWatts": 971,
+                "MinConsumedWatts": 966
+            }
+        }
+    ],
+    "PowerSupplies": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/0",
+            "FirmwareVersion": "1.49.85",
+            "LastPowerOutputWatts": 220,
+            "LineInputVoltage": 208,
+            "LineInputVoltageType": "ACHighLine",
+            "Manufacturer": "DELTA",
+            "MemberId": "0",
+            "Model": "P67252-B21",
+            "Name": "HpeServerPowerSupply",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "AveragePowerOutputWatts": 220,
+                    "BayNumber": 1,
+                    "Domain": "System",
+                    "HotplugCapable": true,
+                    "MaxPowerOutputWatts": 219,
+                    "Mismatched": false,
+                    "PowerSupplyStatus": {
+                        "State": "Ok"
+                    },
+                    "iPDUCapable": false
+                }
+            },
+            "PowerCapacityWatts": 2400,
+            "PowerSupplyType": "Unknown",
+            "SerialNumber": "5YFCV0D4DKS1N4",
+            "SparePartNumber": "P68454-001",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/1",
+            "FirmwareVersion": "1.49.85",
+            "LastPowerOutputWatts": 220,
+            "LineInputVoltage": 208,
+            "LineInputVoltageType": "ACHighLine",
+            "Manufacturer": "DELTA",
+            "MemberId": "1",
+            "Model": "P67252-B21",
+            "Name": "HpeServerPowerSupply",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "AveragePowerOutputWatts": 220,
+                    "BayNumber": 2,
+                    "Domain": "System",
+                    "HotplugCapable": true,
+                    "MaxPowerOutputWatts": 221,
+                    "Mismatched": false,
+                    "PowerSupplyStatus": {
+                        "State": "Ok"
+                    },
+                    "iPDUCapable": false
+                }
+            },
+            "PowerCapacityWatts": 2400,
+            "PowerSupplyType": "Unknown",
+            "SerialNumber": "5YFCV0D4DKS1MV",
+            "SparePartNumber": "P68454-001",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/2",
+            "FirmwareVersion": "1.49.85",
+            "LastPowerOutputWatts": 218,
+            "LineInputVoltage": 208,
+            "LineInputVoltageType": "ACHighLine",
+            "Manufacturer": "DELTA",
+            "MemberId": "2",
+            "Model": "P67252-B21",
+            "Name": "HpeServerPowerSupply",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "AveragePowerOutputWatts": 218,
+                    "BayNumber": 3,
+                    "Domain": "GPU1",
+                    "HotplugCapable": true,
+                    "MaxPowerOutputWatts": 216,
+                    "Mismatched": false,
+                    "PowerSupplyStatus": {
+                        "State": "Ok"
+                    },
+                    "iPDUCapable": false
+                }
+            },
+            "PowerCapacityWatts": 2400,
+            "PowerSupplyType": "Unknown",
+            "SerialNumber": "5YFCV0D4DKS1N3",
+            "SparePartNumber": "P68454-001",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/3",
+            "FirmwareVersion": "1.49.85",
+            "LastPowerOutputWatts": 95,
+            "LineInputVoltage": 208,
+            "LineInputVoltageType": "ACHighLine",
+            "Manufacturer": "DELTA",
+            "MemberId": "3",
+            "Model": "P67252-B21",
+            "Name": "HpeServerPowerSupply",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "AveragePowerOutputWatts": 95,
+                    "BayNumber": 4,
+                    "Domain": "GPU2",
+                    "HotplugCapable": true,
+                    "MaxPowerOutputWatts": 95,
+                    "Mismatched": false,
+                    "PowerSupplyStatus": {
+                        "State": "Ok"
+                    },
+                    "iPDUCapable": false
+                }
+            },
+            "PowerCapacityWatts": 2400,
+            "PowerSupplyType": "Unknown",
+            "SerialNumber": "5YFCV0D4DKS1MY",
+            "SparePartNumber": "P68454-001",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/4",
+            "FirmwareVersion": "1.49.85",
+            "LastPowerOutputWatts": 215,
+            "LineInputVoltage": 206,
+            "LineInputVoltageType": "ACHighLine",
+            "Manufacturer": "DELTA",
+            "MemberId": "4",
+            "Model": "P67252-B21",
+            "Name": "HpeServerPowerSupply",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "AveragePowerOutputWatts": 215,
+                    "BayNumber": 5,
+                    "Domain": "GPU1",
+                    "HotplugCapable": true,
+                    "MaxPowerOutputWatts": 214,
+                    "Mismatched": false,
+                    "PowerSupplyStatus": {
+                        "State": "Ok"
+                    },
+                    "iPDUCapable": false
+                }
+            },
+            "PowerCapacityWatts": 2400,
+            "PowerSupplyType": "Unknown",
+            "SerialNumber": "5YFCV0D4DKS1MK",
+            "SparePartNumber": "P68454-001",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/5",
+            "MemberId": "5",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "BayNumber": 6
+                }
+            },
+            "Status": {
+                "Health": "Warning",
+                "State": "Absent"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/6",
+            "MemberId": "6",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "BayNumber": 7
+                }
+            },
+            "Status": {
+                "Health": "Warning",
+                "State": "Absent"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/7",
+            "MemberId": "7",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "BayNumber": 8
+                }
+            },
+            "Status": {
+                "Health": "Warning",
+                "State": "Absent"
+            }
+        }
+    ],
+    "Redundancy": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#Redundancy/0",
+            "MaxNumSupported": 2,
+            "MemberId": "0",
+            "MinNumNeeded": 2,
+            "Mode": "Failover",
+            "Name": "SystemPowerSupply Redundancy",
+            "RedundancySet": [
+                {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/0"
+                },
+                {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/1"
+                }
+            ],
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        }
+    ]
+}

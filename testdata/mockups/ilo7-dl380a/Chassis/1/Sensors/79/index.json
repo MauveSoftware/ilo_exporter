@@ -1,0 +1,31 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"1955952775\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/79",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "79",
+    "Name": "93-BMC",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 11,
+            "LocationYmm": 14
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 57,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {
+            "Reading": 110
+        },
+        "UpperFatal": {
+            "Reading": 115
+        }
+    }
+}

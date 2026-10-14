@@ -1,0 +1,26 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"2900411015\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/28",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "28",
+    "Name": "35-P/S 8",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 14,
+            "LocationYmm": 14
+        }
+    },
+    "PhysicalContext": "PowerSupply",
+    "Reading": 0,
+    "Status": {
+        "State": "Absent"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

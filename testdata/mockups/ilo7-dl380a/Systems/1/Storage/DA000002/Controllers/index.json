@@ -1,0 +1,14 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#StorageControllerCollection.StorageControllerCollection",
+    "@odata.etag": "W/\"2859287216\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DA000002/Controllers",
+    "@odata.type": "#StorageControllerCollection.StorageControllerCollection",
+    "Description": "Storage Controllers associated with this storage subsystem.",
+    "Name": "Storage Controller Collection",
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DA000002/Controllers/0"
+        }
+    ],
+    "Members@odata.count": 1
+}

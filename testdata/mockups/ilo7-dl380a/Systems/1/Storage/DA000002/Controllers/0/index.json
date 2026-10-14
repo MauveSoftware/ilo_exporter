@@ -1,0 +1,39 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#StorageController.StorageController",
+    "@odata.etag": "W/\"4215684689\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DA000002/Controllers/0",
+    "@odata.type": "#StorageController.v1_0_0.StorageController",
+    "Id": "0",
+    "Description": "NVMe Storage Controller",
+    "FirmwareVersion": "HPK6",
+    "Identifiers": [
+        {
+            "DurableName": "E3:8E:E3:8C:D0:06:C5:C7",
+            "DurableNameFormat": "EUI"
+        }
+    ],
+    "Location": {
+        "PartLocation": {
+            "LocationOrdinalValue": 2,
+            "LocationType": "Bay",
+            "ServiceLabel": "Box 1 Bay 2"
+        }
+    },
+    "Model": "MV003200LXUJK",
+    "Name": "CM7",
+    "PCIeInterface": {
+        "LanesInUse": 4,
+        "MaxLanes": 4
+    },
+    "SerialNumber": "1FC0A0BT0C93",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "SupportedControllerProtocols": [
+        "PCIe"
+    ],
+    "SupportedDeviceProtocols": [
+        "NVMe"
+    ]
+}

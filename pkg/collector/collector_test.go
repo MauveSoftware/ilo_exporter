@@ -31,7 +31,7 @@ func newTestClient(t *testing.T, srv *fakeilo.Server) *client.APIClient {
 
 // TestDescribedMetrics checks with a pedantic registry that all collected metrics are described consistently
 func TestDescribedMetrics(t *testing.T) {
-	for _, gen := range []string{"ilo5", "ilo6", "ilo7"} {
+	for _, gen := range []string{"ilo5", "ilo6", "ilo7", "ilo7-dl380a"} {
 		t.Run(gen, func(t *testing.T) {
 			srv := fakeilo.New(t, filepath.Join("..", "..", "testdata", "mockups", gen))
 

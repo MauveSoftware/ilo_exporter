@@ -30,6 +30,8 @@ var generations = map[string]string{
 	"ilo5": "DL360 Gen10 Plus, iLO 5 v3.11",
 	"ilo6": "DL380a Gen11, iLO 6 v1.66",
 	"ilo7": "DL360 Gen12, iLO 7 v1.14",
+	// NVMe drives directly attached to the system (managed by iLO, not a storage controller)
+	"ilo7-dl380a": "DL380a Gen12, iLO 7 v1.13.01",
 }
 
 const (

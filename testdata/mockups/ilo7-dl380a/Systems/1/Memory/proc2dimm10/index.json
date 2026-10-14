@@ -1,0 +1,61 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Memory.Memory",
+    "@odata.etag": "W/\"1235915338\"",
+    "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm10",
+    "@odata.type": "#Memory.v1_14_0.Memory",
+    "Id": "proc2dimm10",
+    "BaseModuleType": "RDIMM",
+    "BusWidthBits": 80,
+    "CacheSizeMiB": 0,
+    "CapacityMiB": 98304,
+    "DataWidthBits": 64,
+    "DeviceLocator": "PROC 2 DIMM 10",
+    "ErrorCorrection": "MultiBitECC",
+    "LogicalSizeMiB": 0,
+    "Manufacturer": "Hynix",
+    "MemoryDeviceType": "DDR5",
+    "MemoryLocation": {
+        "Channel": 1,
+        "MemoryController": 9,
+        "Slot": 10,
+        "Socket": 2
+    },
+    "MemoryMedia": [
+        "DRAM"
+    ],
+    "MemoryType": "DRAM",
+    "Name": "proc2dimm10",
+    "NonVolatileSizeMiB": 0,
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeMemoryExt.HpeMemoryExt",
+            "@odata.type": "#HpeMemoryExt.v2_5_0.HpeMemoryExt",
+            "Attributes": [
+                "HpeSmartMemory"
+            ],
+            "BaseModuleType": "RDIMM",
+            "DIMMManufacturingDate": "2445",
+            "DIMMStatus": "GoodInUse",
+            "MaxOperatingSpeedMTs": 6400,
+            "MinimumVoltageVoltsX10": 11,
+            "PartNumber": "P69722-0B1",
+            "VendorName": "SK Hynix"
+        }
+    },
+    "OperatingMemoryModes": [
+        "Volatile"
+    ],
+    "OperatingSpeedMhz": 6400,
+    "PartNumber": "HMCGM4MHBRB505N",
+    "PersistentRegionSizeLimitMiB": 0,
+    "RankCount": 2,
+    "SecurityCapabilities": {},
+    "SerialNumber": "886FAC5F",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "VendorID": "44288",
+    "VolatileRegionSizeLimitMiB": 98304,
+    "VolatileSizeMiB": 98304
+}

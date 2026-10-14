@@ -1,0 +1,17 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Processor.Processor",
+    "@odata.etag": "W/\"536851145\"",
+    "@odata.id": "/redfish/v1/Systems/1/Processors/3",
+    "@odata.type": "#Processor.v1_8_2.Processor",
+    "Id": "3",
+    "Manufacturer": "NVIDIA",
+    "Model": "900-21010-0040-000",
+    "Name": "NVIDIA H200 NVL",
+    "PartNumber": "900-21010-0040-000",
+    "ProcessorType": "GPU",
+    "SerialNumber": "1325124064409",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    }
+}
