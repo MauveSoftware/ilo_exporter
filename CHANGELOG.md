@@ -63,6 +63,9 @@
 
 ### Changed
 
+- **The `location` label of NVMe drives attached to the system** (storage subsystems managed by iLO, e.g.
+  `DA000000`) is the physical location (e.g. `Embedded:Port=5A:Box=1:Bay=3`) instead of the deprecated location
+  (e.g. `1:3`), which did not contain the port. This starts new series for these drives.
 - Logging is quiet by default: Redfish requests are only logged at debug level and response bodies only with
   `-log.redfish-bodies` (previously every request and response body was logged at info level).
   Instead of one error per failed request, a warning is logged when an iLO goes down or a scrape becomes

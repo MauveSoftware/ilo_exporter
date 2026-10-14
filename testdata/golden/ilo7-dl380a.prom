@@ -401,26 +401,26 @@ ilo_scrape_collector_success{collector="thermal",host="ilo.test"} 1
 ilo_scrape_redfish_requests{host="ilo.test"} 12
 # HELP ilo_storage_disk_capacity_byte Capacity of the disk in bytes
 # TYPE ilo_storage_disk_capacity_byte gauge
-ilo_storage_disk_capacity_byte{host="ilo.test",location="1:1",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A0ZH0C93"} 3.200631791616e+12
-ilo_storage_disk_capacity_byte{host="ilo.test",location="1:2",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BT0C93"} 3.200631791616e+12
-ilo_storage_disk_capacity_byte{host="ilo.test",location="1:3",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BK0C93"} 3.200631791616e+12
-ilo_storage_disk_capacity_byte{host="ilo.test",location="1:4",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A1000C93"} 3.200631791616e+12
+ilo_storage_disk_capacity_byte{host="ilo.test",location="Embedded:Port=10A:Box=1:Bay=2",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BT0C93"} 3.200631791616e+12
+ilo_storage_disk_capacity_byte{host="ilo.test",location="Embedded:Port=10A:Box=1:Bay=4",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A1000C93"} 3.200631791616e+12
+ilo_storage_disk_capacity_byte{host="ilo.test",location="Embedded:Port=5A:Box=1:Bay=1",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A0ZH0C93"} 3.200631791616e+12
+ilo_storage_disk_capacity_byte{host="ilo.test",location="Embedded:Port=5A:Box=1:Bay=3",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BK0C93"} 3.200631791616e+12
 ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=29:Bay=1",media_type="SSD",model="VR000480KXLXF",name="480GB 16G NVMe SSD",serial_number="S711NN0Y210901"} 4.80103981056e+11
 ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=29:Bay=2",media_type="SSD",model="VR000480KXLXF",name="480GB 16G NVMe SSD",serial_number="S711NN0Y210905"} 4.80103981056e+11
 # HELP ilo_storage_disk_failure_predicted Failure of disk is predicted
 # TYPE ilo_storage_disk_failure_predicted gauge
-ilo_storage_disk_failure_predicted{host="ilo.test",location="1:1",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A0ZH0C93"} 0
-ilo_storage_disk_failure_predicted{host="ilo.test",location="1:2",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BT0C93"} 0
-ilo_storage_disk_failure_predicted{host="ilo.test",location="1:3",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BK0C93"} 0
-ilo_storage_disk_failure_predicted{host="ilo.test",location="1:4",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A1000C93"} 0
+ilo_storage_disk_failure_predicted{host="ilo.test",location="Embedded:Port=10A:Box=1:Bay=2",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BT0C93"} 0
+ilo_storage_disk_failure_predicted{host="ilo.test",location="Embedded:Port=10A:Box=1:Bay=4",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A1000C93"} 0
+ilo_storage_disk_failure_predicted{host="ilo.test",location="Embedded:Port=5A:Box=1:Bay=1",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A0ZH0C93"} 0
+ilo_storage_disk_failure_predicted{host="ilo.test",location="Embedded:Port=5A:Box=1:Bay=3",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BK0C93"} 0
 ilo_storage_disk_failure_predicted{host="ilo.test",location="Slot=29:Bay=1",media_type="SSD",model="VR000480KXLXF",name="480GB 16G NVMe SSD",serial_number="S711NN0Y210901"} 0
 ilo_storage_disk_failure_predicted{host="ilo.test",location="Slot=29:Bay=2",media_type="SSD",model="VR000480KXLXF",name="480GB 16G NVMe SSD",serial_number="S711NN0Y210905"} 0
 # HELP ilo_storage_disk_healthy Health status of the disk
 # TYPE ilo_storage_disk_healthy gauge
-ilo_storage_disk_healthy{host="ilo.test",location="1:1",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A0ZH0C93"} 1
-ilo_storage_disk_healthy{host="ilo.test",location="1:2",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BT0C93"} 1
-ilo_storage_disk_healthy{host="ilo.test",location="1:3",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BK0C93"} 1
-ilo_storage_disk_healthy{host="ilo.test",location="1:4",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A1000C93"} 1
+ilo_storage_disk_healthy{host="ilo.test",location="Embedded:Port=10A:Box=1:Bay=2",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BT0C93"} 1
+ilo_storage_disk_healthy{host="ilo.test",location="Embedded:Port=10A:Box=1:Bay=4",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A1000C93"} 1
+ilo_storage_disk_healthy{host="ilo.test",location="Embedded:Port=5A:Box=1:Bay=1",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FE0A0ZH0C93"} 1
+ilo_storage_disk_healthy{host="ilo.test",location="Embedded:Port=5A:Box=1:Bay=3",media_type="SSD",model="MV003200LXUJK",name="Kioxia 3.00TB 128G NVME SSD",serial_number="1FC0A0BK0C93"} 1
 ilo_storage_disk_healthy{host="ilo.test",location="Slot=29:Bay=1",media_type="SSD",model="VR000480KXLXF",name="480GB 16G NVMe SSD",serial_number="S711NN0Y210901"} 1
 ilo_storage_disk_healthy{host="ilo.test",location="Slot=29:Bay=2",media_type="SSD",model="VR000480KXLXF",name="480GB 16G NVMe SSD",serial_number="S711NN0Y210905"} 1
 # HELP ilo_system_info System Info

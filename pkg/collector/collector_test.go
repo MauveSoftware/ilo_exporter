@@ -118,6 +118,7 @@ func TestDriveLocation(t *testing.T) {
 		`{"Location": [{"Info": "1:1", "InfoFormat": "Box:Bay"}]}`:                                     "1:1",
 		`{"PhysicalLocation": {"PartLocation": {"ServiceLabel": "Slot=12:Port=1I:Box=1:Bay=1"}}}`:      "Slot=12:Port=1I:Box=1:Bay=1",
 		`{"Location": null, "PhysicalLocation": {"PartLocation": {"ServiceLabel": "Embedded:Bay=2"}}}`: "Embedded:Bay=2",
+		`{"Location": [{"Info": "1:3", "InfoFormat": "Box:Bay"}], "PhysicalLocation": {"PartLocation": {"ServiceLabel": "Embedded:Port=5A:Box=1:Bay=3"}}}`: "Embedded:Port=5A:Box=1:Bay=3",
 	}
 
 	for in, want := range tests {
