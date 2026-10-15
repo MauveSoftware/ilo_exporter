@@ -22,6 +22,7 @@ import (
 	"github.com/MauveSoftware/ilo_exporter/pkg/topology"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	dto "github.com/prometheus/client_model/go"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -145,13 +146,42 @@ func (e *exporter) handleMetricsRequest(w http.ResponseWriter, r *http.Request) 
 	reg := prometheus.NewRegistry()
 	reg.MustRegister(col)
 
-	promhttp.HandlerFor(reg, promhttp.HandlerOpts{
-		ErrorLog:      slog.NewLogLogger(e.logger.Handler(), slog.LevelWarn),
+	// metrics which can not be gathered (e.g. duplicates) are dropped and logged by observe on state change only
+	g := &recordingGatherer{Gatherer: reg}
+	promhttp.HandlerFor(g, promhttp.HandlerOpts{
+		ErrorLog:      slog.NewLogLogger(e.logger.Handler(), slog.LevelDebug),
 		ErrorHandling: promhttp.ContinueOnError,
 	}).ServeHTTP(w, r)
 
-	e.observe(host, col.Result(), cl.Requests())
+	e.observe(host, col.Result(), cl.Requests(), g.err)
 	return nil
+}
+
+// recordingGatherer records the error of the last Gather call
+type recordingGatherer struct {
+	prometheus.Gatherer
+	err error
+}
+
+// Gather implements prometheus.Gatherer
+func (g *recordingGatherer) Gather() ([]*dto.MetricFamily, error) {
+	mfs, err := g.Gatherer.Gather()
+	g.err = err
+	return mfs, err
+}
+
+// countErrors returns the number of errors of a gather error
+func countErrors(err error) int {
+	if err == nil {
+		return 0
+	}
+
+	var me prometheus.MultiError
+	if errors.As(err, &me) {
+		return len(me)
+	}
+
+	return 1
 }
 
 // enableSessions enables session authentication, keeping sessions for at most maxHosts hosts
@@ -212,15 +242,18 @@ type hostState struct {
 	failed   string
 	firmware string
 	uuid     string
+	// dropped is the number of metrics which could not be gathered
+	dropped int
 }
 
 // observe logs changes of the state of a host and invalidates its topology if it changed
-func (e *exporter) observe(host string, res collector.Result, requests int64) {
+func (e *exporter) observe(host string, res collector.Result, requests int64, gatherErr error) {
 	cur := hostState{
 		up:       res.Up,
 		failed:   strings.Join(res.Failed, ","),
 		firmware: res.FirmwareVersion,
 		uuid:     res.SystemUUID,
+		dropped:  countErrors(gatherErr),
 	}
 
 	key := topology.Key(host)
@@ -248,6 +281,17 @@ func (e *exporter) observe(host string, res collector.Result, requests int64) {
 	}
 	if invalidate && e.topologies != nil {
 		e.topologies.Invalidate(host)
+	}
+
+	if cur.dropped > 0 && (!known || prev.dropped == 0) {
+		var me prometheus.MultiError
+		first := gatherErr
+		if errors.As(gatherErr, &me) {
+			first = me[0]
+		}
+		e.logger.Warn("Invalid metrics dropped", "host", host, "count", cur.dropped, "err", first)
+	} else if cur.dropped == 0 && known && prev.dropped > 0 {
+		e.logger.Info("Invalid metrics resolved", "host", host)
 	}
 
 	switch {
