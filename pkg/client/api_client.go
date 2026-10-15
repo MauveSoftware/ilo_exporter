@@ -15,7 +15,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"sync"
 	"sync/atomic"
 	"time"
 
@@ -124,17 +123,14 @@ func IsFatal(err error) bool {
 
 // APIClient communicates with the API and parses the results
 type APIClient struct {
-	url        string
-	hostName   string
-	auth       Authenticator
-	tracer     trace.Tracer
-	client     *http.Client
-	logger     *slog.Logger
-	logBodies  bool
-	requests   atomic.Int64
-	failures   atomic.Int64
-	firstErrMu sync.Mutex
-	firstErr   error
+	url       string
+	hostName  string
+	auth      Authenticator
+	tracer    trace.Tracer
+	client    *http.Client
+	logger    *slog.Logger
+	logBodies bool
+	requests  atomic.Int64
 }
 
 // ClientOption applies options to APIClient
@@ -197,42 +193,20 @@ func (cl *APIClient) Requests() int64 {
 	return cl.requests.Load()
 }
 
-// Failures returns the number of failed requests and the first error which occurred
-func (cl *APIClient) Failures() (int64, error) {
-	cl.firstErrMu.Lock()
-	defer cl.firstErrMu.Unlock()
-
-	return cl.failures.Load(), cl.firstErr
-}
-
 // Get retrieves the resource from the API and unmarshals the JSON retrieved
 func (cl *APIClient) Get(ctx context.Context, path string, obj any) error {
 	path = strings.Replace(path, "/redfish/v1/", "", 1)
 
 	b, err := cl.get(ctx, path)
-	if err == nil {
-		err = json.Unmarshal(b, obj)
-		if err != nil {
-			err = fmt.Errorf("could not parse response of %s: %w", path, err)
-		}
-	}
-
 	if err != nil {
-		cl.recordFailure(err)
+		return err
 	}
 
-	return err
-}
-
-func (cl *APIClient) recordFailure(err error) {
-	cl.failures.Add(1)
-
-	cl.firstErrMu.Lock()
-	defer cl.firstErrMu.Unlock()
-
-	if cl.firstErr == nil {
-		cl.firstErr = err
+	if err := json.Unmarshal(b, obj); err != nil {
+		return fmt.Errorf("could not parse response of %s: %w", path, err)
 	}
+
+	return nil
 }
 
 func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
