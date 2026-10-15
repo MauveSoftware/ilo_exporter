@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"runtime"
 	"slices"
 	"strconv"
 	"strings"
@@ -26,6 +27,13 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 )
+
+// buildInfo reports the version of the exporter with every scrape, so the deployed versions can be queried
+var buildInfo = prometheus.NewGaugeFunc(prometheus.GaugeOpts{
+	Name:        "ilo_exporter_build_info",
+	Help:        "Version of the exporter (always 1)",
+	ConstLabels: prometheus.Labels{"version": version, "goversion": runtime.Version()},
+}, func() float64 { return 1 })
 
 // exporter handles scrape requests
 type exporter struct {
@@ -144,7 +152,7 @@ func (e *exporter) handleMetricsRequest(w http.ResponseWriter, r *http.Request) 
 
 	col := collector.New(ctx, cl, tracer, collectorOpts...)
 	reg := prometheus.NewRegistry()
-	reg.MustRegister(col)
+	reg.MustRegister(col, buildInfo)
 
 	// metrics which can not be gathered (e.g. duplicates) are dropped and logged by observe on state change only
 	g := &recordingGatherer{Gatherer: reg}

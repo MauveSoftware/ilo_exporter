@@ -45,6 +45,8 @@
   `storage`) less often than health and sensor data. The system resource is always collected.
 - When the iLO is unreachable or rejects the credentials, no further requests are sent after the system resource.
   Previously every collector tried, causing several failed logins per scrape.
+- `ilo_exporter_build_info{version,goversion}` reports the version of the exporter with every scrape, so the
+  deployed versions can be queried, e.g. `count by (version) (ilo_exporter_build_info)`.
 - `-log.level` (`debug`, `info`, `warn`, `error`; default `info`) and `-log.format` (`logfmt`, `json`).
 - `-log.redfish-bodies` logs every Redfish response body at debug level.
 - `-api.timeout` limits the duration of a scrape. Scrapes are also limited by the scrape timeout sent by Prometheus

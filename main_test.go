@@ -147,9 +147,12 @@ func normalizeRequestCount(body string) string {
 
 var durationLine = regexp.MustCompile(`(?m)^(ilo_\w*duration\w*(?:\{[^}]*\})?) .*$`)
 
+var goVersionLabel = regexp.MustCompile(`goversion="[^"]*"`)
+
 // normalizeMetrics removes values that differ between test runs
 func normalizeMetrics(body, host string) string {
 	body = strings.ReplaceAll(body, host, "ilo.test")
+	body = goVersionLabel.ReplaceAllString(body, `goversion="go"`)
 	return durationLine.ReplaceAllString(body, "$1 <duration>")
 }
 

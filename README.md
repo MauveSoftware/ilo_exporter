@@ -42,6 +42,19 @@ The container image (and binary) also reads the following environment variables:
 
 Run `ilo_exporter -h` for all flags.
 
+### Building the image
+Pass the version to the build, so it can be checked in the running exporter (`-version`, startup log and
+`ilo_exporter_build_info` metric):
+
+```bash
+VERSION=$(git describe --tags --always --dirty)
+docker build --build-arg VERSION=$VERSION -t my-registry/ilo_exporter:$VERSION .
+```
+
+When running the exporter as Docker Swarm service, deploy a new image with `docker service update --image`:
+the image of a service is pinned to the digest it resolved to, so `docker service update --force` restarts the
+service with the same image, even if the tag was pushed again.
+
 ## Prometheus configuration
 To get metrics for 172.16.0.200 using https://my-exporter-tld/metrics?host=172.16.0.200
 
@@ -137,6 +150,7 @@ Besides the hardware metrics (`ilo_power_*`, `ilo_chassis_*`, `ilo_memory_*`, `i
 | `ilo_scrape_collector_success{collector}`         | 1 if all resources of the collector could be retrieved      |
 | `ilo_scrape_collector_duration_seconds{collector}`| Duration of the collector                                   |
 | `ilo_scrape_redfish_requests`                     | Number of Redfish requests sent during the scrape           |
+| `ilo_exporter_build_info{version,goversion}`      | Version of the exporter (always 1)                          |
 
 ## Grafana
 
