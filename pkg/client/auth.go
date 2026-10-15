@@ -167,7 +167,7 @@ func (a *SessionAuth) createSession(ctx context.Context) (token, location string
 	defer drainAndClose(resp)
 
 	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
-		return "", "", &HTTPError{StatusCode: resp.StatusCode, URL: a.sessionsURL}
+		return "", "", newHTTPError(resp, a.sessionsURL)
 	}
 
 	token = resp.Header.Get("X-Auth-Token")

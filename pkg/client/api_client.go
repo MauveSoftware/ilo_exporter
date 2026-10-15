@@ -29,10 +29,48 @@ const maxResponseSize = 32 << 20
 type HTTPError struct {
 	StatusCode int
 	URL        string
+
+	// MessageID is the Redfish message ID of the error response (if any), e.g. "Base.1.4.InternalError"
+	MessageID string
 }
 
 func (e *HTTPError) Error() string {
-	return fmt.Sprintf("%s returned %d %s", e.URL, e.StatusCode, http.StatusText(e.StatusCode))
+	msg := fmt.Sprintf("%s returned %d %s", e.URL, e.StatusCode, http.StatusText(e.StatusCode))
+	if e.MessageID != "" {
+		msg += " (" + e.MessageID + ")"
+	}
+
+	return msg
+}
+
+// newHTTPError creates an error for a response with a non-success status code, including the
+// Redfish message ID of the error response body, which explains why the request was rejected
+func newHTTPError(resp *http.Response, uri string) *HTTPError {
+	e := &HTTPError{StatusCode: resp.StatusCode, URL: uri}
+
+	var body struct {
+		Error struct {
+			Code         string `json:"code"`
+			ExtendedInfo []struct {
+				MessageID   string   `json:"MessageId"`
+				MessageArgs []string `json:"MessageArgs"`
+			} `json:"@Message.ExtendedInfo"`
+		} `json:"error"`
+	}
+	if err := json.NewDecoder(io.LimitReader(resp.Body, 64<<10)).Decode(&body); err != nil {
+		return e
+	}
+
+	if info := body.Error.ExtendedInfo; len(info) > 0 && info[0].MessageID != "" {
+		e.MessageID = info[0].MessageID
+		if len(info[0].MessageArgs) > 0 {
+			e.MessageID += ": " + strings.Join(info[0].MessageArgs, ", ")
+		}
+	} else {
+		e.MessageID = body.Error.Code
+	}
+
+	return e
 }
 
 // IsFatal reports whether the error of a request indicates that further requests to the host
@@ -197,7 +235,7 @@ func (cl *APIClient) do(ctx context.Context, uri string) ([]byte, error) {
 	defer drainAndClose(resp)
 
 	if resp.StatusCode >= 300 {
-		return nil, &HTTPError{StatusCode: resp.StatusCode, URL: uri}
+		return nil, newHTTPError(resp, uri)
 	}
 
 	b, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseSize+1))

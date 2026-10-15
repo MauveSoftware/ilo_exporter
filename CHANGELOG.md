@@ -83,6 +83,8 @@
   scraped by multiple Prometheus servers. Previously the limit applied per scrape. `0` means unlimited
   (previously `0` blocked all requests).
 - HTTP proxy environment variables are still ignored and HTTP/1.1 is still used for Redfish requests.
+- Errors of Redfish requests include the Redfish message ID of the error response (e.g.
+  `returned 400 Bad Request (Base.1.4.ResourceMissingAtURI)`), which explains why the iLO rejected the request.
 - Logging uses `log/slog` (Prometheus `promslog` format) instead of logrus.
 - The binary in release archives is named `ilo_exporter` (was `ilo5_exporter`), matching the container image.
 
