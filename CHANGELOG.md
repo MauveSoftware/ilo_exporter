@@ -19,6 +19,10 @@
   retrieved, e.g. for unreachable hosts. They are now omitted, `ilo_up` is 0 instead.
 - `ilo_memory_healthy` and `ilo_memory_total_byte` were described but never reported. They are now reported based
   on the memory summary of the system resource.
+- Temperature sensors and fans with the same name had identical labels, so all but one of them were silently
+  dropped. Some firmware (e.g. iLO 5 v2.72) reports several sensors named e.g. `23-HD Controller-I/O controller`.
+  Names occurring more than once are now suffixed with the ID of the sensor (e.g.
+  `23-HD Controller-I/O controller #41`), names occurring once are unchanged.
 - `SIGINT` (Ctrl-C) did not stop the exporter, `SIGTERM` did not shut it down gracefully and pending traces were not flushed.
 - `API_USERNAME`/`API_PASSWORD` overwrote both credentials when only one of `-api.username`/`-api.password` was set.
 - The version reported by release binaries and container images is now set at build time.
@@ -68,8 +72,9 @@
   (e.g. `1:3`), which did not contain the port. This starts new series for these drives.
 - Logging is quiet by default: Redfish requests are only logged at debug level and response bodies only with
   `-log.redfish-bodies` (previously every request and response body was logged at info level).
-  Instead of one error per failed request, a warning is logged when an iLO goes down or a scrape becomes
-  incomplete and an info message when it recovers.
+  Instead of one error per failed request, a warning is logged when an iLO goes down, a scrape becomes
+  incomplete or metrics are dropped because of invalid series (e.g. duplicates), and an info message when it
+  recovers. Dropped metrics were not logged at all before.
 - Resources are located by following the links of the Redfish service instead of using hard coded paths
   (`Systems/1`, `Chassis/1`, `Managers/1` remain the fallback).
 - **Connections to an iLO are reused across scrapes** (HTTP keep-alive), avoiding a TLS handshake per request
