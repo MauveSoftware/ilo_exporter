@@ -33,6 +33,35 @@ func TestResourceNotReadyIsRetried(t *testing.T) {
 	want := normalizeRequestCount(strings.ReplaceAll(scrapeFixture(t, "ilo7-dl380a"), "HOST", "ilo.test"))
 
 	srv := fakeilo.New(t, mockupDir("ilo7-dl380a"), fakeilo.WithNotReady(notReadyPath, 1, 1))
+	e := newTestExporter(t, withExporter(func(e *exporter) { e.noExpand = true }))
+
+	start := time.Now()
+	got := scrape(t, e, srv.Host())
+	elapsed := time.Since(start)
+
+	got = normalizeRequestCount(strings.ReplaceAll(got, srv.Host(), "ilo.test"))
+	if got != want {
+		t.Errorf("metrics differ from a scrape without retry:\n%s", diff(want, got))
+	}
+
+	if n := len(requestsOf(srv, "/Storage/DA000002/Drives")); n != 1 {
+		t.Errorf("expected the drive to be requested once, got %d", n)
+	}
+	if n := len(requestsOf(srv, "/Storage/DA000002")) - 1; n != 2 {
+		t.Errorf("expected the storage to be requested twice, got %d", n)
+	}
+	if elapsed < time.Second {
+		t.Errorf("expected the retry to wait the delay requested by the iLO (1s), scrape took %v", elapsed)
+	}
+}
+
+// TestResourceNotReadyExpandFallback covers resources which are not ready when requested with $expand: iLO 5 keeps the
+// data of storage of drives it manages fresh for a few seconds only, so all subordinate resources are rarely ready at
+// the same time. Such resources are retrieved without $expand instead of retrying the request with $expand.
+func TestResourceNotReadyExpandFallback(t *testing.T) {
+	want := normalizeRequestCount(strings.ReplaceAll(scrapeFixture(t, "ilo7-dl380a"), "HOST", "ilo.test"))
+
+	srv := fakeilo.New(t, mockupDir("ilo7-dl380a"), fakeilo.WithNotReady(notReadyPath, 1, 1))
 	e := newTestExporter(t)
 
 	start := time.Now()
@@ -44,11 +73,16 @@ func TestResourceNotReadyIsRetried(t *testing.T) {
 		t.Errorf("metrics differ from a scrape without retry:\n%s", diff(want, got))
 	}
 
-	if n := len(requestsOf(srv, "/Storage/DA000002")); n != 2 {
-		t.Errorf("expected the resource to be requested twice, got %d", n)
+	wantRequests := []string{
+		"GET /redfish/v1/Systems/1/Storage/DA000002",
+		"GET /redfish/v1/Systems/1/Storage/DA000002/Drives/DA000002/",
+		"GET /redfish/v1/Systems/1/Storage/DA000002?$expand=.",
 	}
-	if elapsed < time.Second {
-		t.Errorf("expected the retry to wait the delay requested by the iLO (1s), scrape took %v", elapsed)
+	if got := requestsOf(srv, "/Storage/DA000002"); strings.Join(got, "\n") != strings.Join(wantRequests, "\n") {
+		t.Errorf("got requests:\n%s\nwant:\n%s", strings.Join(got, "\n"), strings.Join(wantRequests, "\n"))
+	}
+	if elapsed > 900*time.Millisecond {
+		t.Errorf("expected no wait for the request with $expand, scrape took %v", elapsed)
 	}
 
 	srv.ResetRequests()
@@ -59,7 +93,7 @@ func TestResourceNotReadyIsRetried(t *testing.T) {
 }
 
 func TestResourceNotReadyGivesUp(t *testing.T) {
-	srv := fakeilo.New(t, mockupDir("ilo7-dl380a"), fakeilo.WithNotReady(notReadyPath, -1, 1))
+	srv := fakeilo.New(t, mockupDir("ilo7-dl380a"), fakeilo.WithNotReady(notReadyPath, -1, 0))
 	e := newTestExporter(t)
 
 	body := scrape(t, e, srv.Host())
@@ -70,8 +104,9 @@ func TestResourceNotReadyGivesUp(t *testing.T) {
 	if !strings.Contains(body, "ilo_storage_disk_healthy") {
 		t.Error("expected drives of the other storage subsystems to be reported")
 	}
-	if n := len(requestsOf(srv, "/Storage/DA000002")); n != 3 {
-		t.Errorf("expected the resource to be requested 3 times (2 retries), got %d", n)
+	// one request with $expand, one without and 3 retries
+	if n := len(requestsOf(srv, "/Storage/DA000002")); n != 5 {
+		t.Errorf("expected the resource to be requested 5 times, got %d", n)
 	}
 
 	srv.ResetRequests()
@@ -94,7 +129,8 @@ func TestResourceNotReadyRespectsDeadline(t *testing.T) {
 	if elapsed := time.Since(start); elapsed > 2*time.Second {
 		t.Errorf("expected no wait exceeding the scrape deadline, scrape took %v", elapsed)
 	}
-	if n := len(requestsOf(srv, "/Storage/DA000002")); n != 1 {
+	// one request with $expand, one without, no retry
+	if n := len(requestsOf(srv, "/Storage/DA000002")); n != 2 {
 		t.Errorf("expected no retry which can not complete before the deadline, got %d requests", n)
 	}
 }

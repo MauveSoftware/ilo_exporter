@@ -92,16 +92,26 @@ func (s *scrape) getExpanded(ctx context.Context, path string, obj any) error {
 		sep = "&"
 	}
 
-	err := s.cl.Get(ctx, path+sep+"$expand=.", obj)
+	err := s.cl.Get(client.WithoutRetry(ctx), path+sep+"$expand=.", obj)
 
-	// iLO also answers 400 for resources which are not ready yet, which is not a rejection of $expand
 	var he *client.HTTPError
-	if errors.As(err, &he) && !he.NotReady && (he.StatusCode == http.StatusBadRequest || he.StatusCode == http.StatusNotImplemented) {
-		s.topology.RejectExpand()
-		return s.cl.Get(ctx, path, obj)
+	if !errors.As(err, &he) {
+		return err
 	}
 
-	return err
+	switch {
+	case he.NotReady:
+		// an expanded resource is only ready if all its subordinate resources are ready at the same time, which
+		// iLO 5 rarely achieves for storage of drives it manages (their data is kept fresh for a few seconds only).
+		// The resource is retrieved without $expand, so the subordinate resources are retrieved (and retried)
+		// individually.
+		return s.cl.Get(ctx, path, obj)
+	case he.StatusCode == http.StatusBadRequest || he.StatusCode == http.StatusNotImplemented:
+		s.topology.RejectExpand()
+		return s.cl.Get(ctx, path, obj)
+	default:
+		return err
+	}
 }
 
 func (s *scrape) expandSupported() bool {
