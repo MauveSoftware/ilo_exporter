@@ -8,6 +8,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
+	"strconv"
 
 	"github.com/MauveSoftware/ilo_exporter/pkg/redfish"
 )
@@ -32,6 +34,7 @@ type Thermal struct {
 
 // Temperature is a temperature sensor of the thermal resource
 type Temperature struct {
+	MemberID               string         `json:"MemberId"`
 	Name                   string         `json:"Name"`
 	ReadingCelsius         float64        `json:"ReadingCelsius"`
 	UpperThresholdCritical float64        `json:"UpperThresholdCritical"`
@@ -41,6 +44,7 @@ type Temperature struct {
 
 // Fan is a fan of the thermal resource. Legacy fields are used by iLO 4.
 type Fan struct {
+	MemberID       string         `json:"MemberId"`
 	NameCurrent    string         `json:"Name"`
 	NameLegacy     string         `json:"FanName"`
 	ReadingCurrent float64        `json:"Reading"`
@@ -85,28 +89,58 @@ func collectThermal(ctx context.Context, s *scrape) error {
 		return fmt.Errorf("could not get thermal data: %w", err)
 	}
 
-	for _, f := range th.Fans {
-		if f.Status.IsAbsent() || f.Status.State == "UnavailableOffline" || f.Status.State == "Offline" {
-			continue
-		}
-
-		s.emit(fanHealthyDesc, f.Status.HealthValue(), s.host, f.Name())
-		s.emit(fanEnabledDesc, f.Status.EnabledValue(), s.host, f.Name())
-		s.emit(fanCurrentDesc, f.Reading(), s.host, f.Name())
+	fans := slices.DeleteFunc(th.Fans, func(f Fan) bool { return !isOperational(f.Status) })
+	fanNames := uniqueNames(fans, (*Fan).Name, func(f *Fan) string { return f.MemberID })
+	for i, f := range fans {
+		s.emit(fanHealthyDesc, f.Status.HealthValue(), s.host, fanNames[i])
+		s.emit(fanEnabledDesc, f.Status.EnabledValue(), s.host, fanNames[i])
+		s.emit(fanCurrentDesc, f.Reading(), s.host, fanNames[i])
 	}
 
-	for _, t := range th.Temperatures {
-		if t.Status.State == "Absent" || t.Status.State == "Offline" {
-			continue
-		}
-
-		s.emit(tempCurrentDesc, t.ReadingCelsius, s.host, t.Name)
-		s.emit(tempCriticalThresholdDesc, t.UpperThresholdCritical, s.host, t.Name)
-		s.emit(tempFatalThresholdDesc, t.UpperThresholdFatal, s.host, t.Name)
-		s.emit(tempHealthyDesc, t.Status.HealthValue(), s.host, t.Name)
+	temps := slices.DeleteFunc(th.Temperatures, func(t Temperature) bool {
+		return t.Status.IsAbsent() || t.Status.State == "Offline"
+	})
+	tempNames := uniqueNames(temps, func(t *Temperature) string { return t.Name }, func(t *Temperature) string { return t.MemberID })
+	for i, t := range temps {
+		s.emit(tempCurrentDesc, t.ReadingCelsius, s.host, tempNames[i])
+		s.emit(tempCriticalThresholdDesc, t.UpperThresholdCritical, s.host, tempNames[i])
+		s.emit(tempFatalThresholdDesc, t.UpperThresholdFatal, s.host, tempNames[i])
+		s.emit(tempHealthyDesc, t.Status.HealthValue(), s.host, tempNames[i])
 	}
 
 	return nil
+}
+
+// isOperational returns false for fans which are not present or offline
+func isOperational(st redfish.Status) bool {
+	return !st.IsAbsent() && st.State != "UnavailableOffline" && st.State != "Offline"
+}
+
+// uniqueNames returns the name label of each sensor. Some firmware (e.g. iLO 5 v2.72) reports different sensors
+// with the same name, which would result in identical series of which all but one are dropped. Names occurring
+// more than once are suffixed with the ID of the sensor (e.g. "23-HD Controller-I/O controller #24"), all other
+// names are kept as they are.
+func uniqueNames[T any](items []T, name, id func(*T) string) []string {
+	names := make([]string, len(items))
+	count := make(map[string]int, len(items))
+	for i := range items {
+		names[i] = name(&items[i])
+		count[names[i]]++
+	}
+
+	for i, n := range names {
+		if count[n] < 2 {
+			continue
+		}
+
+		suffix := id(&items[i])
+		if suffix == "" {
+			suffix = strconv.Itoa(i)
+		}
+		names[i] = n + " #" + suffix
+	}
+
+	return names
 }
 
 // ThermalSubsystem is the thermal subsystem of a chassis (Redfish 2020.4 and later)
@@ -116,6 +150,7 @@ type ThermalSubsystem struct {
 
 // SubsystemFan is a fan of the thermal subsystem
 type SubsystemFan struct {
+	ID           string `json:"Id"`
 	Name         string `json:"Name"`
 	SpeedPercent struct {
 		Reading float64 `json:"Reading"`
@@ -125,6 +160,7 @@ type SubsystemFan struct {
 
 // Sensor is a sensor of a chassis (Redfish 2018.3 and later)
 type Sensor struct {
+	ID           string  `json:"Id"`
 	Name         string  `json:"Name"`
 	Reading      float64 `json:"Reading"`
 	ReadingType  string  `json:"ReadingType"`
@@ -164,15 +200,15 @@ func collectThermalSubsystem(ctx context.Context, s *scrape) error {
 
 	if links.Sensors != "" {
 		sensors, err := getMembers[Sensor](ctx, s, links.Sensors)
-		for _, t := range sensors {
-			if !t.isTemperature() || t.Status.IsAbsent() || t.Status.State == "Offline" {
-				continue
-			}
-
-			s.emit(tempCurrentDesc, t.Reading, s.host, t.Name)
-			s.emit(tempCriticalThresholdDesc, t.Thresholds.UpperCritical.Reading, s.host, t.Name)
-			s.emit(tempFatalThresholdDesc, t.Thresholds.UpperFatal.Reading, s.host, t.Name)
-			s.emit(tempHealthyDesc, t.Status.HealthValue(), s.host, t.Name)
+		sensors = slices.DeleteFunc(sensors, func(t Sensor) bool {
+			return !t.isTemperature() || t.Status.IsAbsent() || t.Status.State == "Offline"
+		})
+		names := uniqueNames(sensors, func(t *Sensor) string { return t.Name }, func(t *Sensor) string { return t.ID })
+		for i, t := range sensors {
+			s.emit(tempCurrentDesc, t.Reading, s.host, names[i])
+			s.emit(tempCriticalThresholdDesc, t.Thresholds.UpperCritical.Reading, s.host, names[i])
+			s.emit(tempFatalThresholdDesc, t.Thresholds.UpperFatal.Reading, s.host, names[i])
+			s.emit(tempHealthyDesc, t.Status.HealthValue(), s.host, names[i])
 		}
 
 		if err != nil {
@@ -195,14 +231,12 @@ func collectSubsystemFans(ctx context.Context, s *scrape, path string) error {
 	}
 
 	fans, err := getMembers[SubsystemFan](ctx, s, ts.Fans.ID)
-	for _, f := range fans {
-		if f.Status.IsAbsent() || f.Status.State == "UnavailableOffline" || f.Status.State == "Offline" {
-			continue
-		}
-
-		s.emit(fanHealthyDesc, f.Status.HealthValue(), s.host, f.Name)
-		s.emit(fanEnabledDesc, f.Status.EnabledValue(), s.host, f.Name)
-		s.emit(fanCurrentDesc, f.SpeedPercent.Reading, s.host, f.Name)
+	fans = slices.DeleteFunc(fans, func(f SubsystemFan) bool { return !isOperational(f.Status) })
+	names := uniqueNames(fans, func(f *SubsystemFan) string { return f.Name }, func(f *SubsystemFan) string { return f.ID })
+	for i, f := range fans {
+		s.emit(fanHealthyDesc, f.Status.HealthValue(), s.host, names[i])
+		s.emit(fanEnabledDesc, f.Status.EnabledValue(), s.host, names[i])
+		s.emit(fanCurrentDesc, f.SpeedPercent.Reading, s.host, names[i])
 	}
 
 	if err != nil {

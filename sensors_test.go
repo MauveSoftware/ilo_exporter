@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
@@ -29,6 +31,95 @@ func chassisMockup(links string, resources map[string]string) map[string]string 
 	}
 
 	return m
+}
+
+func temperature(id, name string, reading int) string {
+	return fmt.Sprintf(`{"MemberId": %q, "Name": %q, "ReadingCelsius": %d, "UpperThresholdCritical": 80, "Status": {"Health": "OK", "State": "Enabled"}}`, id, name, reading)
+}
+
+func sensor(id, name string, reading int) string {
+	return fmt.Sprintf(`{"@odata.type": "#Sensor.v1_7_0.Sensor", "Id": %q, "Name": %q, "Reading": %d, "Thresholds": {"UpperCritical": {"Reading": 80}}, "Status": {"Health": "OK", "State": "Enabled"}}`, id, name, reading)
+}
+
+var tempLine = regexp.MustCompile(`(?m)^ilo_chassis_temperature_current\{host="[^"]*",name="([^"]*)"\} (\S+)$`)
+
+func temperatures(body string) []string {
+	var res []string
+	for _, m := range tempLine.FindAllStringSubmatch(body, -1) {
+		res = append(res, m[1]+"="+m[2])
+	}
+	slices.Sort(res)
+	return res
+}
+
+// TestDuplicateSensorNames covers firmware reporting different sensors with the same name (seen on iLO 5 v2.72)
+func TestDuplicateSensorNames(t *testing.T) {
+	want := []string{
+		"23-HD Controller #22=76",
+		"23-HD Controller-I/O controller #40=69",
+		"23-HD Controller-I/O controller #41=54",
+		"23-HD Controller-I/O controller #42=56",
+		"29-PCI 1 #28=73",
+		"29-PCI 1-I/O module #43=71",
+		"29-PCI 1-I/O module #44=54",
+	}
+	// names occurring once must not change
+	want[0] = "23-HD Controller=76"
+	want[4] = "29-PCI 1=73"
+	slices.Sort(want)
+
+	thermal := `{"Temperatures": [` + strings.Join([]string{
+		temperature("22", "23-HD Controller", 76),
+		temperature("28", "29-PCI 1", 73),
+		temperature("40", "23-HD Controller-I/O controller", 69),
+		temperature("41", "23-HD Controller-I/O controller", 54),
+		temperature("42", "23-HD Controller-I/O controller", 56),
+		temperature("43", "29-PCI 1-I/O module", 71),
+		temperature("44", "29-PCI 1-I/O module", 54),
+		`{"MemberId": "45", "Name": "29-PCI 1-I/O module", "Status": {"State": "Absent"}}`,
+	}, ",") + `]}`
+
+	sensors := map[string]string{
+		"Chassis/1/Sensors": `{"Members": [` + strings.Join([]string{
+			`{"@odata.id": "/redfish/v1/Chassis/1/Sensors/22"}`, `{"@odata.id": "/redfish/v1/Chassis/1/Sensors/28"}`,
+			`{"@odata.id": "/redfish/v1/Chassis/1/Sensors/40"}`, `{"@odata.id": "/redfish/v1/Chassis/1/Sensors/41"}`,
+			`{"@odata.id": "/redfish/v1/Chassis/1/Sensors/42"}`, `{"@odata.id": "/redfish/v1/Chassis/1/Sensors/43"}`,
+			`{"@odata.id": "/redfish/v1/Chassis/1/Sensors/44"}`,
+		}, ",") + `]}`,
+		"Chassis/1/Sensors/22": sensor("22", "23-HD Controller", 76),
+		"Chassis/1/Sensors/28": sensor("28", "29-PCI 1", 73),
+		"Chassis/1/Sensors/40": sensor("40", "23-HD Controller-I/O controller", 69),
+		"Chassis/1/Sensors/41": sensor("41", "23-HD Controller-I/O controller", 54),
+		"Chassis/1/Sensors/42": sensor("42", "23-HD Controller-I/O controller", 56),
+		"Chassis/1/Sensors/43": sensor("43", "29-PCI 1-I/O module", 71),
+		"Chassis/1/Sensors/44": sensor("44", "29-PCI 1-I/O module", 54),
+	}
+
+	tests := map[string]map[string]string{
+		"thermal": chassisMockup(`"Thermal": {"@odata.id": "/redfish/v1/Chassis/1/Thermal"}`, map[string]string{
+			"Chassis/1/Thermal": thermal,
+		}),
+		"sensors": chassisMockup(`"Sensors": {"@odata.id": "/redfish/v1/Chassis/1/Sensors"}`, sensors),
+	}
+
+	for name, mockup := range tests {
+		t.Run(name, func(t *testing.T) {
+			var buf bytes.Buffer
+			srv := fakeilo.New(t, writeMockup(t, mockup))
+			e := newTestExporter(t, withExporter(func(e *exporter) {
+				e.logger = promslog.New(&promslog.Config{Writer: &buf})
+			}))
+
+			got := temperatures(scrape(t, e, srv.Host()))
+
+			if !slices.Equal(got, want) {
+				t.Errorf("got temperatures:\n%s\nwant:\n%s", strings.Join(got, "\n"), strings.Join(want, "\n"))
+			}
+			if out := buf.String(); strings.Contains(out, "Invalid metrics") {
+				t.Errorf("expected no dropped metrics, got:\n%s", out)
+			}
+		})
+	}
 }
 
 // TestLogsDroppedMetricsOnce makes sure metrics dropped by the registry (e.g. duplicates) are only logged on change
