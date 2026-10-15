@@ -94,8 +94,9 @@ func (s *scrape) getExpanded(ctx context.Context, path string, obj any) error {
 
 	err := s.cl.Get(ctx, path+sep+"$expand=.", obj)
 
+	// iLO also answers 400 for resources which are not ready yet, which is not a rejection of $expand
 	var he *client.HTTPError
-	if errors.As(err, &he) && (he.StatusCode == http.StatusBadRequest || he.StatusCode == http.StatusNotImplemented) {
+	if errors.As(err, &he) && !he.NotReady && (he.StatusCode == http.StatusBadRequest || he.StatusCode == http.StatusNotImplemented) {
 		s.topology.RejectExpand()
 		return s.cl.Get(ctx, path, obj)
 	}

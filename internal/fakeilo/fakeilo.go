@@ -41,6 +41,7 @@ type Server struct {
 	expandStatus int
 	latency      time.Duration
 	status       map[string]int
+	notReady     map[string]notReady
 	block        map[string]bool
 	hidden       map[string]map[string]bool
 
@@ -100,6 +101,20 @@ func WithStatus(path string, code int) Option {
 	}
 }
 
+type notReady struct {
+	times int
+	delay int
+}
+
+// WithNotReady answers the first times requests for path (with any query) like iLO for resources it has to
+// retrieve from a device first: 400 with iLO.2.15.ResourceNotReadyRetry, asking to retry after delay seconds.
+// times < 0 answers all requests this way.
+func WithNotReady(path string, times, delay int) Option {
+	return func(s *Server) {
+		s.notReady[normalize(path)] = notReady{times: times, delay: delay}
+	}
+}
+
 // WithBlock makes requests for path hang until the client gives up
 func WithBlock(path string) Option {
 	return func(s *Server) {
@@ -133,6 +148,7 @@ func New(t testing.TB, dir string, opts ...Option) *Server {
 		root:     root,
 		expand:   true,
 		status:   make(map[string]int),
+		notReady: make(map[string]notReady),
 		block:    make(map[string]bool),
 		hidden:   make(map[string]map[string]bool),
 		sessions: make(map[string]string),
@@ -293,9 +309,21 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 
 	s.mu.Lock()
 	code, found := s.status[p]
+	notReady, delay := false, 0
+	if nr, ok := s.notReady[p]; ok && nr.times != 0 {
+		notReady, delay = true, nr.delay
+		if nr.times > 0 {
+			nr.times--
+			s.notReady[p] = nr
+		}
+	}
 	s.mu.Unlock()
 	if found {
 		writeError(w, code, "Base.1.0.InternalError")
+		return
+	}
+	if notReady {
+		writeError(w, http.StatusBadRequest, "iLO.2.15.ResourceNotReadyRetry", fmt.Sprintf("%d, (84,00,00)", delay))
 		return
 	}
 
@@ -469,16 +497,19 @@ func normalize(p string) string {
 	return strings.TrimSuffix(p, "/")
 }
 
-func writeError(w http.ResponseWriter, code int, msg string) {
+func writeError(w http.ResponseWriter, code int, msg string, args ...string) {
+	info := map[string]any{"MessageId": msg}
+	if len(args) > 0 {
+		info["MessageArgs"] = args
+	}
+
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(code)
 	_ = json.NewEncoder(w).Encode(map[string]any{
 		"error": map[string]any{
-			"code":    "iLO.0.10.ExtendedInfo",
-			"message": "See @Message.ExtendedInfo for more information.",
-			"@Message.ExtendedInfo": []map[string]string{
-				{"MessageId": msg},
-			},
+			"code":                  "iLO.0.10.ExtendedInfo",
+			"message":               "See @Message.ExtendedInfo for more information.",
+			"@Message.ExtendedInfo": []map[string]any{info},
 		},
 	})
 }

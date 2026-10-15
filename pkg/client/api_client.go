@@ -13,17 +13,30 @@ import (
 	"log/slog"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
 
-// maxResponseSize limits the size of a response body read from the API
-const maxResponseSize = 32 << 20
+const (
+	// maxResponseSize limits the size of a response body read from the API
+	maxResponseSize = 32 << 20
+
+	// maxNotReadyRetries limits the retries of requests for resources which are not ready yet
+	maxNotReadyRetries = 2
+
+	// maxNotReadyDelay limits the time to wait before retrying a request for a resource which is not ready yet
+	maxNotReadyDelay = 10 * time.Second
+
+	// defaultNotReadyDelay is used if the service does not specify when to retry
+	defaultNotReadyDelay = 5 * time.Second
+)
 
 // HTTPError is returned when the API responds with a non-success status code
 type HTTPError struct {
@@ -32,12 +45,23 @@ type HTTPError struct {
 
 	// MessageID is the Redfish message ID of the error response (if any), e.g. "Base.1.4.InternalError"
 	MessageID string
+
+	// MessageArgs are the arguments of the message
+	MessageArgs []string
+
+	// NotReady is true if the resource is not ready yet and the request should be retried after RetryAfter
+	NotReady   bool
+	RetryAfter time.Duration
 }
 
 func (e *HTTPError) Error() string {
 	msg := fmt.Sprintf("%s returned %d %s", e.URL, e.StatusCode, http.StatusText(e.StatusCode))
 	if e.MessageID != "" {
-		msg += " (" + e.MessageID + ")"
+		msg += " (" + e.MessageID
+		if len(e.MessageArgs) > 0 {
+			msg += ": " + strings.Join(e.MessageArgs, ", ")
+		}
+		msg += ")"
 	}
 
 	return msg
@@ -63,11 +87,21 @@ func newHTTPError(resp *http.Response, uri string) *HTTPError {
 
 	if info := body.Error.ExtendedInfo; len(info) > 0 && info[0].MessageID != "" {
 		e.MessageID = info[0].MessageID
-		if len(info[0].MessageArgs) > 0 {
-			e.MessageID += ": " + strings.Join(info[0].MessageArgs, ", ")
-		}
+		e.MessageArgs = info[0].MessageArgs
 	} else {
 		e.MessageID = body.Error.Code
+	}
+
+	// iLO answers requests for resources it has to retrieve from devices first (e.g. storage of NVMe drives
+	// managed by iLO 5) with 400 and iLO.2.x.ResourceNotReadyRetry, the first argument being the seconds to wait
+	if strings.HasSuffix(e.MessageID, ".ResourceNotReadyRetry") {
+		e.NotReady = true
+		e.RetryAfter = defaultNotReadyDelay
+		if len(e.MessageArgs) > 0 {
+			if s, err := strconv.Atoi(strings.TrimSpace(strings.Split(e.MessageArgs[0], ",")[0])); err == nil && s >= 0 {
+				e.RetryAfter = time.Duration(s) * time.Second
+			}
+		}
 	}
 
 	return e
@@ -222,11 +256,46 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 }
 
 func (cl *APIClient) do(ctx context.Context, uri string) ([]byte, error) {
-	if err := ctx.Err(); err != nil {
-		// do not queue requests for scrapes which were canceled or timed out
-		return nil, fmt.Errorf("GET %s: %w", uri, context.Cause(ctx))
+	for attempt := 0; ; attempt++ {
+		if err := ctx.Err(); err != nil {
+			// do not queue requests for scrapes which were canceled or timed out
+			return nil, fmt.Errorf("GET %s: %w", uri, context.Cause(ctx))
+		}
+
+		b, err := cl.fetch(ctx, uri)
+
+		var he *HTTPError
+		if attempt < maxNotReadyRetries && errors.As(err, &he) && he.NotReady {
+			delay := min(he.RetryAfter, maxNotReadyDelay)
+			cl.logger.Debug("Resource not ready", "uri", uri, "retry_after", delay)
+
+			if wait(ctx, delay) {
+				continue
+			}
+		}
+
+		return b, err
+	}
+}
+
+// wait waits for d, unless ctx is done earlier or its deadline does not leave time for a request after waiting
+func wait(ctx context.Context, d time.Duration) bool {
+	if deadline, ok := ctx.Deadline(); ok && time.Until(deadline) < d+time.Second {
+		return false
 	}
 
+	t := time.NewTimer(d)
+	defer t.Stop()
+
+	select {
+	case <-t.C:
+		return true
+	case <-ctx.Done():
+		return false
+	}
+}
+
+func (cl *APIClient) fetch(ctx context.Context, uri string) ([]byte, error) {
 	resp, err := cl.send(ctx, uri)
 	if err != nil {
 		return nil, err
