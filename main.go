@@ -6,6 +6,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"html"
@@ -34,6 +35,7 @@ var (
 	listenAddress            = flag.String("web.listen-address", ":9545", "Address on which to expose metrics and web interface.")
 	metricsPath              = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
 	writeTimeout             = flag.Duration("web.write-timeout", 2*time.Minute, "Maximum duration for writing a response incl. collecting metrics from the API (0 disables the timeout)")
+	allowedTargets           = flag.String("web.allowed-targets", "", "Comma separated list of host names, domain suffixes (.example.com), IP addresses and CIDR prefixes which may be scraped (empty: all hosts, the configured credentials are sent to every requested host)")
 	username                 = flag.String("api.username", "", "Username")
 	password                 = flag.String("api.password", "", "Password")
 	maxConcurrentRequests    = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent against API concurrently")
@@ -43,6 +45,9 @@ var (
 	tracingEnabled           = flag.Bool("tracing.enabled", false, "Enables tracing using OpenTelemetry")
 	tracingProvider          = flag.String("tracing.provider", "", "Sets the tracing provider (stdout or collector)")
 	tracingCollectorEndpoint = flag.String("tracing.collector.grpc-endpoint", "", "Sets the tracing provider (stdout or collector)")
+
+	// targets restricts the hosts which can be scraped (nil: all hosts)
+	targets *targetFilter
 )
 
 func init() {
@@ -69,6 +74,12 @@ func main() {
 		os.Exit(0)
 	}
 
+	filter, err := parseTargetFilter(*allowedTargets)
+	if err != nil {
+		log.Fatal(err)
+	}
+	targets = filter
+
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
 
@@ -91,6 +102,7 @@ func printVersion() {
 
 func startServer() {
 	logrus.Infof("Starting iLO exporter (Version: %s)", version)
+	logTargetFilter(logrus.StandardLogger(), targets, *allowedTargets)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte(`<html>
 			<head><title>iLO5 Exporter (Version ` + version + `)</title></head>
@@ -130,10 +142,31 @@ func errorHandler(f func(http.ResponseWriter, *http.Request) error) http.Handler
 		err := f(w, r)
 
 		if err != nil {
+			var he *httpError
+			if errors.As(err, &he) {
+				logrus.Debugf("rejected request from %s: %v", r.RemoteAddr, err)
+				http.Error(w, err.Error(), he.code)
+				return
+			}
+
 			logrus.Errorln(err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
+}
+
+// httpError is an error caused by the request, answered with the given status code instead of 500
+type httpError struct {
+	code int
+	err  error
+}
+
+func (e *httpError) Error() string {
+	return e.err.Error()
+}
+
+func (e *httpError) Unwrap() error {
+	return e.err
 }
 
 func handleMetricsRequest(w http.ResponseWriter, r *http.Request) error {
@@ -144,13 +177,19 @@ func handleMetricsRequest(w http.ResponseWriter, r *http.Request) error {
 	))
 	defer span.End()
 
-	if host == "" {
-		return fmt.Errorf("no host defined")
+	// the configured credentials are sent to this host: only accept host[:port] of allowed targets
+	addr, err := parseTarget(host)
+	if err != nil {
+		return &httpError{code: http.StatusBadRequest, err: err}
+	}
+
+	if !targets.allows(addr) {
+		return &httpError{code: http.StatusForbidden, err: fmt.Errorf("host %s is not allowed", addr)}
 	}
 
 	reg := prometheus.NewRegistry()
 
-	cl := client.NewClient(host, *username, *password, tracer, client.WithMaxConcurrentRequests(*maxConcurrentRequests), client.WithInsecure(), client.WithDebug())
+	cl := client.NewClient(addr, *username, *password, tracer, client.WithMaxConcurrentRequests(*maxConcurrentRequests), client.WithInsecure(), client.WithDebug())
 	reg.MustRegister(system.NewCollector(ctx, cl, tracer))
 	reg.MustRegister(manager.NewCollector(ctx, cl, tracer))
 	reg.MustRegister(chassis.NewCollector(ctx, cl, tracer))

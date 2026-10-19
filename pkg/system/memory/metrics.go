@@ -7,7 +7,6 @@ package memory
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -78,11 +77,8 @@ func collectForDIMM(ctx context.Context, link string, cc *common.CollectorContex
 	))
 	defer span.End()
 
-	i := strings.Index(link, "Systems/")
-	p := link[i:]
-
 	d := MemoryDIMM{}
-	err := cc.Client().Get(ctx, p, &d)
+	err := cc.Client().Get(ctx, link, &d)
 	if err != nil {
 		cc.HandleError(fmt.Errorf("could not get memory information from %s: %w", link, err), span)
 		return
