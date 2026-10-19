@@ -48,6 +48,20 @@ To get metrics for 172.16.0.200 using https://my-exporter-tld/metrics?host=172.1
         replacement: my-exporter-tld
 ```
 
+## Security
+* **The credentials configured are sent to every host requested via the `host` parameter.** Without
+  `-web.allowed-targets` anyone able to reach the exporter can request `?host=<a host of theirs>` and receive the
+  credentials, so a warning is logged at startup. Restrict the hosts which can be scraped, e.g.
+  `-web.allowed-targets=.ilo.example.com,10.0.0.0/8,ilo-01.example.net`:
+  * Entries starting with a dot (or `*.`) match all hosts in that domain: `.ilo.example.com` matches
+    `srv1.ilo.example.com` and `srv1.dc2.ilo.example.com`, but not `ilo.example.com` itself.
+  * Host names match exactly (case insensitive).
+  * IP addresses and CIDR prefixes only match targets given as IP address: host names are not resolved.
+
+  Also restrict network access to the exporter to the Prometheus servers scraping it.
+* The `host` parameter must be `host[:port]`. Other values are rejected with `400 Bad Request`, hosts which are not
+  allowed with `403 Forbidden`.
+
 ## Grafana
 
 For users of [Grafana](https://grafana.com/), this repository includes an example [dashboard](iLO-grafana-dashboard.json) and example [alert rules](ilo-grafana-alerts.yaml).
