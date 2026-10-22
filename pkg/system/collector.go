@@ -14,7 +14,6 @@ import (
 	"github.com/MauveSoftware/ilo_exporter/pkg/system/processor"
 	"github.com/MauveSoftware/ilo_exporter/pkg/system/storage"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -63,10 +62,7 @@ func (c *collector) Collect(ch chan<- prometheus.Metric) {
 	p := "Systems/1"
 
 	s := System{}
-	err := c.cl.Get(ctx, p, &s)
-	if err != nil {
-		logrus.Error(err)
-	}
+	_ = c.cl.Get(ctx, p, &s) // failed requests are logged by the client
 
 	ch <- prometheus.MustNewConstMetric(powerUpDesc, prometheus.GaugeValue, s.PowerUpValue(), c.cl.HostName())
 	ch <- prometheus.MustNewConstMetric(infoDesc, prometheus.GaugeValue, 1, c.cl.HostName(),

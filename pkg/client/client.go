@@ -8,5 +8,5 @@ import "context"
 
 type Client interface {
 	HostName() string
-	Get(ctx context.Context, ressource string, obj interface{}) error
+	Get(ctx context.Context, path string, obj any) error
 }

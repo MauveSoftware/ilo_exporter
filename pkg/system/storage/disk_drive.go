@@ -31,7 +31,7 @@ func (d *DiskDrive) GetLocation() string {
 
 func (d *DiskDrive) CapacityBytes() float64 {
 	if d.CapacityMB > 0 {
-		return float64(d.CapacityMB << 10)
+		return float64(d.CapacityMB << 20)
 	}
 
 	return float64(d.CapacityB)

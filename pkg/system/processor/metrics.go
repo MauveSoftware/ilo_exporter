@@ -71,7 +71,7 @@ func Collect(parentPath string, cc *common.CollectorContext) {
 }
 
 func collectForProcessor(ctx context.Context, link string, cc *common.CollectorContext) {
-	ctx, span := cc.Tracer().Start(ctx, "Storage.CollectProcessor", trace.WithAttributes(
+	ctx, span := cc.Tracer().Start(ctx, "Processor.CollectProcessor", trace.WithAttributes(
 		attribute.String("path", link),
 	))
 	defer span.End()
