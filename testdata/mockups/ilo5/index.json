@@ -1,0 +1,165 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#ServiceRoot.ServiceRoot",
+    "@odata.etag": "W/\"ECAFA384\"",
+    "@odata.id": "/redfish/v1",
+    "@odata.type": "#ServiceRoot.v1_5_1.ServiceRoot",
+    "Id": "RootService",
+    "AccountService": {
+        "@odata.id": "/redfish/v1/AccountService"
+    },
+    "CertificateService": {
+        "@odata.id": "/redfish/v1/CertificateService"
+    },
+    "Chassis": {
+        "@odata.id": "/redfish/v1/Chassis"
+    },
+    "EventService": {
+        "@odata.id": "/redfish/v1/EventService"
+    },
+    "Fabrics": {
+        "@odata.id": "/redfish/v1/Fabrics"
+    },
+    "JsonSchemas": {
+        "@odata.id": "/redfish/v1/JsonSchemas"
+    },
+    "Links": {
+        "Sessions": {
+            "@odata.id": "/redfish/v1/SessionService/Sessions"
+        }
+    },
+    "Managers": {
+        "@odata.id": "/redfish/v1/Managers"
+    },
+    "Name": "HPE RESTful Root Service",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeiLOServiceExt.HpeiLOServiceExt",
+            "@odata.type": "#HpeiLOServiceExt.v2_5_0.HpeiLOServiceExt",
+            "CACLoginUri": "/html/login_cert.html",
+            "Links": {
+                "ResourceDirectory": {
+                    "@odata.id": "/redfish/v1/ResourceDirectory"
+                }
+            },
+            "Manager": [
+                {
+                    "DefaultLanguage": "en",
+                    "ExternalManager": "None",
+                    "FQDN": null,
+                    "HostName": "ILOMXQ2390RHW",
+                    "Languages": [
+                        {
+                            "Language": "en",
+                            "TranslationName": "English",
+                            "Version": "3.11"
+                        }
+                    ],
+                    "ManagerFirmwareVersion": "3.11",
+                    "ManagerType": "iLO 5",
+                    "Status": {
+                        "Health": "OK"
+                    }
+                }
+            ],
+            "Moniker": {
+                "ADVLIC": "iLO Advanced",
+                "BMC": "iLO",
+                "BSYS": "BladeSystem",
+                "CBM": "Compute Ops Management",
+                "CLASS": "Baseboard Management Controller",
+                "FEDGRP": "DEFAULT",
+                "IPROV": "Intelligent Provisioning",
+                "PRODABR": "iLO",
+                "PRODFAM": "Integrated Lights-Out",
+                "PRODGEN": "iLO 5",
+                "PRODNAM": "Integrated Lights-Out 5",
+                "PRODTAG": "HPE iLO 5",
+                "RDA": "https://midway.ext.hpe.com/",
+                "STDLIC": "iLO Standard",
+                "SUMABR": "SUM",
+                "SUMGR": "Smart Update Manager",
+                "SYSFAM": "ProLiant",
+                "SYSMGMT": "Enhanced",
+                "VENDABR": "HPE",
+                "VENDNAM": "Hewlett-Packard Enterprise",
+                "VNIC": "Virtual NIC",
+                "WWW": "www.hpe.com",
+                "WWWAHSV": "www.hpe.com/servers/ahsv",
+                "WWWBMC": "www.hpe.com/servers/ilo",
+                "WWWDOC": "www.hpe.com/support/ilo-docs",
+                "WWWERS": "www.hpe.com/services/getconnected",
+                "WWWGLIS": "www.hpe.com/glis",
+                "WWWINFOSIGHT": "infosight.hpe.com",
+                "WWWIOL": "www.hpe.com/info/insightonline",
+                "WWWLIC": "www.hpe.com/info/ilo",
+                "WWWLML": "www.hpe.com/support",
+                "WWWPASS": "www.hpe.com/support/hpesc",
+                "WWWPRV": "www.hpe.com/info/privacy",
+                "WWWQSPEC": "www.hpe.com/info/qs",
+                "WWWRESTDOC": "www.hpe.com/us/en/servers/restful-api.html",
+                "WWWSUP": "www.hpe.com/support/ilo5",
+                "WWWSWLIC": "www.hpe.com/software/SWLicensing"
+            },
+            "Sessions": {
+                "CertCommonName": "ILOMXQ2390RHW",
+                "CertificateLoginEnabled": false,
+                "KerberosEnabled": false,
+                "LDAPAuthLicenced": true,
+                "LDAPEnabled": false,
+                "LocalLoginEnabled": true,
+                "LoginFailureDelay": 0,
+                "LoginHint": {
+                    "Hint": "POST to /Sessions to login using the following JSON object:",
+                    "HintPOSTData": {
+                        "Password": "password",
+                        "UserName": "username"
+                    }
+                },
+                "SecurityOverride": false,
+                "ServerName": ""
+            },
+            "System": [
+                {
+                    "Status": {
+                        "Health": "OK"
+                    }
+                }
+            ],
+            "Time": "2025-05-29T11:00:37Z"
+        }
+    },
+    "Product": "ProLiant DL360 Gen10 Plus - SIMULATED",
+    "ProtocolFeaturesSupported": {
+        "ExpandQuery": {
+            "ExpandAll": false,
+            "Levels": true,
+            "Links": false,
+            "MaxLevels": 1,
+            "NoLinks": true
+        },
+        "FilterQuery": true,
+        "OnlyMemberQuery": true,
+        "SelectQuery": true
+    },
+    "RedfishVersion": "1.20.0",
+    "Registries": {
+        "@odata.id": "/redfish/v1/Registries"
+    },
+    "SessionService": {
+        "@odata.id": "/redfish/v1/SessionService"
+    },
+    "Systems": {
+        "@odata.id": "/redfish/v1/Systems"
+    },
+    "Tasks": {
+        "@odata.id": "/redfish/v1/TaskService"
+    },
+    "TelemetryService": {
+        "@odata.id": "/redfish/v1/TelemetryService"
+    },
+    "UUID": "a710c5d0-0aae-52fb-9284-a6e40c297acb",
+    "UpdateService": {
+        "@odata.id": "/redfish/v1/UpdateService"
+    },
+    "Vendor": "HPE"
+}

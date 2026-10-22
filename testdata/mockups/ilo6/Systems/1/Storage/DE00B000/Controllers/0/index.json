@@ -1,0 +1,85 @@
+{
+    "@odata.etag": "\"aaef8180\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00B000/Controllers/0",
+    "@odata.type": "#StorageController.v1_7_0.StorageController",
+    "Id": "0",
+    "Name": "HPE MR416i-o Gen11",
+    "CacheSummary": {
+        "TotalCacheSizeMiB": 8192,
+        "PersistentCacheSizeMiB": 7783,
+        "Status": {
+            "State": "Enabled",
+            "Health": "OK"
+        }
+    },
+    "ControllerRates": {
+        "@Redfish.WriteableProperties": [
+            "ConsistencyCheckRatePercent",
+            "RebuildRatePercent",
+            "TransformationRatePercent"
+        ],
+        "ConsistencyCheckRatePercent@Redfish.AllowableNumbers": [
+            ":100"
+        ],
+        "ConsistencyCheckRatePercent": 30,
+        "RebuildRatePercent@Redfish.AllowableNumbers": [
+            ":100"
+        ],
+        "RebuildRatePercent": 30,
+        "TransformationRatePercent@Redfish.AllowableNumbers": [
+            ":100"
+        ],
+        "TransformationRatePercent": 30
+    },
+    "FirmwareVersion": "52.28.3-5681",
+    "Identifiers": [
+        {
+            "DurableName": "600062B2218E23801BD742EB7E16D3FF",
+            "DurableNameFormat": "NAA"
+        }
+    ],
+    "Location": {
+        "PartLocation": {
+            "ServiceLabel": "Slot=18",
+            "LocationType": "Slot",
+            "LocationOrdinalValue": 18
+        }
+    },
+    "Manufacturer": "HPE",
+    "Model": "HPE MR416i-o Gen11",
+    "PartNumber": "P47952-001",
+    "PCIeInterface": {
+        "MaxPCIeType": "Gen4",
+        "PCIeType": "Gen4",
+        "MaxLanes": 8,
+        "LanesInUse": 8
+    },
+    "Ports": {
+        "@odata.id": "/redfish/v1/Systems/1/Storage/DE00B000/Controllers/0/Ports"
+    },
+    "SKU": "P47781-B21",
+    "SerialNumber": "PZDVH0CBIKF17X",
+    "SpeedGbps": 16.0,
+    "SupportedControllerProtocols": [
+        "PCIe"
+    ],
+    "SupportedDeviceProtocols": [
+        "NVMe",
+        "SAS",
+        "SATA"
+    ],
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "SupportedRAIDTypes": [
+        "None",
+        "RAID0",
+        "RAID1",
+        "RAID10",
+        "RAID5",
+        "RAID50",
+        "RAID6",
+        "RAID60"
+    ]
+}

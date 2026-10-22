@@ -1,0 +1,136 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#MemoryCollection.MemoryCollection",
+    "@odata.etag": "W/\"52C2F4CA\"",
+    "@odata.id": "/redfish/v1/Systems/1/Memory",
+    "@odata.type": "#MemoryCollection.MemoryCollection",
+    "Description": "Memory DIMM Collection",
+    "Name": "Memory DIMM Collection",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeAdvancedMemoryProtection.HpeAdvancedMemoryProtection",
+            "@odata.type": "#HpeAdvancedMemoryProtection.v2_0_0.HpeAdvancedMemoryProtection",
+            "AmpModeActive": "AdvancedECC",
+            "AmpModeStatus": "AdvancedECC",
+            "AmpModeSupported": [
+                "AdvancedECC",
+                "IntrasocketMirroring",
+                "A3DC"
+            ],
+            "MemoryList": [
+                {
+                    "BoardCpuNumber": 1,
+                    "BoardNumberOfSockets": 16,
+                    "BoardOperationalFrequency": 2666,
+                    "BoardOperationalVoltage": 1200,
+                    "BoardTotalMemorySize": 98304
+                },
+                {
+                    "BoardCpuNumber": 2,
+                    "BoardNumberOfSockets": 16,
+                    "BoardOperationalFrequency": 2666,
+                    "BoardOperationalVoltage": 1200,
+                    "BoardTotalMemorySize": 98304
+                }
+            ]
+        }
+    },
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm2"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm3"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm4"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm5"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm6"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm7"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm8"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm9"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm10"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm11"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm12"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm13"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm14"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm15"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm16"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm2"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm3"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm4"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm5"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm6"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm7"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm8"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm9"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm10"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm11"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm12"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm13"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm14"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm15"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Memory/proc2dimm16"
+        }
+    ],
+    "Members@odata.count": 32
+}

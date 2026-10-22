@@ -1,0 +1,28 @@
+{
+    "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/2559",
+    "@odata.type": "#Drive.v1_18_0.Drive",
+    "Name": "Empty Bay",
+    "Id": "2559",
+    "Status": {
+        "State": "Absent",
+        "Health": "OK"
+    },
+    "SlotCapableProtocols": [
+        "SAS",
+        "SATA",
+        "NVMe"
+    ],
+    "Links": {
+        "Chassis": {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000"
+        }
+    },
+    "PhysicalLocation": {
+        "PartLocation": {
+            "LocationOrdinalValue": 4,
+            "LocationType": "Bay",
+            "ServiceLabel": "Slot=12:Port=2I:Box=1:Bay=4"
+        }
+    },
+    "@odata.etag": "\"263EBC31\""
+}

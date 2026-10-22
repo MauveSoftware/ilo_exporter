@@ -1,0 +1,20 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#HpeSmartStorage.HpeSmartStorage",
+    "@odata.etag": "W/\"0B5F770C\"",
+    "@odata.id": "/redfish/v1/Systems/1/SmartStorage",
+    "@odata.type": "#HpeSmartStorage.v2_0_0.HpeSmartStorage",
+    "Id": "SmartStorage",
+    "Description": "HPE Smart Storage",
+    "Links": {
+        "HostBusAdapters": {
+            "@odata.id": "/redfish/v1/Systems/1/SmartStorage/HostBusAdapters"
+        },
+        "ArrayControllers": {
+            "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers"
+        }
+    },
+    "Name": "HpeSmartStorage",
+    "Status": {
+        "Health": "OK"
+    }
+}

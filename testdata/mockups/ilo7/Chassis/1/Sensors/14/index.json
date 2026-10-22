@@ -1,0 +1,26 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"2555945998\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/14",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "14",
+    "Name": "17-Exp Bay Rear",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 1,
+            "LocationYmm": 2
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 0,
+    "Status": {
+        "State": "Absent"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

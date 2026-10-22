@@ -1,0 +1,108 @@
+{
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Controllers/0",
+    "@odata.type": "#StorageController.v1_7_2.StorageController",
+    "Id": "0",
+    "Name": "HPE SR416i-a Gen10+",
+    "@Redfish.WriteableProperties": [
+        "AssetTag"
+    ],
+    "AssetTag": "",
+    "AssetTag@Redfish.AllowablePattern": "^[ -~]{0,32}$",
+    "FirmwareVersion": "03.01.33.044",
+    "Identifiers": [
+        {
+            "DurableName": "51402EC013A3F460",
+            "DurableNameFormat": "NAA"
+        }
+    ],
+    "Location": {
+        "PartLocation": {
+            "LocationType": "Slot",
+            "ServiceLabel": "Slot=12",
+            "LocationOrdinalValue": 12
+        }
+    },
+    "Manufacturer": "HPE",
+    "Model": "HPE SR416i-a Gen10+",
+    "PartNumber": "P12691-001",
+    "SerialNumber": "PWWTT0C52GE0FF",
+    "SpeedGbps": 22.5,
+    "SKU": "P13928-001",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled",
+        "Conditions": []
+    },
+    "SupportedDeviceProtocols": [
+        "SAS",
+        "SATA",
+        "NVMe"
+    ],
+    "SupportedControllerProtocols": [
+        "PCIe"
+    ],
+    "CacheSummary": {
+        "TotalCacheSizeMiB": 4096,
+        "PersistentCacheSizeMiB": 3644,
+        "Status": {
+            "Health": "OK",
+            "State": "Disabled"
+        }
+    },
+    "PCIeInterface": {
+        "MaxPCIeType": "Gen4",
+        "PCIeType": "Gen4",
+        "MaxLanes": 8,
+        "LanesInUse": 8
+    },
+    "SupportedRAIDTypes": [
+        "RAID0",
+        "RAID1",
+        "RAID10",
+        "RAID5",
+        "RAID50",
+        "RAID6",
+        "RAID60",
+        "RAID1Triple",
+        "RAID10Triple",
+        "None"
+    ],
+    "ControllerRates": {
+        "@Redfish.WriteableProperties": [
+            "ConsistencyCheckRatePercent",
+            "RebuildRatePercent",
+            "TransformationRatePercent"
+        ],
+        "ConsistencyCheckRatePercent": 89,
+        "ConsistencyCheckRatePercent@Redfish.AllowableNumbers": [
+            "0",
+            "2:100"
+        ],
+        "RebuildRatePercent": 100,
+        "RebuildRatePercent@Redfish.AllowableNumbers": [
+            ":100"
+        ],
+        "TransformationRatePercent": 54,
+        "TransformationRatePercent@Redfish.AllowableNumbers": [
+            ":100"
+        ]
+    },
+    "Ports": {
+        "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Controllers/0/Ports"
+    },
+    "Links": {
+        "Batteries@odata.count": 1,
+        "Batteries": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/1"
+            }
+        ],
+        "PCIeFunctions@odata.count": 1,
+        "PCIeFunctions": [
+            {
+                "@odata.id": "F0"
+            }
+        ]
+    },
+    "@odata.etag": "\"79C6C2FC\""
+}

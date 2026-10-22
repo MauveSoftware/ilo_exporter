@@ -1,0 +1,29 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"CACA1DC9\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/7",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "7",
+    "Name": "08-P2 DIMM 1-6",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 3,
+            "LocationYmm": 10
+        }
+    },
+    "PhysicalContext": "Memory",
+    "Reading": 34.0,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {
+            "Reading": 92
+        },
+        "UpperFatal": {}
+    }
+}

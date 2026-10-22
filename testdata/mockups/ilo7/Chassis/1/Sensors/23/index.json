@@ -1,0 +1,26 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"2632227530\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/23",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "23",
+    "Name": "32-OCP B",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 8,
+            "LocationYmm": 14
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 0,
+    "Status": {
+        "State": "Absent"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#StorageCollection.StorageCollection",
+    "@odata.etag": "W/\"AA6D42B0\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage",
+    "@odata.type": "#StorageCollection.StorageCollection",
+    "Description": "Storage subsystems known to this system",
+    "Name": "Storage",
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000"
+        }
+    ],
+    "Members@odata.count": 1
+}

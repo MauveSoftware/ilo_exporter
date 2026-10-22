@@ -1,0 +1,31 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"1227967147\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/7",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "7",
+    "Name": "08-VR P1",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 12,
+            "LocationYmm": 7
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 41,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {
+            "Reading": 110
+        },
+        "UpperFatal": {
+            "Reading": 115
+        }
+    }
+}

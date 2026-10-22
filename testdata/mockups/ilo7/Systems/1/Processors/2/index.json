@@ -1,0 +1,134 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Processor.Processor",
+    "@odata.etag": "W/\"1053422536\"",
+    "@odata.id": "/redfish/v1/Systems/1/Processors/2",
+    "@odata.type": "#Processor.v1_8_2.Processor",
+    "Id": "2",
+    "InstructionSet": "x86-64",
+    "Manufacturer": "Intel(R) Corporation",
+    "MaxSpeedMHz": 4000,
+    "Model": "Intel(R) Xeon(R) 6517P",
+    "Name": "Processors",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeProcessorExt.HpeProcessorExt",
+            "@odata.type": "#HpeProcessorExt.v2_2_1.HpeProcessorExt",
+            "AssetTag": "UNKNOWN",
+            "Cache": [
+                {
+                    "Associativity": "12waySetAssociative",
+                    "CacheSpeedns": 0,
+                    "CurrentSRAMType": [
+                        "Synchronous"
+                    ],
+                    "EccType": "SingleBitECC",
+                    "InstalledSizeKB": 1792,
+                    "Location": "Internal",
+                    "MaximumSizeKB": 1792,
+                    "Name": "L1-Cache",
+                    "Policy": "WriteBack",
+                    "Socketed": false,
+                    "SupportedSRAMType": [
+                        "Synchronous"
+                    ],
+                    "SystemCacheType": "Unified"
+                },
+                {
+                    "Associativity": "16waySetAssociative",
+                    "CacheSpeedns": 0,
+                    "CurrentSRAMType": [
+                        "Synchronous"
+                    ],
+                    "EccType": "SingleBitECC",
+                    "InstalledSizeKB": 32768,
+                    "Location": "Internal",
+                    "MaximumSizeKB": 32768,
+                    "Name": "L2-Cache",
+                    "Policy": "Varies",
+                    "Socketed": false,
+                    "SupportedSRAMType": [
+                        "Synchronous"
+                    ],
+                    "SystemCacheType": "Unified"
+                },
+                {
+                    "Associativity": "16waySetAssociative",
+                    "CacheSpeedns": 0,
+                    "CurrentSRAMType": [
+                        "Synchronous"
+                    ],
+                    "EccType": "SingleBitECC",
+                    "InstalledSizeKB": 73728,
+                    "Location": "Internal",
+                    "MaximumSizeKB": 73728,
+                    "Name": "L3-Cache",
+                    "Policy": "Varies",
+                    "Socketed": false,
+                    "SupportedSRAMType": [
+                        "Synchronous"
+                    ],
+                    "SystemCacheType": "Unified"
+                }
+            ],
+            "Characteristics": [
+                "64Bit",
+                "MultiCore",
+                "HwThread",
+                "ExecuteProtection",
+                "EnhancedVirtualization",
+                "PowerPerfControl"
+            ],
+            "ConfigStatus": {
+                "Populated": true,
+                "State": "Enabled"
+            },
+            "CoresEnabled": 16,
+            "ExternalClockMHz": 100,
+            "MicrocodePatches": [
+                {
+                    "CpuId": "0x000A06F3",
+                    "Date": "2025-05-03T00:00:00Z",
+                    "PatchId": "0x03000362"
+                },
+                {
+                    "CpuId": "0x000A06D1",
+                    "Date": "2025-05-01T00:00:00Z",
+                    "PatchId": "0x0A0000F2"
+                },
+                {
+                    "CpuId": "0x000A06D0",
+                    "Date": "2024-08-14T00:00:00Z",
+                    "PatchId": "0x80000680"
+                },
+                {
+                    "CpuId": "0x000A06D1",
+                    "Date": "2025-05-01T00:00:00Z",
+                    "PatchId": "0x010003C2"
+                }
+            ],
+            "PartNumber": "",
+            "RatedSpeedMHz": 3200,
+            "SerialNumber": "",
+            "VoltageVoltsX10": 18
+        }
+    },
+    "PartNumber": "",
+    "ProcessorArchitecture": "x86",
+    "ProcessorId": {
+        "EffectiveFamily": "179",
+        "EffectiveModel": "13",
+        "IdentificationRegisters": "0x06d1000afbffbfeb",
+        "MicrocodeInfo": null,
+        "Step": "1",
+        "VendorId": "Intel(R) Corporation"
+    },
+    "ProcessorType": "CPU",
+    "SerialNumber": "",
+    "Socket": "Proc 2",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "TotalCores": 16,
+    "TotalThreads": 32
+}

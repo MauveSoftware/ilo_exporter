@@ -1,0 +1,25 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#ThermalSubsystem.ThermalSubsystem",
+    "@odata.etag": "W/\"1212403165\"",
+    "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem",
+    "@odata.type": "#ThermalSubsystem.v1_3_2.ThermalSubsystem",
+    "Id": "ThermalSubsystem",
+    "Fans": {
+        "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans"
+    },
+    "Name": "ThermalSubsystem",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeThermalExt.HpeThermalExt",
+            "@odata.type": "#HpeThermalExt.v2_1_2.HpeThermalExt",
+            "FanPercentMinimum": 0,
+            "ThermalConfiguration": "OptimalCooling"
+        }
+    },
+    "Pumps": {
+        "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Pumps"
+    },
+    "ThermalMetrics": {
+        "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/ThermalMetrics"
+    }
+}

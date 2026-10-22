@@ -1,0 +1,60 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#HpeSmartStorageArrayController.HpeSmartStorageArrayController",
+    "@odata.etag": "W/\"55164A06\"",
+    "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers/12",
+    "@odata.type": "#HpeSmartStorageArrayController.v2_2_0.HpeSmartStorageArrayController",
+    "Id": "12",
+    "AdapterType": "SmartArray",
+    "BackupPowerSourceStatus": "Present",
+    "ControllerBoard": {
+        "Status": {
+            "Health": "OK"
+        }
+    },
+    "ControllerPartNumber": "P13928-001",
+    "CurrentOperatingMode": "Mixed",
+    "Description": "HPE Smart Storage Array Controller View",
+    "DriveWriteCache": "Disabled",
+    "DualModeControllerSupported": true,
+    "EncryptionCryptoOfficerPasswordSet": false,
+    "EncryptionCspTestPassed": true,
+    "EncryptionEnabled": false,
+    "EncryptionFwLocked": false,
+    "EncryptionHasLockedVolumesMissingBootPassword": false,
+    "EncryptionMixedVolumesEnabled": false,
+    "EncryptionSelfTestPassed": true,
+    "EncryptionStandaloneModeEnabled": false,
+    "ExternalPortCount": 0,
+    "FirmwareVersion": {
+        "Current": {
+            "VersionString": "03.01.33.044"
+        }
+    },
+    "HardwareRevision": "B",
+    "InternalPortCount": 2,
+    "Links": {
+        "LogicalDrives": {
+            "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers/12/LogicalDrives"
+        },
+        "StorageEnclosures": {
+            "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers/12/StorageEnclosures"
+        },
+        "PhysicalDrives": {
+            "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers/12/DiskDrives"
+        },
+        "UnconfiguredDrives": {
+            "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers/12/UnconfiguredDrives"
+        }
+    },
+    "Location": "Slot 12",
+    "LocationFormat": "PCISlot",
+    "Model": "HPE SR416i-a Gen10+",
+    "Name": "Hpe Smart Storage Array Controller",
+    "ReadCachePercent": 0,
+    "SerialNumber": "PWWTT0C52GE0FF",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "WriteCacheWithoutBackupPowerEnabled": false
+}

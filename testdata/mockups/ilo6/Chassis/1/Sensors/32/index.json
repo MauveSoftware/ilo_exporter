@@ -1,0 +1,26 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"727036A7\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/32",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "32",
+    "Name": "37-PCI 5",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 7,
+            "LocationYmm": 13
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 0.0,
+    "Status": {
+        "State": "Absent"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

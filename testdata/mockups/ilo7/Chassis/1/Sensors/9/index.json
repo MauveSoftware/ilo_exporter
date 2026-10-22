@@ -1,0 +1,29 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"4158348025\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/9",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "9",
+    "Name": "10-HD Max",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 8,
+            "LocationYmm": 2
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 40,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {
+            "Reading": 72
+        },
+        "UpperFatal": {}
+    }
+}

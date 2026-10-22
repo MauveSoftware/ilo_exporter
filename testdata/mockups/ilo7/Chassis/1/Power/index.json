@@ -1,0 +1,197 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Power.Power",
+    "@odata.etag": "W/\"365869752\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Power",
+    "@odata.type": "#Power.v1_7_1.Power",
+    "Id": "Power",
+    "Name": "PowerMetrics",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpePowerMetricsExt.HpePowerMetricsExt",
+            "@odata.type": "#HpePowerMetricsExt.v2_6_0.HpePowerMetricsExt",
+            "BrownoutRecoveryEnabled": true,
+            "HasCpuPowerMetering": true,
+            "HasDimmPowerMetering": true,
+            "HasFanPowerMetering": true,
+            "HasGpuPowerMetering": false,
+            "HasPowerMetering": true,
+            "HighEfficiencyMode": "Balanced",
+            "Links": {
+                "PowerMeter": {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power/PowerMeter"
+                },
+                "FastPowerMeter": {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power/FastPowerMeter"
+                },
+                "SlowPowerMeter": {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power/SlowPowerMeter"
+                }
+            },
+            "MinimumSafelyAchievableCap": null,
+            "MinimumSafelyAchievableCapValid": false,
+            "PowerMetric": {
+                "AmbTemp": 0,
+                "Cap": 0,
+                "CpuCapLim": 0,
+                "CpuMax": 0,
+                "CpuPwrSavLim": 0,
+                "CpuWatts": 0,
+                "DimmWatts": 0,
+                "GpuWatts": 0,
+                "PrMode": "",
+                "PunCap": false,
+                "UnachCap": false
+            },
+            "SNMPPowerThresholdAlert": {
+                "DurationInMin": 0,
+                "ThresholdWatts": 0,
+                "Trigger": "Disabled"
+            }
+        }
+    },
+    "PowerControl": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerControl/0",
+            "MemberId": "0",
+            "PowerCapacityWatts": 2000,
+            "PowerConsumedWatts": 217,
+            "PowerLimit": {
+                "LimitInWatts": null
+            },
+            "PowerMetrics": {
+                "AverageConsumedWatts": 223,
+                "IntervalInMin": 20,
+                "MaxConsumedWatts": 403,
+                "MinConsumedWatts": 214
+            }
+        }
+    ],
+    "PowerSupplies": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/0",
+            "FirmwareVersion": "1.02",
+            "LastPowerOutputWatts": 117,
+            "LineInputVoltage": 208,
+            "LineInputVoltageType": "ACHighLine",
+            "Manufacturer": "LTEON",
+            "MemberId": "0",
+            "Model": "P03178-B21",
+            "Name": "HpeServerPowerSupply",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "AveragePowerOutputWatts": 117,
+                    "BayNumber": 1,
+                    "Domain": "System",
+                    "HotplugCapable": true,
+                    "MaxPowerOutputWatts": 121,
+                    "Mismatched": false,
+                    "PowerSupplyStatus": {
+                        "State": "Ok"
+                    },
+                    "iPDUCapable": false
+                }
+            },
+            "PowerCapacityWatts": 1000,
+            "PowerSupplyType": "AC",
+            "SerialNumber": "5WSVA0ALLKLKZV",
+            "SparePartNumber": "P44412-001",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/1",
+            "FirmwareVersion": "1.02",
+            "LastPowerOutputWatts": 100,
+            "LineInputVoltage": 208,
+            "LineInputVoltageType": "ACHighLine",
+            "Manufacturer": "LTEON",
+            "MemberId": "1",
+            "Model": "P03178-B21",
+            "Name": "HpeServerPowerSupply",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "AveragePowerOutputWatts": 100,
+                    "BayNumber": 2,
+                    "Domain": "System",
+                    "HotplugCapable": true,
+                    "MaxPowerOutputWatts": 101,
+                    "Mismatched": false,
+                    "PowerSupplyStatus": {
+                        "State": "Ok"
+                    },
+                    "iPDUCapable": false
+                }
+            },
+            "PowerCapacityWatts": 1000,
+            "PowerSupplyType": "AC",
+            "SerialNumber": "5WSVA0ALLKLKYJ",
+            "SparePartNumber": "P44412-001",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        }
+    ],
+    "Redundancy": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#Redundancy/0",
+            "MaxNumSupported": 2,
+            "MemberId": "0",
+            "MinNumNeeded": 2,
+            "Mode": "Failover",
+            "Name": "PowerSupply Redundancy Group 1",
+            "RedundancySet": [
+                {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/0"
+                },
+                {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/1"
+                }
+            ],
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        }
+    ],
+    "Voltages": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#Voltages/0",
+            "LowerThresholdCritical": 65535,
+            "LowerThresholdFatal": 65535,
+            "LowerThresholdNonCritical": 65535,
+            "MemberId": "0",
+            "Name": "",
+            "ReadingVolts": 0,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 65535,
+            "UpperThresholdFatal": 65535,
+            "UpperThresholdNonCritical": 65535
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#Voltages/1",
+            "LowerThresholdCritical": 65535,
+            "LowerThresholdFatal": 65535,
+            "LowerThresholdNonCritical": 65535,
+            "MemberId": "1",
+            "Name": "",
+            "ReadingVolts": 0,
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "UpperThresholdCritical": 65535,
+            "UpperThresholdFatal": 65535,
+            "UpperThresholdNonCritical": 65535
+        }
+    ]
+}

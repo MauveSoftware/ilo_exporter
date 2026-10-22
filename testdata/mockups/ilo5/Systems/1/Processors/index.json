@@ -1,0 +1,17 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#ProcessorCollection.ProcessorCollection",
+    "@odata.etag": "W/\"570254F2\"",
+    "@odata.id": "/redfish/v1/Systems/1/Processors",
+    "@odata.type": "#ProcessorCollection.ProcessorCollection",
+    "Description": "Processors view",
+    "Name": "Processors Collection",
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Processors/1"
+        },
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Processors/2"
+        }
+    ],
+    "Members@odata.count": 2
+}

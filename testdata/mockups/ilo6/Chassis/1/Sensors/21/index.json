@@ -1,0 +1,27 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"E2291AA7\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/21",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "21",
+    "Name": "23-P/S 1 Inlet",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 1,
+            "LocationYmm": 13
+        }
+    },
+    "PhysicalContext": "PowerSupply",
+    "Reading": 30.0,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

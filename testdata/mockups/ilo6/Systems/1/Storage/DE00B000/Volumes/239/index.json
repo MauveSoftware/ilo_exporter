@@ -1,0 +1,76 @@
+{
+    "@odata.etag": "\"3b633934\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00B000/Volumes/239",
+    "@odata.type": "#Volume.v1_9_0.Volume",
+    "Id": "239",
+    "Name": "MR Volume 239",
+    "Actions": {
+        "#Volume.Initialize": {
+            "InitializeMethod@Redfish.AllowableValues": [
+                "Foreground",
+                "Background"
+            ],
+            "InitializeType@Redfish.AllowableValues": [
+                "Fast",
+                "Slow"
+            ],
+            "target": "/redfish/v1/Systems/1/Storage/DE00B000/Volumes/239/Actions/Volume.Initialize"
+        }
+    },
+    "OptimumIOSizeBytes": 65536,
+    "StripSizeBytes": 65536,
+    "ReadCachePolicy@Redfish.AllowableValues": [
+        "Off",
+        "ReadAhead"
+    ],
+    "ReadCachePolicy": "Off",
+    "WriteCachePolicy@Redfish.AllowableValues": [
+        "ProtectedWriteBack",
+        "UnprotectedWriteBack",
+        "WriteThrough"
+    ],
+    "WriteCachePolicy": "ProtectedWriteBack",
+    "WriteCacheState": "Protected",
+    "DisplayName@Redfish.AllowablePattern": "^.{0,15}$",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "BlockSizeBytes": 512,
+    "CapacityBytes": 1599774654464,
+    "DisplayName": "MR Volume 239",
+    "Encrypted": false,
+    "EncryptionTypes": [],
+    "Identifiers": [
+        {
+            "DurableName": "600062B2218E23802FDC23942A65F7AA",
+            "DurableNameFormat": "NAA"
+        }
+    ],
+    "IOPerfModeEnabled": true,
+    "Links": {
+        "Drives@odata.count": 2,
+        "Drives": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/DE00B000/Drives/3"
+            },
+            {
+                "@odata.id": "/redfish/v1/Chassis/DE00B000/Drives/4"
+            }
+        ],
+        "@Redfish.WriteableProperties": [
+            "DedicatedSpareDrives"
+        ],
+        "DedicatedSpareDrives@odata.count": 0,
+        "DedicatedSpareDrives": []
+    },
+    "LogicalUnitNumber": 0,
+    "Operations": [],
+    "RAIDType": "RAID1",
+    "VolumeUsage": "Data",
+    "@Redfish.WriteableProperties": [
+        "DisplayName",
+        "ReadCachePolicy",
+        "WriteCachePolicy"
+    ]
+}

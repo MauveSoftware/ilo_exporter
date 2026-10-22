@@ -1,0 +1,343 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Manager.Manager",
+    "@odata.etag": "W/\"CBC8BED9\"",
+    "@odata.id": "/redfish/v1/Managers/1",
+    "@odata.type": "#Manager.v1_5_1.Manager",
+    "Id": "1",
+    "Actions": {
+        "#Manager.Reset": {
+            "ResetType@Redfish.AllowableValues": [
+                "ForceRestart",
+                "GracefulRestart"
+            ],
+            "target": "/redfish/v1/Managers/1/Actions/Manager.Reset"
+        }
+    },
+    "CommandShell": {
+        "ConnectTypesSupported": [
+            "SSH",
+            "Oem"
+        ],
+        "MaxConcurrentSessions": 9,
+        "ServiceEnabled": true
+    },
+    "DateTime": "2025-05-29T11:00:40Z",
+    "DateTimeLocalOffset": "-07:00",
+    "EthernetInterfaces": {
+        "@odata.id": "/redfish/v1/Managers/1/EthernetInterfaces"
+    },
+    "FirmwareVersion": "iLO 5 v3.11",
+    "GraphicalConsole": {
+        "ConnectTypesSupported": [
+            "KVMIP"
+        ],
+        "MaxConcurrentSessions": 10,
+        "ServiceEnabled": true
+    },
+    "HostInterfaces": {
+        "@odata.id": "/redfish/v1/Managers/1/HostInterfaces"
+    },
+    "Links": {
+        "ManagerInChassis": {
+            "@odata.id": "/redfish/v1/Chassis/1"
+        },
+        "ManagerForServers": [
+            {
+                "@odata.id": "/redfish/v1/Systems/1"
+            }
+        ],
+        "ManagerForChassis": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/1"
+            }
+        ]
+    },
+    "LogServices": {
+        "@odata.id": "/redfish/v1/Managers/1/LogServices"
+    },
+    "ManagerType": "BMC",
+    "Model": "iLO 5",
+    "Name": "Manager",
+    "NetworkProtocol": {
+        "@odata.id": "/redfish/v1/Managers/1/NetworkProtocol"
+    },
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeiLO.HpeiLO",
+            "@odata.type": "#HpeiLO.v2_13_0.HpeiLO",
+            "Actions": {
+                "#HpeiLO.ClearHotKeys": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.ClearHotKeys"
+                },
+                "#HpeiLO.ClearNVRAM": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.ClearNVRAM"
+                },
+                "#HpeiLO.ClearRestApiState": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.ClearRestApiState"
+                },
+                "#HpeiLO.DisableCloudConnect": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.DisableCloudConnect"
+                },
+                "#HpeiLO.DisableiLOFunctionality": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.DisableiLOFunctionality"
+                },
+                "#HpeiLO.EnableCloudConnect": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.EnableCloudConnect"
+                },
+                "#HpeiLO.RequestFirmwareAndOsRecovery": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.RequestFirmwareAndOsRecovery"
+                },
+                "#HpeiLO.ResetToFactoryDefaults": {
+                    "ResetType@Redfish.AllowableValues": [
+                        "Default"
+                    ],
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.ResetToFactoryDefaults"
+                },
+                "#HpeiLO.RetryCloudConnect": {
+                    "target": "/redfish/v1/Managers/1/Actions/Oem/Hpe/HpeiLO.RetryCloudConnect"
+                }
+            },
+            "ClearRestApiStatus": "DataPresent",
+            "CloudConnect": {
+                "CloudConnectStatus": "NotEnabled",
+                "ConnectionType": "Direct",
+                "FailReason": "NotTested",
+                "WorkspaceId": ""
+            },
+            "ConfigurationLimitations": "None",
+            "ConfigurationSettings": "Current",
+            "FederationConfig": {
+                "IPv6MulticastScope": "Site",
+                "MulticastAnnouncementInterval": 600,
+                "MulticastDiscovery": "Enabled",
+                "MulticastTimeToLive": 5,
+                "iLOFederationManagement": "Enabled"
+            },
+            "Firmware": {
+                "Current": {
+                    "Date": "Feb 25 2025",
+                    "DebugBuild": false,
+                    "MajorVersion": 3,
+                    "MinorVersion": 11,
+                    "VersionString": "iLO 5 v3.11"
+                }
+            },
+            "ForceOnDriveLED": false,
+            "FrontPanelUSB": {
+                "State": "Ready"
+            },
+            "IdleConnectionTimeoutMinutes": 30,
+            "IntegratedRemoteConsole": {
+                "HotKeys": [
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-T"
+                    },
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-U"
+                    },
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-V"
+                    },
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-W"
+                    },
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-X"
+                    },
+                    {
+                        "KeySequence": [
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE",
+                            "NONE"
+                        ],
+                        "Name": "Ctrl-Y"
+                    }
+                ],
+                "LockKey": {
+                    "CustomKeySequence": [
+                        "NONE",
+                        "NONE",
+                        "NONE",
+                        "NONE",
+                        "NONE"
+                    ],
+                    "LockOption": "Disabled"
+                },
+                "TrustedCertificateRequired": false
+            },
+            "License": {
+                "LicenseKey": "XXXXX-XXXXX-XXXXX-XXXXX-HLP6M",
+                "LicenseString": "iLO Advanced limited-distribution test",
+                "LicenseType": "Internal"
+            },
+            "Links": {
+                "DateTimeService": {
+                    "@odata.id": "/redfish/v1/Managers/1/DateTime"
+                },
+                "LicenseService": {
+                    "@odata.id": "/redfish/v1/Managers/1/LicenseService"
+                },
+                "EmbeddedMediaService": {
+                    "@odata.id": "/redfish/v1/Managers/1/EmbeddedMedia"
+                },
+                "SNMPService": {
+                    "@odata.id": "/redfish/v1/Managers/1/SnmpService"
+                },
+                "FederationPeers": {
+                    "@odata.id": "/redfish/v1/Managers/1/FederationPeers"
+                },
+                "FederationGroups": {
+                    "@odata.id": "/redfish/v1/Managers/1/FederationGroups"
+                },
+                "ActiveHealthSystem": {
+                    "@odata.id": "/redfish/v1/Managers/1/ActiveHealthSystem"
+                },
+                "SecurityService": {
+                    "@odata.id": "/redfish/v1/Managers/1/SecurityService"
+                },
+                "BackupRestoreService": {
+                    "@odata.id": "/redfish/v1/Managers/1/BackupRestoreService"
+                },
+                "RemoteSupport": {
+                    "@odata.id": "/redfish/v1/Managers/1/RemoteSupportService"
+                },
+                "GUIService": {
+                    "@odata.id": "/redfish/v1/Managers/1/GUIService"
+                },
+                "FederationDispatch": {
+                    "extref": "/dispatch"
+                },
+                "VSPLogLocation": {
+                    "extref": "/sol.log.gz"
+                },
+                "Thumbnail": {
+                    "extref": "/images/thumbnail.bmp"
+                }
+            },
+            "PersistentMouseKeyboardEnabled": false,
+            "PhysicalMonitorHealthStatusEnabled": true,
+            "RIBCLEnabled": true,
+            "RemoteConsoleThumbnailEnabled": true,
+            "RequireHostAuthentication": false,
+            "RequiredLoginForiLORBSU": false,
+            "SerialCLISpeed": 9600,
+            "SerialCLIStatus": "EnabledAuthReq",
+            "SerialCLIUART": "Present",
+            "VSPDlLoggingEnabled": false,
+            "VSPLogDownloadEnabled": false,
+            "VideoPresenceDetectOverride": true,
+            "VideoPresenceDetectOverrideSupported": true,
+            "VirtualNICEnabled": false,
+            "WebGuiEnabled": true,
+            "iLOFunctionalityEnabled": true,
+            "iLOFunctionalityRequired": false,
+            "iLOIPduringPOSTEnabled": true,
+            "iLORBSUEnabled": true,
+            "iLOSelfTestResults": [
+                {
+                    "Notes": "",
+                    "SelfTestName": "NVRAMData",
+                    "Status": "OK"
+                },
+                {
+                    "Notes": "Controller firmware revision  2.11.00  ",
+                    "SelfTestName": "EmbeddedFlash",
+                    "Status": "OK"
+                },
+                {
+                    "Notes": "",
+                    "SelfTestName": "EEPROM",
+                    "Status": "OK"
+                },
+                {
+                    "Notes": "",
+                    "SelfTestName": "HostRom",
+                    "Status": "OK"
+                },
+                {
+                    "Notes": "",
+                    "SelfTestName": "SupportedHost",
+                    "Status": "OK"
+                },
+                {
+                    "Notes": "Version 1.0.8",
+                    "SelfTestName": "PowerManagementController",
+                    "Status": "Informational"
+                },
+                {
+                    "Notes": "ProLiant DL360 Gen10 Plus System Programmable Logic Device 0x15",
+                    "SelfTestName": "CPLDPAL0",
+                    "Status": "Informational"
+                },
+                {
+                    "Notes": "",
+                    "SelfTestName": "ASICFuses",
+                    "Status": "OK"
+                }
+            ],
+            "iLOServicePort": {
+                "MassStorageAuthenticationRequired": false,
+                "USBEthernetAdaptersEnabled": true,
+                "USBFlashDriveEnabled": true,
+                "iLOServicePortEnabled": true
+            }
+        }
+    },
+    "SerialConsole": {
+        "ConnectTypesSupported": [
+            "SSH",
+            "IPMI",
+            "Oem"
+        ],
+        "MaxConcurrentSessions": 13,
+        "ServiceEnabled": true
+    },
+    "SerialInterfaces": {
+        "@odata.id": "/redfish/v1/Managers/1/SerialInterfaces"
+    },
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "UUID": "3acc3025-eae6-52aa-aa5a-2a5052ce49bd",
+    "VirtualMedia": {
+        "@odata.id": "/redfish/v1/Managers/1/VirtualMedia"
+    }
+}

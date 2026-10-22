@@ -1,0 +1,61 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Memory.Memory",
+    "@odata.etag": "W/\"E6EC3A2C\"",
+    "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm14",
+    "@odata.type": "#Memory.v1_7_1.Memory",
+    "Id": "proc1dimm14",
+    "BaseModuleType": "RDIMM",
+    "BusWidthBits": 72,
+    "CacheSizeMiB": 0,
+    "CapacityMiB": 16384,
+    "DataWidthBits": 64,
+    "DeviceLocator": "PROC 1 DIMM 14",
+    "ErrorCorrection": "MultiBitECC",
+    "LogicalSizeMiB": 0,
+    "Manufacturer": "Samsung",
+    "MemoryDeviceType": "DDR4",
+    "MemoryLocation": {
+        "Channel": 1,
+        "MemoryController": 1,
+        "Slot": 14,
+        "Socket": 1
+    },
+    "MemoryMedia": [
+        "DRAM"
+    ],
+    "MemoryType": "DRAM",
+    "Name": "proc1dimm14",
+    "NonVolatileSizeMiB": 0,
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeMemoryExt.HpeMemoryExt",
+            "@odata.type": "#HpeMemoryExt.v2_5_0.HpeMemoryExt",
+            "Attributes": [
+                "HpeSmartMemory"
+            ],
+            "BaseModuleType": "RDIMM",
+            "DIMMManufacturingDate": "2217",
+            "DIMMStatus": "GoodInUse",
+            "MaxOperatingSpeedMTs": 3200,
+            "MinimumVoltageVoltsX10": 12,
+            "PartNumber": "P11443-091",
+            "VendorName": "Samsung"
+        }
+    },
+    "OperatingMemoryModes": [
+        "Volatile"
+    ],
+    "OperatingSpeedMhz": 2666,
+    "PartNumber": "M393A2K43DB3-CWE",
+    "PersistentRegionSizeLimitMiB": 0,
+    "RankCount": 2,
+    "SecurityCapabilities": {},
+    "SerialNumber": "14D4DDBC",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "VendorID": "52736",
+    "VolatileRegionSizeLimitMiB": 16384,
+    "VolatileSizeMiB": 16384
+}

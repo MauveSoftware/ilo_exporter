@@ -1,0 +1,27 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"3A5CA0A7\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/22",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "22",
+    "Name": "24-P/S 2",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 4,
+            "LocationYmm": 13
+        }
+    },
+    "PhysicalContext": "PowerSupply",
+    "Reading": 41.0,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

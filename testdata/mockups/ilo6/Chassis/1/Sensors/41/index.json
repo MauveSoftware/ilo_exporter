@@ -1,0 +1,34 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"F19BA6AB\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/41",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "41",
+    "Description": "33-PCI 2",
+    "Name": "33.1-PCI 2-Network controller",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 14,
+            "LocationYmm": 13
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 94.0,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {
+            "Reading": 100
+        },
+        "UpperCritical": {
+            "Reading": 105
+        },
+        "UpperFatal": {
+            "Reading": 115
+        }
+    }
+}

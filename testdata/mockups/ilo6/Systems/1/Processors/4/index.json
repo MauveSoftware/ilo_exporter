@@ -1,0 +1,17 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Processor.Processor",
+    "@odata.etag": "W/\"274FEABA\"",
+    "@odata.id": "/redfish/v1/Systems/1/Processors/4",
+    "@odata.type": "#Processor.v1_8_2.Processor",
+    "Id": "4",
+    "Manufacturer": "NVIDIA",
+    "Model": "900-21010-0320-030",
+    "Name": "NVIDIA H100 NVL",
+    "PartNumber": "900-21010-0320-030",
+    "ProcessorType": "GPU",
+    "SerialNumber": "1790125011977",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    }
+}

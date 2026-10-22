@@ -1,0 +1,23 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#HpeSmartStorageStorageEnclosure.HpeSmartStorageStorageEnclosure",
+    "@odata.etag": "W/\"26465846\"",
+    "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers/12/StorageEnclosures/3",
+    "@odata.type": "#HpeSmartStorageStorageEnclosure.v2_0_0.HpeSmartStorageStorageEnclosure",
+    "Id": "3",
+    "Description": "HPE Smart Storage Enclosure View",
+    "DriveBayCount": 8,
+    "FirmwareVersion": {
+        "Current": {
+            "VersionString": "1.00"
+        }
+    },
+    "Location": "2I:1",
+    "LocationFormat": "Port:Box",
+    "Model": "UBM6",
+    "Name": "HpeSmartStorageEnclosure",
+    "SerialNumber": "",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    }
+}

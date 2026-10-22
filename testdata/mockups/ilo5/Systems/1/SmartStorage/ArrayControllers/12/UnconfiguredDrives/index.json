@@ -1,0 +1,10 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#HpeSmartStorageDiskDriveCollection.HpeSmartStorageDiskDriveCollection",
+    "@odata.etag": "W/\"75983E8D\"",
+    "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers/12/UnconfiguredDrives",
+    "@odata.type": "#HpeSmartStorageDiskDriveCollection.HpeSmartStorageDiskDriveCollection",
+    "Description": "HPE Smart Storage Unconfigured Disk Drives View",
+    "Name": "HpeSmartStorageUnconfiguredDiskDrives",
+    "Members": [],
+    "Members@odata.count": 0
+}

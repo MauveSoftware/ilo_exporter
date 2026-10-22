@@ -1,0 +1,43 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#HpeSmartStorageDiskDrive.HpeSmartStorageDiskDrive",
+    "@odata.etag": "W/\"C5656820\"",
+    "@odata.id": "/redfish/v1/Systems/1/SmartStorage/ArrayControllers/12/DiskDrives/9",
+    "@odata.type": "#HpeSmartStorageDiskDrive.v2_1_0.HpeSmartStorageDiskDrive",
+    "Id": "9",
+    "BlockSizeBytes": 512,
+    "CapacityGB": 480,
+    "CapacityLogicalBlocks": 937703088,
+    "CapacityMiB": 457862,
+    "CarrierApplicationVersion": "0",
+    "CarrierAuthenticationStatus": "NotApplicable",
+    "CurrentTemperatureCelsius": 14,
+    "Description": "HPE Smart Storage Disk Drive View",
+    "DiskDriveStatusReasons": [
+        "None"
+    ],
+    "DiskDriveUse": "Data",
+    "EncryptedDrive": false,
+    "FirmwareVersion": {
+        "Current": {
+            "VersionString": "HPG3"
+        }
+    },
+    "InterfaceSpeedMbps": 6000,
+    "InterfaceType": "SATA",
+    "LegacyBootPriority": "None",
+    "Location": "2I:1:2",
+    "LocationFormat": "ControllerPort:Box:Bay",
+    "MaximumTemperatureCelsius": 27,
+    "MediaType": "SSD",
+    "Model": "MK000480GWSSC",
+    "Name": "HpeSmartStorageDiskDrive",
+    "PowerOnHours": 5991,
+    "SSDEnduranceUtilizationPercentage": 1,
+    "SerialNumber": "S521NA0T605338",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "UncorrectedReadErrors": 0,
+    "UncorrectedWriteErrors": 0
+}

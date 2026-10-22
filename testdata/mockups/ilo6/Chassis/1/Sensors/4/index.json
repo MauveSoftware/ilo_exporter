@@ -1,0 +1,26 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"A1506F88\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/4",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "4",
+    "Name": "05-P1 PMM 1-6",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 9,
+            "LocationYmm": 10
+        }
+    },
+    "PhysicalContext": "Memory",
+    "Reading": 0.0,
+    "Status": {
+        "State": "Absent"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

@@ -1,0 +1,64 @@
+{
+    "@odata.etag": "\"aedf3030\"",
+    "@odata.id": "/redfish/v1/Chassis/DE00A000/Drives/5",
+    "@odata.type": "#Drive.v1_17_0.Drive",
+    "Id": "5",
+    "Name": "6.40TB 64G NVMe SSD",
+    "Status": {
+        "State": "StandbyOffline",
+        "Health": "OK"
+    },
+    "Links": {
+        "Storage": {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000"
+        },
+        "Chassis": {
+            "@odata.id": "/redfish/v1/Chassis/DE00A000"
+        },
+        "Volumes@odata.count": 0,
+        "Volumes": []
+    },
+    "PhysicalLocation": {
+        "PartLocation": {
+            "ServiceLabel": "Slot=17:Port=1:Box=1:Bay=2",
+            "LocationType": "Bay",
+            "LocationOrdinalValue": 2
+        }
+    },
+    "Actions": {
+        "#Drive.SecureErase": {
+            "target": "/redfish/v1/Chassis/DE00A000/Drives/5/Actions/Drive.SecureErase"
+        }
+    },
+    "BlockSizeBytes": 512,
+    "CapableSpeedGbs": 64.0,
+    "CapacityBytes": 6401252745216,
+    "EncryptionAbility": "None",
+    "FailurePredicted": false,
+    "Identifiers": [
+        {
+            "DurableName": "1A:58:71:41:1C:38:25:00",
+            "DurableNameFormat": "EUI"
+        }
+    ],
+    "MediaType": "SSD",
+    "Model": "MO006400KYDND",
+    "Multipath": false,
+    "NegotiatedSpeedGbs": 64.0,
+    "Operations": [],
+    "PredictedMediaLifeLeftPercent": 100.0,
+    "Protocol": "NVMe",
+    "Revision": "HPK5",
+    "SerialNumber": "S70XNN0XC14012",
+    "StatusIndicator": "OK",
+    "@Redfish.WriteableProperties": [
+        "HotspareType",
+        "LocationIndicatorActive"
+    ],
+    "HotspareType": "None",
+    "LocationIndicatorActive": false,
+    "WriteCacheEnabled": false,
+    "HotspareType@Redfish.AllowableValues": [
+        "Global"
+    ]
+}

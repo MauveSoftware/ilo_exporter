@@ -1,0 +1,73 @@
+{
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Volumes/Capabilities",
+    "@odata.type": "#Volume.v1_9_0.Volume",
+    "Id": "Capabilities",
+    "Name": "Capabilities for the volume collection",
+    "Name@Redfish.OptionalOnCreate": true,
+    "Name@Redfish.AllowablePattern": "^[ !\"#$%&'()*+,-.\\/\\w:;<=>?@[\\]\\^`{\\|}~]{1,64}$",
+    "RAIDType@Redfish.RequiredOnCreate": true,
+    "RAIDType@Redfish.AllowableValues": [
+        "RAID0",
+        "RAID1",
+        "RAID10",
+        "RAID5",
+        "RAID50",
+        "RAID6",
+        "RAID60",
+        "RAID1Triple",
+        "RAID10Triple"
+    ],
+    "CapacityBytes@Redfish.OptionalOnCreate": true,
+    "CapacityBytes@Redfish.AllowableNumbers": [],
+    "StripSizeBytes@Redfish.OptionalOnCreate": true,
+    "StripSizeBytes@Redfish.AllowableNumbers": [
+        "16384",
+        "32768",
+        "65536",
+        "131072",
+        "262144",
+        "524288",
+        "1048576"
+    ],
+    "IOPerfModeEnabled@Redfish.OptionalOnCreate": true,
+    "IOPerfModeEnabled@Redfish.UpdatableAfterCreate": true,
+    "MediaSpanCount@Redfish.OptionalOnCreate": true,
+    "MediaSpanCount@Redfish.AllowableNumbers": [],
+    "DisplayName@Redfish.OptionalOnCreate": true,
+    "DisplayName@Redfish.UpdatableAfterCreate": true,
+    "DisplayName@Redfish.AllowablePattern": "^[ !\"#$%&'()*+,-.\\/\\w:;<=>?@[\\]\\^`{\\|}~]{1,64}$",
+    "ReadCachePolicy@Redfish.OptionalOnCreate": true,
+    "ReadCachePolicy@Redfish.AllowableValues": [
+        "Off",
+        "ReadAhead"
+    ],
+    "ReadCachePolicy@Redfish.UpdatableAfterCreate": true,
+    "WriteCachePolicy@Redfish.OptionalOnCreate": true,
+    "WriteCachePolicy@Redfish.AllowableValues": [
+        "Off",
+        "ProtectedWriteBack",
+        "UnprotectedWriteBack"
+    ],
+    "WriteCachePolicy@Redfish.UpdatableAfterCreate": true,
+    "VolumeUsage@Redfish.OptionalOnCreate": true,
+    "VolumeUsage@Redfish.AllowableValues": [
+        "Data"
+    ],
+    "InitializeMethod@Redfish.OptionalOnCreate": true,
+    "InitializeMethod@Redfish.AllowableValues": [
+        "Background",
+        "Foreground"
+    ],
+    "Encrypted@Redfish.OptionalOnCreate": true,
+    "EncryptionTypes@Redfish.OptionalOnCreate": true,
+    "EncryptionTypes@Redfish.AllowableValues": [
+        "NativeDriveEncryption"
+    ],
+    "Links@Redfish.RequiredOnCreate": true,
+    "Links": {
+        "Drives@Redfish.RequiredOnCreate": true,
+        "DedicatedSpareDrives@Redfish.OptionalOnCreate": true,
+        "DedicatedSpareDrives@Redfish.UpdatableAfterCreate": true
+    },
+    "@odata.etag": "\"07E9D1DC\""
+}

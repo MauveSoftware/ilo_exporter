@@ -1,0 +1,29 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"12BFA7C9\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/2",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "2",
+    "Name": "03-CPU 2 PkgTmp",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 6,
+            "LocationYmm": 10
+        }
+    },
+    "PhysicalContext": "CPU",
+    "Reading": 44.0,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {
+            "Reading": 91
+        },
+        "UpperFatal": {}
+    }
+}

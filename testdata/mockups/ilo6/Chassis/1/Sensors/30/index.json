@@ -1,0 +1,34 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"8FD1094B\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/30",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "30",
+    "Description": "55-XLR8R 16",
+    "Name": "55.1-XLR8R 16-GPU ASIC",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 13,
+            "LocationYmm": 3
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 57.0,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {
+            "Reading": null
+        },
+        "UpperCritical": {
+            "Reading": null
+        },
+        "UpperFatal": {
+            "Reading": null
+        }
+    }
+}

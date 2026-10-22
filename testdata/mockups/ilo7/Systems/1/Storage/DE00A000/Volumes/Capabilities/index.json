@@ -1,0 +1,63 @@
+{
+    "@odata.etag": "\"fd0cc020\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE00A000/Volumes/Capabilities",
+    "@odata.type": "#Volume.v1_9_0.Volume",
+    "Id": "Capabilities",
+    "Name": "Capabilities for VolumeCollection",
+    "CapacityBytes@Redfish.OptionalOnCreate": true,
+    "CapacityBytes@Redfish.AllowableNumbers": [
+        "1073741824:3199549308928"
+    ],
+    "Encrypted@Redfish.OptionalOnCreate": true,
+    "Encrypted@Redfish.UpdatableAfterCreate": true,
+    "DisplayName@Redfish.OptionalOnCreate": true,
+    "DisplayName@Redfish.UpdatableAfterCreate": true,
+    "DisplayName@Redfish.AllowablePattern": "^.{0,15}$",
+    "InitializeMethod@Redfish.OptionalOnCreate": true,
+    "InitializeMethod@Redfish.AllowableValues": [
+        "Foreground",
+        "Background"
+    ],
+    "Links@Redfish.RequiredOnCreate": true,
+    "Links": {
+        "Drives@Redfish.RequiredOnCreate": true,
+        "DedicatedSpareDrives@Redfish.OptionalOnCreate": true,
+        "DedicatedSpareDrives@Redfish.UpdatableAfterCreate": true
+    },
+    "MediaSpanCount@Redfish.OptionalOnCreate": true,
+    "MediaSpanCount@Redfish.AllowableNumbers": [
+        "1:16"
+    ],
+    "Name@Redfish.OptionalOnCreate": true,
+    "Name@Redfish.AllowablePattern": "^.{0,15}$",
+    "RAIDType@Redfish.RequiredOnCreate": true,
+    "RAIDType@Redfish.AllowableValues": [
+        "None",
+        "RAID0",
+        "RAID1",
+        "RAID10"
+    ],
+    "ReadCachePolicy@Redfish.OptionalOnCreate": true,
+    "ReadCachePolicy@Redfish.UpdatableAfterCreate": true,
+    "ReadCachePolicy@Redfish.AllowableValues": [
+        "Off",
+        "ReadAhead"
+    ],
+    "StripSizeBytes@Redfish.OptionalOnCreate": true,
+    "StripSizeBytes@Redfish.AllowableNumbers": [
+        "65536",
+        "131072",
+        "262144",
+        "524288",
+        "1048576"
+    ],
+    "VolumeUsage@Redfish.OptionalOnCreate": true,
+    "VolumeUsage@Redfish.AllowableValues": [
+        "Data"
+    ],
+    "WriteCachePolicy@Redfish.OptionalOnCreate": true,
+    "WriteCachePolicy@Redfish.UpdatableAfterCreate": true,
+    "WriteCachePolicy@Redfish.AllowableValues": [
+        "WriteThrough"
+    ]
+}

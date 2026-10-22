@@ -1,0 +1,49 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Memory.Memory",
+    "@odata.etag": "W/\"6165906D\"",
+    "@odata.id": "/redfish/v1/Systems/1/Memory/proc1dimm15",
+    "@odata.type": "#Memory.v1_7_1.Memory",
+    "Id": "proc1dimm15",
+    "BusWidthBits": 72,
+    "CacheSizeMiB": 0,
+    "CapacityMiB": 0,
+    "DataWidthBits": 64,
+    "DeviceLocator": "PROC 1 DIMM 15",
+    "ErrorCorrection": "MultiBitECC",
+    "LogicalSizeMiB": 0,
+    "MemoryLocation": {
+        "Channel": 2,
+        "MemoryController": 1,
+        "Slot": 15,
+        "Socket": 1
+    },
+    "MemoryMedia": [
+        "DRAM"
+    ],
+    "MemoryType": "DRAM",
+    "Name": "proc1dimm15",
+    "NonVolatileSizeMiB": 0,
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeMemoryExt.HpeMemoryExt",
+            "@odata.type": "#HpeMemoryExt.v2_5_0.HpeMemoryExt",
+            "DIMMManufacturingDate": "",
+            "DIMMStatus": "NotPresent",
+            "MinimumVoltageVoltsX10": 0,
+            "PartNumber": "Unknown"
+        }
+    },
+    "OperatingMemoryModes": [
+        "Volatile"
+    ],
+    "PersistentRegionSizeLimitMiB": 0,
+    "RankCount": null,
+    "SecurityCapabilities": {},
+    "Status": {
+        "Health": "OK",
+        "State": "Absent"
+    },
+    "VendorID": "0",
+    "VolatileRegionSizeLimitMiB": 0,
+    "VolatileSizeMiB": 0
+}

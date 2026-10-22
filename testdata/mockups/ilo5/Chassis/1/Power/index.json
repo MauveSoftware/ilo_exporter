@@ -1,0 +1,160 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Power.Power",
+    "@odata.etag": "W/\"DA2ECBA8\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Power",
+    "@odata.type": "#Power.v1_3_0.Power",
+    "Id": "Power",
+    "Name": "PowerMetrics",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpePowerMetricsExt.HpePowerMetricsExt",
+            "@odata.type": "#HpePowerMetricsExt.v2_4_1.HpePowerMetricsExt",
+            "BrownoutRecoveryEnabled": true,
+            "HasCpuPowerMetering": true,
+            "HasDimmPowerMetering": true,
+            "HasGpuPowerMetering": false,
+            "HasPowerMetering": true,
+            "HighEfficiencyMode": "Balanced",
+            "Links": {
+                "PowerMeter": {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power/PowerMeter"
+                },
+                "FastPowerMeter": {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power/FastPowerMeter"
+                },
+                "SlowPowerMeter": {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power/SlowPowerMeter"
+                },
+                "FederatedGroupCapping": {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power/FederatedGroupCapping"
+                }
+            },
+            "MinimumSafelyAchievableCap": null,
+            "MinimumSafelyAchievableCapValid": false,
+            "PowerMetric": {
+                "AmbTemp": 21,
+                "Cap": 0,
+                "CpuCapLim": 100,
+                "CpuMax": 0,
+                "CpuPwrSavLim": 100,
+                "CpuWatts": 60,
+                "DimmWatts": 8,
+                "GpuWatts": 0,
+                "PrMode": "dyn",
+                "PunCap": false,
+                "UnachCap": false
+            },
+            "SNMPPowerThresholdAlert": {
+                "DurationInMin": 0,
+                "ThresholdWatts": 0,
+                "Trigger": "Disabled"
+            }
+        }
+    },
+    "PowerControl": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerControl/0",
+            "MemberId": "0",
+            "PowerCapacityWatts": 1600,
+            "PowerConsumedWatts": 150,
+            "PowerMetrics": {
+                "AverageConsumedWatts": 151,
+                "IntervalInMin": 20,
+                "MaxConsumedWatts": 179,
+                "MinConsumedWatts": 150
+            }
+        }
+    ],
+    "PowerSupplies": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/0",
+            "FirmwareVersion": "2.00",
+            "LastPowerOutputWatts": 75,
+            "LineInputVoltage": 207,
+            "LineInputVoltageType": "ACHighLine",
+            "Manufacturer": "DELTA",
+            "MemberId": "0",
+            "Model": "865438-B21",
+            "Name": "HpeServerPowerSupply",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "AveragePowerOutputWatts": 75,
+                    "BayNumber": 1,
+                    "HotplugCapable": true,
+                    "MaxPowerOutputWatts": 82,
+                    "Mismatched": false,
+                    "PowerSupplyStatus": {
+                        "State": "Ok"
+                    },
+                    "iPDUCapable": false
+                }
+            },
+            "PowerCapacityWatts": 800,
+            "PowerSupplyType": "AC",
+            "SerialNumber": "5WBYE0F4DGX2JS",
+            "SparePartNumber": "866793-001",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        },
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/1",
+            "FirmwareVersion": "2.00",
+            "LastPowerOutputWatts": 75,
+            "LineInputVoltage": 208,
+            "LineInputVoltageType": "ACHighLine",
+            "Manufacturer": "DELTA",
+            "MemberId": "1",
+            "Model": "865438-B21",
+            "Name": "HpeServerPowerSupply",
+            "Oem": {
+                "Hpe": {
+                    "@odata.context": "/redfish/v1/$metadata#HpeServerPowerSupply.HpeServerPowerSupply",
+                    "@odata.type": "#HpeServerPowerSupply.v2_0_0.HpeServerPowerSupply",
+                    "AveragePowerOutputWatts": 75,
+                    "BayNumber": 2,
+                    "HotplugCapable": true,
+                    "MaxPowerOutputWatts": 82,
+                    "Mismatched": false,
+                    "PowerSupplyStatus": {
+                        "State": "Ok"
+                    },
+                    "iPDUCapable": false
+                }
+            },
+            "PowerCapacityWatts": 800,
+            "PowerSupplyType": "AC",
+            "SerialNumber": "5WBYE0F4DGX2K2",
+            "SparePartNumber": "866793-001",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        }
+    ],
+    "Redundancy": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/Power#Redundancy/0",
+            "MaxNumSupported": 2,
+            "MemberId": "0",
+            "MinNumNeeded": 2,
+            "Mode": "Failover",
+            "Name": "PowerSupply Redundancy Group 1",
+            "RedundancySet": [
+                {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/0"
+                },
+                {
+                    "@odata.id": "/redfish/v1/Chassis/1/Power#PowerSupplies/1"
+                }
+            ],
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        }
+    ]
+}
