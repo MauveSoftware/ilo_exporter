@@ -28,7 +28,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const version string = "1.1.2"
+const version string = "1.1.3"
 
 var (
 	showVersion              = flag.Bool("version", false, "Print version information.")
@@ -140,7 +140,6 @@ func startServer() {
 func errorHandler(f func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := f(w, r)
-
 		if err != nil {
 			var he *httpError
 			if errors.As(err, &he) {
@@ -199,6 +198,7 @@ func handleMetricsRequest(w http.ResponseWriter, r *http.Request) error {
 
 	promhttp.HandlerFor(reg, promhttp.HandlerOpts{
 		ErrorLog:      l,
-		ErrorHandling: promhttp.ContinueOnError}).ServeHTTP(w, r)
+		ErrorHandling: promhttp.ContinueOnError,
+	}).ServeHTTP(w, r)
 	return nil
 }
