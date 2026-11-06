@@ -11,7 +11,6 @@ import (
 
 	"github.com/MauveSoftware/ilo_exporter/pkg/client"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -66,5 +65,4 @@ func (cc *CollectorContext) HandleError(err error, span trace.Span) {
 	atomic.AddInt32(&cc.errCount, 1)
 	span.RecordError(err)
 	span.SetStatus(codes.Error, err.Error())
-	logrus.Error(err.Error())
 }

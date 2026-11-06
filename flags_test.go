@@ -5,8 +5,10 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"io"
+	"strings"
 	"testing"
 )
 
@@ -89,5 +91,17 @@ func TestParseFlags(t *testing.T) {
 				t.Errorf("tls.enabled: got %t, want %t", *tls, tt.wantTLS)
 			}
 		})
+	}
+}
+
+func TestPrintDefaults(t *testing.T) {
+	var buf bytes.Buffer
+	flag.CommandLine.SetOutput(&buf)
+	t.Cleanup(func() { flag.CommandLine.SetOutput(nil) })
+
+	flag.PrintDefaults()
+
+	if out := buf.String(); strings.Contains(out, "panic calling") || !strings.Contains(out, `(default info)`) {
+		t.Errorf("unexpected help output:\n%s", out)
 	}
 }

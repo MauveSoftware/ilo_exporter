@@ -5,8 +5,8 @@
 package main
 
 import (
+	"bytes"
 	"flag"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -14,9 +14,11 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/MauveSoftware/ilo_exporter/internal/fakeilo"
-	"github.com/sirupsen/logrus"
+	"github.com/MauveSoftware/ilo_exporter/pkg/client"
+	"github.com/prometheus/common/promslog"
 )
 
 var update = flag.Bool("update", false, "update golden files")
@@ -35,10 +37,50 @@ const (
 
 func TestMain(m *testing.M) {
 	flag.Parse()
-	logrus.SetOutput(io.Discard)
-	*username = testUser
-	*password = testPassword
 	os.Exit(m.Run())
+}
+
+type testOption func(*exporter, *client.TransportConfig)
+
+func withTransport(f func(*client.TransportConfig)) testOption {
+	return func(_ *exporter, cfg *client.TransportConfig) {
+		f(cfg)
+	}
+}
+
+func withExporter(f func(*exporter)) testOption {
+	return func(e *exporter, _ *client.TransportConfig) {
+		f(e)
+	}
+}
+
+func newTestExporter(t *testing.T, opts ...testOption) *exporter {
+	t.Helper()
+
+	cfg := client.TransportConfig{
+		MaxConnsPerHost:    4,
+		IdleConnTimeout:    time.Minute,
+		InsecureSkipVerify: true,
+	}
+	e := &exporter{
+		username:      testUser,
+		password:      testPassword,
+		logger:        promslog.NewNopLogger(),
+		timeoutOffset: 500 * time.Millisecond,
+	}
+
+	for _, o := range opts {
+		o(e, &cfg)
+	}
+
+	tr, err := client.NewTransport(cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(tr.CloseIdleConnections)
+	e.httpClient = &http.Client{Transport: tr}
+
+	return e
 }
 
 func TestGolden(t *testing.T) {
@@ -46,7 +88,7 @@ func TestGolden(t *testing.T) {
 		t.Run(gen, func(t *testing.T) {
 			srv := fakeilo.New(t, mockupDir(gen), fakeilo.WithCredentials(testUser, testPassword))
 
-			body := scrape(t, srv.Host())
+			body := scrape(t, newTestExporter(t), srv.Host())
 
 			checkGolden(t, gen+".prom", normalizeMetrics(body, srv.Host()))
 			checkGolden(t, gen+".requests", strings.Join(srv.Requests(), "\n")+"\n")
@@ -58,12 +100,18 @@ func mockupDir(gen string) string {
 	return filepath.Join("testdata", "mockups", gen)
 }
 
-func scrape(t *testing.T, host string) string {
+func scrape(t *testing.T, e *exporter, host string) string {
 	t.Helper()
 
 	r := httptest.NewRequest(http.MethodGet, "/metrics?host="+host, nil)
+	return scrapeRequest(t, e, r)
+}
+
+func scrapeRequest(t *testing.T, e *exporter, r *http.Request) string {
+	t.Helper()
+
 	w := httptest.NewRecorder()
-	errorHandler(handleMetricsRequest).ServeHTTP(w, r)
+	e.ServeHTTP(w, r)
 
 	if w.Code != http.StatusOK {
 		t.Fatalf("unexpected status %d: %s", w.Code, w.Body.String())
@@ -134,4 +182,84 @@ func diff(want, got string) string {
 		b.WriteString("+ " + l + "\n")
 	}
 	return b.String()
+}
+
+func TestRejectsInvalidTargets(t *testing.T) {
+	f, err := parseTargetFilter("10.0.0.0/8")
+	if err != nil {
+		t.Fatal(err)
+	}
+	e := newTestExporter(t, withExporter(func(e *exporter) { e.targets = f }))
+
+	tests := map[string]int{
+		"/metrics":                      http.StatusBadRequest,
+		"/metrics?host=evil.example%23": http.StatusBadRequest,
+		"/metrics?host=10.0.0.1%2Fx":    http.StatusBadRequest,
+		"/metrics?host=192.168.0.1":     http.StatusForbidden,
+		"/metrics?host=ilo.example.com": http.StatusForbidden,
+	}
+
+	for target, want := range tests {
+		r := httptest.NewRequest(http.MethodGet, target, nil)
+		w := httptest.NewRecorder()
+		e.ServeHTTP(w, r)
+
+		if w.Code != want {
+			t.Errorf("%s: got status %d, want %d", target, w.Code, want)
+		}
+	}
+}
+
+// TestUnexpectedLinks makes sure links in unexpected places (or from a malicious server) do not crash the exporter
+func TestUnexpectedLinks(t *testing.T) {
+	dir := writeMockup(t, map[string]string{
+		"Systems/1":        `{"PowerState": "On"}`,
+		"Systems/1/Memory": `{"Members": [{"@odata.id": "/redfish/v1/Elsewhere/dimm1"}, {"@odata.id": "x"}]}`,
+		"Elsewhere/dimm1":  `{"Name": "dimm1", "Status": {"Health": "OK", "State": "Enabled"}, "CapacityMiB": 1024}`,
+	})
+	srv := fakeilo.New(t, dir)
+
+	body := scrape(t, newTestExporter(t), srv.Host())
+
+	if !strings.Contains(body, `ilo_memory_dimm_byte{host="`+srv.Host()+`",name="dimm1"} 1.073741824e+09`) {
+		t.Errorf("expected metrics of DIMM with unexpected path, got:\n%s", body)
+	}
+}
+
+// writeMockup creates a mockup directory from a map of resource path (relative to /redfish/v1) to JSON
+func writeMockup(t *testing.T, resources map[string]string) string {
+	t.Helper()
+
+	dir := t.TempDir()
+	for p, content := range resources {
+		d := filepath.Join(dir, filepath.FromSlash(p))
+		if err := os.MkdirAll(d, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(d, "index.json"), []byte(content), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	return dir
+}
+
+func TestDefaultLogging(t *testing.T) {
+	var buf bytes.Buffer
+	e := newTestExporter(t, withExporter(func(e *exporter) {
+		e.logger = promslog.New(&promslog.Config{Writer: &buf})
+	}))
+
+	srv := fakeilo.New(t, mockupDir("ilo7"), fakeilo.WithCredentials(testUser, testPassword))
+	scrape(t, e, srv.Host())
+
+	out := buf.String()
+	if strings.Contains(out, "GET") || strings.Contains(out, "@odata") {
+		t.Errorf("requests or responses logged at default level:\n%s", out)
+	}
+
+	// TODO: no log output at all when the SmartStorage API is only requested if present
+	if n := strings.Count(out, "\n"); n > 1 {
+		t.Errorf("expected at most one log line per scrape, got %d:\n%s", n, out)
+	}
 }

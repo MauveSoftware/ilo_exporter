@@ -9,8 +9,12 @@
 package fakeilo
 
 import (
+	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -39,6 +43,7 @@ type Server struct {
 	hidden   map[string]map[string]bool
 
 	mu          sync.Mutex
+	conns       int
 	requests    []string
 	inFlight    int
 	maxInFlight int
@@ -120,7 +125,16 @@ func New(t testing.TB, dir string, opts ...Option) *Server {
 		o(s)
 	}
 
-	s.srv = httptest.NewTLSServer(http.HandlerFunc(s.serve))
+	s.srv = httptest.NewUnstartedServer(http.HandlerFunc(s.serve))
+	s.srv.Config.ConnState = func(_ net.Conn, state http.ConnState) {
+		if state == http.StateNew {
+			s.mu.Lock()
+			s.conns++
+			s.mu.Unlock()
+		}
+	}
+	s.srv.Config.ErrorLog = log.New(io.Discard, "", 0)
+	s.srv.StartTLS()
 	t.Cleanup(s.srv.Close)
 
 	return s
@@ -129,6 +143,19 @@ func New(t testing.TB, dir string, opts ...Option) *Server {
 // Host returns host:port of the server
 func (s *Server) Host() string {
 	return strings.TrimPrefix(s.srv.URL, "https://")
+}
+
+// Certificate returns the certificate of the server
+func (s *Server) Certificate() *x509.Certificate {
+	return s.srv.Certificate()
+}
+
+// Connections returns the number of connections accepted so far
+func (s *Server) Connections() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	return s.conns
 }
 
 // Requests returns all requests received so far as "METHOD path[?query]", sorted
