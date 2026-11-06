@@ -1,0 +1,14 @@
+GET /redfish/v1/
+GET /redfish/v1/Chassis/1
+GET /redfish/v1/Chassis/1/Power
+GET /redfish/v1/Chassis/1/Thermal
+GET /redfish/v1/Managers/1
+GET /redfish/v1/Systems
+GET /redfish/v1/Systems/1
+GET /redfish/v1/Systems/1
+GET /redfish/v1/Systems/1/Memory?$expand=.
+GET /redfish/v1/Systems/1/Processors?$expand=.
+GET /redfish/v1/Systems/1/SmartStorage/ArrayControllers/12/DiskDrives?$expand=.
+GET /redfish/v1/Systems/1/SmartStorage/ArrayControllers/?$expand=.
+GET /redfish/v1/Systems/1/Storage
+GET /redfish/v1/Systems/1/Storage/DE00A000?$expand=.

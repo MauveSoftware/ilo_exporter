@@ -17,7 +17,9 @@ import (
 	"time"
 
 	"github.com/MauveSoftware/ilo_exporter/internal/fakeilo"
+	"github.com/MauveSoftware/ilo_exporter/internal/lru"
 	"github.com/MauveSoftware/ilo_exporter/pkg/client"
+	"github.com/MauveSoftware/ilo_exporter/pkg/topology"
 	"github.com/prometheus/common/promslog"
 )
 
@@ -67,6 +69,8 @@ func newTestExporter(t *testing.T, opts ...testOption) *exporter {
 		password:      testPassword,
 		logger:        promslog.NewNopLogger(),
 		timeoutOffset: 500 * time.Millisecond,
+		topologies:    topology.NewCache(100, time.Hour),
+		states:        lru.New[hostState](100),
 	}
 
 	for _, o := range opts {
@@ -87,11 +91,22 @@ func TestGolden(t *testing.T) {
 	for gen := range generations {
 		t.Run(gen, func(t *testing.T) {
 			srv := fakeilo.New(t, mockupDir(gen), fakeilo.WithCredentials(testUser, testPassword))
+			e := newTestExporter(t)
 
-			body := scrape(t, newTestExporter(t), srv.Host())
+			first := scrape(t, e, srv.Host())
+			discovery := srv.Requests()
+			srv.ResetRequests()
+
+			// the second scrape uses the cached topology (steady state)
+			body := scrape(t, e, srv.Host())
+
+			if normalizeRequestCount(first) != normalizeRequestCount(body) {
+				t.Errorf("metrics of first and second scrape differ:\n%s", diff(normalizeRequestCount(first), normalizeRequestCount(body)))
+			}
 
 			checkGolden(t, gen+".prom", normalizeMetrics(body, srv.Host()))
 			checkGolden(t, gen+".requests", strings.Join(srv.Requests(), "\n")+"\n")
+			checkGolden(t, gen+".discovery.requests", strings.Join(discovery, "\n")+"\n")
 		})
 	}
 }
@@ -118,6 +133,14 @@ func scrapeRequest(t *testing.T, e *exporter, r *http.Request) string {
 	}
 
 	return w.Body.String()
+}
+
+var requestCountLine = regexp.MustCompile(`(?m)^(ilo_scrape_redfish_requests(?:\{[^}]*\})?) .*$`)
+
+// normalizeRequestCount removes the number of requests, which differs between scrapes with and without discovery
+func normalizeRequestCount(body string) string {
+	body = durationLine.ReplaceAllString(body, "$1 <duration>")
+	return requestCountLine.ReplaceAllString(body, "$1 <requests>")
 }
 
 var durationLine = regexp.MustCompile(`(?m)^(ilo_\w*duration\w*(?:\{[^}]*\})?) .*$`)
@@ -213,7 +236,7 @@ func TestRejectsInvalidTargets(t *testing.T) {
 // TestUnexpectedLinks makes sure links in unexpected places (or from a malicious server) do not crash the exporter
 func TestUnexpectedLinks(t *testing.T) {
 	dir := writeMockup(t, map[string]string{
-		"Systems/1":        `{"PowerState": "On"}`,
+		"Systems/1":        `{"PowerState": "On", "Memory": {"@odata.id": "/redfish/v1/Systems/1/Memory"}}`,
 		"Systems/1/Memory": `{"Members": [{"@odata.id": "/redfish/v1/Elsewhere/dimm1"}, {"@odata.id": "x"}]}`,
 		"Elsewhere/dimm1":  `{"Name": "dimm1", "Status": {"Health": "OK", "State": "Enabled"}, "CapacityMiB": 1024}`,
 	})
@@ -258,8 +281,7 @@ func TestDefaultLogging(t *testing.T) {
 		t.Errorf("requests or responses logged at default level:\n%s", out)
 	}
 
-	// TODO: no log output at all when the SmartStorage API is only requested if present
-	if n := strings.Count(out, "\n"); n > 1 {
-		t.Errorf("expected at most one log line per scrape, got %d:\n%s", n, out)
+	if out != "" {
+		t.Errorf("expected no log output for a successful scrape, got:\n%s", out)
 	}
 }

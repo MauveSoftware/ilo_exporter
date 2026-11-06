@@ -7,10 +7,12 @@ package client
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -31,6 +33,18 @@ type HTTPError struct {
 
 func (e *HTTPError) Error() string {
 	return fmt.Sprintf("%s returned %d %s", e.URL, e.StatusCode, http.StatusText(e.StatusCode))
+}
+
+// IsFatal reports whether the error of a request indicates that further requests to the host
+// will fail as well, e.g. because the host is unreachable or the credentials are invalid
+func IsFatal(err error) bool {
+	var he *HTTPError
+	if errors.As(err, &he) {
+		return he.StatusCode == http.StatusUnauthorized || he.StatusCode == http.StatusForbidden
+	}
+
+	var ue *url.Error
+	return errors.As(err, &ue) || errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded)
 }
 
 // APIClient communicates with the API and parses the results
@@ -145,10 +159,7 @@ func (cl *APIClient) get(ctx context.Context, path string) ([]byte, error) {
 	baseURL := strings.TrimSuffix(cl.url, "/")
 	relativePath := strings.TrimPrefix(path, "/")
 
-	uri := baseURL
-	if relativePath != "" {
-		uri += "/" + relativePath
-	}
+	uri := baseURL + "/" + relativePath
 
 	ctx, span := cl.tracer.Start(ctx, "Client.Get", trace.WithAttributes(
 		attribute.String("URI", uri),
