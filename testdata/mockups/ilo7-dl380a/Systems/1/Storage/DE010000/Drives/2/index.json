@@ -1,0 +1,75 @@
+{
+    "@odata.etag": "W/\"e44a4c40\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000/Drives/2",
+    "@odata.type": "#Drive.v1_17_0.Drive",
+    "@Redfish.WriteableProperties": [
+        "LocationIndicatorActive",
+        "StatusIndicator"
+    ],
+    "Id": "2",
+    "Name": "480GB 16G NVMe SSD",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK",
+        "Conditions": [
+            {
+                "MessageArgs": [
+                    "Slot=2"
+                ],
+                "Severity": "OK"
+            }
+        ]
+    },
+    "BlockSizeBytes": 512,
+    "CapableSpeedGbs": 16.0,
+    "CapacityBytes": 480103981056,
+    "DriveFormFactor": "M2_2280",
+    "EncryptionAbility": "None",
+    "EncryptionStatus": "Unencrypted",
+    "FirmwareVersion": "HPK3",
+    "Revision": "HPK3",
+    "FailurePredicted": false,
+    "HotspareType": "None",
+    "Identifiers": [
+        {
+            "DurableNameFormat": "EUI",
+            "DurableName": "a3:9b:e4:5b:d3:65:b5:7f"
+        }
+    ],
+    "LocationIndicatorActive": false,
+    "Links": {
+        "Storage": {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000"
+        },
+        "Volumes": [
+            {
+                "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000/Volumes/1"
+            }
+        ],
+        "Volumes@odata.count": 1
+    },
+    "MediaType": "SSD",
+    "Model": "VR000480KXLXF",
+    "Multipath": false,
+    "NegotiatedSpeedGbs": 16.0,
+    "PhysicalLocation": {
+        "PartLocation": {
+            "LocationOrdinalValue": 2,
+            "LocationType": "Bay",
+            "ServiceLabel": "Slot=29:Bay=2"
+        }
+    },
+    "PredictedMediaLifeLeftPercent": 100.0,
+    "Protocol": "NVMe",
+    "SerialNumber": "S711NN0Y210905",
+    "SlotCapableProtocols": [
+        "NVMe"
+    ],
+    "StatusIndicator@Redfish.AllowableValues": [
+        "OK",
+        "Fail"
+    ],
+    "StatusIndicator": "OK",
+    "WriteCacheEnabled": false,
+    "Operations": []
+}

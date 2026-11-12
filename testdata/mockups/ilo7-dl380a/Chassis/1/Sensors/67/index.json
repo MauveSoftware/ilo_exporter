@@ -1,0 +1,27 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"4037254682\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/67",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "67",
+    "Name": "77-PCI 18 Zone",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 8,
+            "LocationYmm": 4
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 51,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

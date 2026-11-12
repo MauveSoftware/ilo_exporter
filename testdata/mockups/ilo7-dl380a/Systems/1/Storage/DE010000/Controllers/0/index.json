@@ -1,0 +1,87 @@
+{
+    "@odata.etag": "W/\"3efdc50e\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000/Controllers/0",
+    "@odata.type": "#StorageController.v1_7_0.StorageController",
+    "@Redfish.WriteableProperties": [
+        "AssetTag"
+    ],
+    "Id": "0",
+    "Name": "HPE NS204i-u Gen11 Boot Controller",
+    "AssetTag@Redfish.AllowablePattern": "^.{1,15}$",
+    "AssetTag": "",
+    "CacheSummary": {
+        "TotalCacheSizeMiB": 0,
+        "PersistentCacheSizeMiB": 0,
+        "Status": {
+            "Health": "OK",
+            "State": "Absent",
+            "Conditions": [
+                {
+                    "MessageArgs": [],
+                    "Severity": "OK"
+                }
+            ]
+        }
+    },
+    "ControllerRates": {
+        "@Redfish.WriteableProperties": [
+            "RebuildRatePercent"
+        ],
+        "RebuildRatePercent@Redfish.AllowableNumbers": [
+            "10",
+            "50",
+            "100"
+        ],
+        "RebuildRatePercent": 50
+    },
+    "FirmwareVersion": "1.2.14.1018",
+    "Identifiers": [
+        {
+            "DurableName": "51402ec021b81b64",
+            "DurableNameFormat": "NAA"
+        }
+    ],
+    "Links": {
+        "PCIeFunctions@odata.count": 1
+    },
+    "Location": {
+        "PartLocation": {
+            "ServiceLabel": "Slot=29",
+            "LocationType": "Slot",
+            "LocationOrdinalValue": 29
+        }
+    },
+    "Manufacturer": "HPE",
+    "Model": "HPE NS204i-u Gen11 Boot Controller",
+    "PartNumber": "P48185-003",
+    "PCIeInterface": {
+        "MaxPCIeType": "Gen3",
+        "PCIeType": "Gen3",
+        "MaxLanes": 4,
+        "LanesInUse": 4
+    },
+    "SKU": "P78279-B21",
+    "SerialNumber": "PYWWA0A6KKL1CD",
+    "SpeedGbps": 16.0,
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK",
+        "Conditions": [
+            {
+                "MessageArgs": [
+                    "Slot=2"
+                ],
+                "Severity": "OK"
+            }
+        ]
+    },
+    "SupportedControllerProtocols": [
+        "PCIe"
+    ],
+    "SupportedDeviceProtocols": [
+        "NVMe"
+    ],
+    "SupportedRAIDTypes": [
+        "RAID1"
+    ]
+}

@@ -37,6 +37,7 @@ var (
 	timeoutOffset            = flag.Duration("web.timeout-offset", 500*time.Millisecond, "Offset to subtract from the scrape timeout sent by Prometheus, leaving time to send the response")
 	allowedTargets           = flag.String("web.allowed-targets", "", "Comma separated list of host names, domain suffixes (.example.com), IP addresses and CIDR prefixes which may be scraped (empty: all hosts, the configured credentials are sent to every requested host)")
 	username                 = flag.String("api.username", "", "Username")
+	apiAuth                  = flag.String("api.auth", "basic", "Authentication method: basic (credentials sent with every request) or session (one Redfish session per iLO, renewed when expired)")
 	password                 = flag.String("api.password", "", "Password")
 	maxConcurrentRequests    = flag.Uint("api.max-concurrent-requests", 4, "Maximum number of requests sent to an iLO concurrently, across all scrapes of the iLO (0: unlimited)")
 	apiTimeout               = flag.Duration("api.timeout", 0, "Maximum duration of a scrape (0: limited by the scrape timeout sent by Prometheus and -web.write-timeout)")
@@ -153,6 +154,14 @@ func newExporterFromFlags(logger *slog.Logger) (*exporter, error) {
 		e.topologies = topology.NewCache(*cacheMaxHosts, *discoveryTTL)
 	}
 
+	switch *apiAuth {
+	case "basic":
+	case "session":
+		e.enableSessions(*cacheMaxHosts)
+	default:
+		return nil, fmt.Errorf("invalid authentication method %q (valid: basic, session)", *apiAuth)
+	}
+
 	return e, nil
 }
 
@@ -167,7 +176,13 @@ func run(e *exporter, logger *slog.Logger) int {
 	}
 	defer shutdownTracing()
 
-	if err := startServer(ctx, e, logger); err != nil {
+	err = startServer(ctx, e, logger)
+
+	closeCtx, cancelClose := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancelClose()
+	e.close(closeCtx)
+
+	if err != nil {
 		logger.Error("Server failed", "err", err)
 		return 1
 	}

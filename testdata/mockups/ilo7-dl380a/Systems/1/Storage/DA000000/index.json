@@ -1,0 +1,67 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Storage.Storage",
+    "@odata.etag": "W/\"2046352829\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DA000000",
+    "@odata.type": "#Storage.v1_14_1.Storage",
+    "Id": "DA000000",
+    "Controllers": {
+        "@odata.id": "/redfish/v1/Systems/1/Storage/DA000000/Controllers"
+    },
+    "Drives": [
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DA000000/Drives/DA000000/"
+        }
+    ],
+    "Links": {
+        "Enclosures": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/1"
+            }
+        ]
+    },
+    "LocalEncryptionKeyIdentifier": "1FE0A0ZH0C93",
+    "Name": "NVMe Storage System",
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "StorageControllers": [
+        {
+            "@odata.id": "/redfish/v1/Systems/1/Storage/DA000000#/StorageControllers/0/",
+            "FirmwareVersion": "HPK6",
+            "Identifiers": [
+                {
+                    "DurableName": "8C:E3:8E:E3:06:DB:11:4D",
+                    "DurableNameFormat": "EUI"
+                }
+            ],
+            "Location": {
+                "PartLocation": {
+                    "LocationOrdinalValue": 1,
+                    "LocationType": "Bay",
+                    "ServiceLabel": "Embedded:Port=5A:Box=1:Bay=1"
+                }
+            },
+            "MemberId": "0",
+            "Model": "MV003200LXUJK",
+            "Name": "CM7",
+            "PCIeInterface": {
+                "LanesInUse": 4,
+                "MaxLanes": 4,
+                "MaxPCIeType": "Gen5",
+                "PCIeType": "Gen5"
+            },
+            "SerialNumber": "1FE0A0ZH0C93",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            },
+            "SupportedControllerProtocols": [
+                "PCIe"
+            ],
+            "SupportedDeviceProtocols": [
+                "NVMe"
+            ]
+        }
+    ]
+}

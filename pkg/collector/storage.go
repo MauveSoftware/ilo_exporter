@@ -45,13 +45,15 @@ type DiskDrive struct {
 	FailurePredicted bool           `json:"FailurePredicted"`
 }
 
-// GetLocation returns the location of the drive
+// GetLocation returns the location of the drive. The physical location (e.g. "Embedded:Port=5A:Box=1:Bay=3")
+// is preferred over the deprecated location, which only contains box and bay (e.g. "1:3") for drives attached
+// to the system. SmartStorage drives only have a location (e.g. "2I:1:1").
 func (d *DiskDrive) GetLocation() string {
-	if d.Location != "" {
-		return string(d.Location)
+	if d.PhysicalLocation != "" {
+		return string(d.PhysicalLocation)
 	}
 
-	return string(d.PhysicalLocation)
+	return string(d.Location)
 }
 
 // CapacityBytes returns the capacity in bytes

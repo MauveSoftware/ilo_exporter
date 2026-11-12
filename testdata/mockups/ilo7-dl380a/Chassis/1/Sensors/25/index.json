@@ -1,0 +1,26 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"2900411015\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/25",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "25",
+    "Name": "32-P/S 6 Inlet",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 14,
+            "LocationYmm": 14
+        }
+    },
+    "PhysicalContext": "PowerSupply",
+    "Reading": 0,
+    "Status": {
+        "State": "Absent"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

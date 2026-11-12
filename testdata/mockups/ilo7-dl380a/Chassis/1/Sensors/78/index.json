@@ -1,0 +1,31 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"1167910709\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/78",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "78",
+    "Name": "90-P/S 2 Zone",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 14,
+            "LocationYmm": 11
+        }
+    },
+    "PhysicalContext": "PowerSupply",
+    "Reading": 37,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {
+            "Reading": 90
+        },
+        "UpperFatal": {
+            "Reading": 95
+        }
+    }
+}

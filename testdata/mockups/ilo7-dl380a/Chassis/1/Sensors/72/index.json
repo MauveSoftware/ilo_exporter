@@ -1,0 +1,27 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"2235324551\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/72",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "72",
+    "Name": "83-NV Switch 3",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 9,
+            "LocationYmm": 4
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 78,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

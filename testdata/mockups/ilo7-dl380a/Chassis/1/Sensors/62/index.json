@@ -1,0 +1,27 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"2640562277\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/62",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "62",
+    "Name": "72-PCI 9 Zone",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 3,
+            "LocationYmm": 1
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 22,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCritical": {},
+        "UpperFatal": {}
+    }
+}

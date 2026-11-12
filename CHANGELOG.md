@@ -19,6 +19,16 @@
   retrieved, e.g. for unreachable hosts. They are now omitted, `ilo_up` is 0 instead.
 - `ilo_memory_healthy` and `ilo_memory_total_byte` were described but never reported. They are now reported based
   on the memory summary of the system resource.
+- Temperature sensors and fans with the same name had identical labels, so all but one of them were silently
+  dropped. Some firmware (e.g. iLO 5 v2.72) reports several sensors named e.g. `23-HD Controller-I/O controller`.
+  Names occurring more than once are now suffixed with the ID of the sensor (e.g.
+  `23-HD Controller-I/O controller #41`), names occurring once are unchanged.
+- Requests for resources iLO has to retrieve from devices first (e.g. storage of NVMe drives managed by iLO 5)
+  are answered with `400 Bad Request` (`iLO.2.x.ResourceNotReadyRetry`) until the data is available. These requests
+  are retried after the delay given by the iLO (max. 10s, up to 3 times and only if the scrape deadline allows),
+  instead of failing the storage collector. Since iLO 5 keeps this data fresh for a few seconds only, such resources
+  are rarely ready as a whole when requested with `$expand`: they are retrieved without `$expand` instead (members
+  requested individually). Such responses no longer disable `$expand` for the iLO.
 - `SIGINT` (Ctrl-C) did not stop the exporter, `SIGTERM` did not shut it down gracefully and pending traces were not flushed.
 - `API_USERNAME`/`API_PASSWORD` overwrote both credentials when only one of `-api.username`/`-api.password` was set.
 - The version reported by release binaries and container images is now set at build time.
@@ -35,6 +45,8 @@
   `storage`) less often than health and sensor data. The system resource is always collected.
 - When the iLO is unreachable or rejects the credentials, no further requests are sent after the system resource.
   Previously every collector tried, causing several failed logins per scrape.
+- `ilo_exporter_build_info{version,goversion}` reports the version of the exporter with every scrape, so the
+  deployed versions can be queried, e.g. `count by (version) (ilo_exporter_build_info)`.
 - `-log.level` (`debug`, `info`, `warn`, `error`; default `info`) and `-log.format` (`logfmt`, `json`).
 - `-log.redfish-bodies` logs every Redfish response body at debug level.
 - `-api.timeout` limits the duration of a scrape. Scrapes are also limited by the scrape timeout sent by Prometheus
@@ -49,13 +61,28 @@
 - **Collections (memory, processors, drives) are retrieved with a single request using `$expand=.`** if supported
   by the iLO (iLO 5, 6 and 7). This reduces the number of requests per scrape from about 45 to about 10 for a
   typical server. `-api.expand=false` disables it. Paginated collections (`Members@odata.nextLink`) are supported.
+- Support for iLOs without the deprecated `Power` and `Thermal` resources of the chassis: fans, temperatures, power
+  supplies and power (capacity and current consumption) are collected from `ThermalSubsystem`, `Sensors`,
+  `PowerSubsystem` and `EnvironmentMetrics` instead, using the same metric names and labels. Average, minimum and
+  maximum power consumption are not available from these resources. As long as an iLO provides the deprecated
+  resources (iLO 5, 6 and 7 up to at least v1.25), they are used since they contain all metrics in two requests.
+- `-api.auth=session` authenticates using one Redfish session per iLO instead of HTTP basic authentication
+  (default `basic`). With basic authentication iLO creates and deletes a session for every request, which is
+  expensive especially for directory (LDAP/AD) accounts. Sessions are created on first use, renewed when expired
+  and deleted on shutdown or when the host is evicted from the cache (`-api.cache-max-hosts`). Session
+  authentication is required for iLOs with basic authentication disabled.
+- Example alert rule `iLO Up` based on `ilo_up`. The `Power Up` alert no longer fires for unreachable iLOs.
 
 ### Changed
 
+- **The `location` label of NVMe drives attached to the system** (storage subsystems managed by iLO, e.g.
+  `DA000000`) is the physical location (e.g. `Embedded:Port=5A:Box=1:Bay=3`) instead of the deprecated location
+  (e.g. `1:3`), which did not contain the port. This starts new series for these drives.
 - Logging is quiet by default: Redfish requests are only logged at debug level and response bodies only with
   `-log.redfish-bodies` (previously every request and response body was logged at info level).
-  Instead of one error per failed request, a warning is logged when an iLO goes down or a scrape becomes
-  incomplete and an info message when it recovers.
+  Instead of one error per failed request, a warning is logged when an iLO goes down, a scrape becomes
+  incomplete or metrics are dropped because of invalid series (e.g. duplicates), and an info message when it
+  recovers. Dropped metrics were not logged at all before.
 - Resources are located by following the links of the Redfish service instead of using hard coded paths
   (`Systems/1`, `Chassis/1`, `Managers/1` remain the fallback).
 - **Connections to an iLO are reused across scrapes** (HTTP keep-alive), avoiding a TLS handshake per request
@@ -64,6 +91,8 @@
   scraped by multiple Prometheus servers. Previously the limit applied per scrape. `0` means unlimited
   (previously `0` blocked all requests).
 - HTTP proxy environment variables are still ignored and HTTP/1.1 is still used for Redfish requests.
+- Errors of Redfish requests include the Redfish message ID of the error response (e.g.
+  `returned 400 Bad Request (Base.1.4.ResourceMissingAtURI)`), which explains why the iLO rejected the request.
 - Logging uses `log/slog` (Prometheus `promslog` format) instead of logrus.
 - The binary in release archives is named `ilo_exporter` (was `ilo5_exporter`), matching the container image.
 

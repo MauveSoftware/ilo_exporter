@@ -6,6 +6,7 @@ package collector
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/MauveSoftware/ilo_exporter/pkg/redfish"
@@ -50,7 +51,7 @@ func collectPower(ctx context.Context, s *scrape) error {
 		path = s.topology.Chassis.Power
 	}
 	if path == "" {
-		return nil
+		return collectPowerSubsystem(ctx, s)
 	}
 
 	pwr := Power{}
@@ -74,6 +75,77 @@ func collectPower(ctx context.Context, s *scrape) error {
 
 		s.emit(powerSupplyEnabledDesc, sup.Status.EnabledValue(), s.host, sup.SerialNumber)
 		s.emit(powerSupplyHealthyDesc, sup.Status.HealthValue(), s.host, sup.SerialNumber)
+	}
+
+	return nil
+}
+
+// PowerSubsystem is the power subsystem of a chassis (Redfish 2020.4 and later)
+type PowerSubsystem struct {
+	CapacityWatts *float64     `json:"CapacityWatts"`
+	PowerSupplies redfish.Link `json:"PowerSupplies"`
+}
+
+// EnvironmentMetrics are the environment metrics of a chassis (Redfish 2020.4 and later)
+type EnvironmentMetrics struct {
+	PowerWatts struct {
+		Reading *float64 `json:"Reading"`
+	} `json:"PowerWatts"`
+}
+
+// collectPowerSubsystem collects power metrics using the resources replacing the deprecated power resource.
+// The power resource is preferred, since it contains all metrics (incl. average, min and max consumption)
+// in a single resource.
+func collectPowerSubsystem(ctx context.Context, s *scrape) error {
+	// metrics of the chassis have the ID of the first power control of the power resource for continuity
+	const id = "0"
+	links := s.topology.Chassis
+
+	var errs []error
+	if links.EnvironmentMetrics != "" {
+		em := EnvironmentMetrics{}
+		if err := s.cl.Get(ctx, links.EnvironmentMetrics, &em); err != nil {
+			s.checkStale(err)
+			errs = append(errs, fmt.Errorf("could not get environment metrics: %w", err))
+		} else if em.PowerWatts.Reading != nil {
+			s.emit(powerCurrentDesc, *em.PowerWatts.Reading, s.host, id)
+		}
+	}
+
+	if links.PowerSubsystem != "" {
+		errs = append(errs, collectPowerSupplies(ctx, s, links.PowerSubsystem, id))
+	}
+
+	return errors.Join(errs...)
+}
+
+func collectPowerSupplies(ctx context.Context, s *scrape, path, id string) error {
+	ps := PowerSubsystem{}
+	if err := s.cl.Get(ctx, path, &ps); err != nil {
+		s.checkStale(err)
+		return fmt.Errorf("could not get power subsystem: %w", err)
+	}
+
+	if ps.CapacityWatts != nil {
+		s.emit(powerCapacityDesc, *ps.CapacityWatts, s.host, id)
+	}
+
+	if ps.PowerSupplies.ID == "" {
+		return nil
+	}
+
+	supplies, err := getMembers[PowerSupply](ctx, s, ps.PowerSupplies.ID)
+	for _, sup := range supplies {
+		if sup.Status.IsAbsent() {
+			continue
+		}
+
+		s.emit(powerSupplyEnabledDesc, sup.Status.EnabledValue(), s.host, sup.SerialNumber)
+		s.emit(powerSupplyHealthyDesc, sup.Status.HealthValue(), s.host, sup.SerialNumber)
+	}
+
+	if err != nil {
+		return fmt.Errorf("could not get power supplies: %w", err)
 	}
 
 	return nil

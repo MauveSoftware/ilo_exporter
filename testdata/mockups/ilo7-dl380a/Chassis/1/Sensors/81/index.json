@@ -1,0 +1,33 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"4158348025\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/81",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "81",
+    "Name": "56.2-XLR8R 17-Memory",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 8,
+            "LocationYmm": 2
+        }
+    },
+    "PhysicalContext": "SystemBoard",
+    "Reading": 38,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {
+            "Reading": null
+        },
+        "UpperCritical": {
+            "Reading": null
+        },
+        "UpperFatal": {
+            "Reading": null
+        }
+    }
+}

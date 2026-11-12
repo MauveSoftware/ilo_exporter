@@ -1,0 +1,20 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Fan.Fan",
+    "@odata.etag": "W/\"340811868\"",
+    "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/1",
+    "@odata.type": "#Fan.v1_5_1.Fan",
+    "Id": "1",
+    "Assembly": {
+        "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/1/Assembly"
+    },
+    "HotPluggable": true,
+    "Name": "Fan 2",
+    "PhysicalContext": "SystemBoard",
+    "SpeedPercent": {
+        "Reading": 32
+    },
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    }
+}

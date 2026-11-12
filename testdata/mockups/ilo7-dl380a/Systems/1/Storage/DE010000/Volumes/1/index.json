@@ -1,0 +1,58 @@
+{
+    "@odata.etag": "W/\"93e15a63\"",
+    "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000/Volumes/1",
+    "@odata.type": "#Volume.v1_9_0.Volume",
+    "@Redfish.WriteableProperties": [
+        "DisplayName"
+    ],
+    "Id": "1",
+    "Name": "NS Volume 1",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK",
+        "Conditions": [
+            {
+                "MessageArgs": [
+                    "1",
+                    "Slot=29"
+                ],
+                "Severity": "OK"
+            }
+        ]
+    },
+    "BlockSizeBytes": 512,
+    "CapacityBytes": 480036519936,
+    "DisplayName": "NS Volume 1",
+    "DisplayName@Redfish.AllowablePattern": "^.{1,15}$",
+    "Encrypted": false,
+    "Identifiers": [
+        {
+            "DurableNameFormat": "EUI",
+            "DurableName": "00:50:43:97:c9:fb:00:01"
+        }
+    ],
+    "InitializeMethod": "Background",
+    "IsBootCapable": true,
+    "IOPerfModeEnabled": false,
+    "Links": {
+        "Drives@odata.count": 2,
+        "Drives": [
+            {
+                "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000/Drives/1"
+            },
+            {
+                "@odata.id": "/redfish/v1/Systems/1/Storage/DE010000/Drives/2"
+            }
+        ],
+        "DedicatedSpareDrives@odata.count": 0,
+        "DedicatedSpareDrives": []
+    },
+    "LogicalUnitNumber": 1,
+    "OptimumIOSizeBytes": 131072,
+    "RAIDType": "RAID1",
+    "ReadCachePolicy": "Off",
+    "StripSizeBytes": 131072,
+    "VolumeUsage": "Data",
+    "WriteCachePolicy": "Off",
+    "Operations": []
+}

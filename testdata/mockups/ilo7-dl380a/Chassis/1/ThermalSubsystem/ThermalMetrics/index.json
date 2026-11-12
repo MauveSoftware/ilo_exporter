@@ -1,0 +1,446 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#ThermalMetrics.ThermalMetrics",
+    "@odata.etag": "W/\"395227800\"",
+    "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/ThermalMetrics",
+    "@odata.type": "#ThermalMetrics.v1_3_1.ThermalMetrics",
+    "Id": "ThermalMetrics",
+    "Name": "ThermalMetrics",
+    "PowerWatts": {},
+    "TemperatureReadingsCelsius": [
+        {
+            "DeviceName": "01-Inlet Ambient",
+            "PhysicalContext": "Intake",
+            "Reading": 16
+        },
+        {
+            "DeviceName": "02-CPU 1 PkgTmp",
+            "PhysicalContext": "CPU",
+            "Reading": 43
+        },
+        {
+            "DeviceName": "03-CPU 2 PkgTmp",
+            "PhysicalContext": "CPU",
+            "Reading": 42
+        },
+        {
+            "DeviceName": "06-P1 DIMM 1-8",
+            "PhysicalContext": "Memory",
+            "Reading": 36
+        },
+        {
+            "DeviceName": "07-P1 DIMM 9-16",
+            "PhysicalContext": "Memory",
+            "Reading": 35
+        },
+        {
+            "DeviceName": "08-P2 DIMM 1-8",
+            "PhysicalContext": "Memory",
+            "Reading": 29
+        },
+        {
+            "DeviceName": "09-P2 DIMM 9-16",
+            "PhysicalContext": "Memory",
+            "Reading": 34
+        },
+        {
+            "DeviceName": "10-VR P1",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 47
+        },
+        {
+            "DeviceName": "11-VR P2",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 44
+        },
+        {
+            "DeviceName": "14-HD Max",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "15-AHCI HD Max",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "16-Exp Bay Drive",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 40
+        },
+        {
+            "DeviceName": "18-Stor Batt",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "21-P/S 1",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 55
+        },
+        {
+            "DeviceName": "22-P/S 1 Inlet",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 35
+        },
+        {
+            "DeviceName": "23-P/S 2",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 55
+        },
+        {
+            "DeviceName": "24-P/S 2 Inlet",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 34
+        },
+        {
+            "DeviceName": "25-P/S 3",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 55
+        },
+        {
+            "DeviceName": "26-P/S 3 Inlet",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 33
+        },
+        {
+            "DeviceName": "27-P/S 4",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 55
+        },
+        {
+            "DeviceName": "28-P/S 4 Inlet",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 33
+        },
+        {
+            "DeviceName": "29-P/S 5",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 55
+        },
+        {
+            "DeviceName": "30-P/S 5 Inlet",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 32
+        },
+        {
+            "DeviceName": "31-P/S 6",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "32-P/S 6 Inlet",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "33-P/S 7",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "34-P/S 7 Inlet",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "35-P/S 8",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "36-P/S 8 Inlet",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "38-OCP A",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "39-OCP B",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "40-PCI 1",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "41-PCI 2",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "43-PCI 4",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "44-PCI 5",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "45-PCI 6",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "48-PCI 9",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "49-PCI 10",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "50-PCI 11",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "51-PCI 12",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "53-PCI 14",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "55-PCI 16",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "57-PCI 18",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "59-PCI 20",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "60-PCI 21",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "61-PCI 22",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "62-PCI 23",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "63-PCI 24",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "67-PCI 1 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "68-PCI 3 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 35
+        },
+        {
+            "DeviceName": "69-PCI 4 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "70-PCI 6 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 0
+        },
+        {
+            "DeviceName": "72-PCI 9 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 22
+        },
+        {
+            "DeviceName": "73-PCI 10 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 35
+        },
+        {
+            "DeviceName": "74-PCI 13 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 24
+        },
+        {
+            "DeviceName": "75-PCI 14 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 53
+        },
+        {
+            "DeviceName": "76-PCI 17 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 22
+        },
+        {
+            "DeviceName": "77-PCI 18 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 51
+        },
+        {
+            "DeviceName": "78-PCI 21 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 22
+        },
+        {
+            "DeviceName": "79-PCI 22 Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 34
+        },
+        {
+            "DeviceName": "81-NV Switch 1",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 52
+        },
+        {
+            "DeviceName": "82-NV Switch 2",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 80
+        },
+        {
+            "DeviceName": "83-NV Switch 3",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 78
+        },
+        {
+            "DeviceName": "84-NV Switch 4",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 55
+        },
+        {
+            "DeviceName": "86-Sys Exhaust 1",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 34
+        },
+        {
+            "DeviceName": "87-OCP Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 33
+        },
+        {
+            "DeviceName": "88-Board Inlet",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 25
+        },
+        {
+            "DeviceName": "89-P/S 1 Zone",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 39
+        },
+        {
+            "DeviceName": "90-P/S 2 Zone",
+            "PhysicalContext": "PowerSupply",
+            "Reading": 37
+        },
+        {
+            "DeviceName": "93-BMC",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 57
+        },
+        {
+            "DeviceName": "94-BMC Zone",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 42
+        },
+        {
+            "DeviceName": "52.1-XLR8R 13-GPU ASIC",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 35
+        },
+        {
+            "DeviceName": "52.2-XLR8R 13-Memory",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 37
+        },
+        {
+            "DeviceName": "54.1-XLR8R 15-GPU ASIC",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 36
+        },
+        {
+            "DeviceName": "54.2-XLR8R 15-Memory",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 40
+        },
+        {
+            "DeviceName": "17.1-ExpBayBoot-I/O controller",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 36
+        },
+        {
+            "DeviceName": "17.2-ExpBayBoot-I/O controller",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 20
+        },
+        {
+            "DeviceName": "42.1-PCI 3-Network controller",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 62
+        },
+        {
+            "DeviceName": "46.1-PCI 7-I/O module",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 39
+        },
+        {
+            "DeviceName": "47.1-PCI 8-I/O module",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 41
+        },
+        {
+            "DeviceName": "56.1-XLR8R 17-GPU ASIC",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 35
+        },
+        {
+            "DeviceName": "56.2-XLR8R 17-Memory",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 38
+        },
+        {
+            "DeviceName": "64.1-PCI 25-I/O module",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 43
+        },
+        {
+            "DeviceName": "65.1-PCI 26-I/O module",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 41
+        },
+        {
+            "DeviceName": "58.1-XLR8R 19-GPU ASIC",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 34
+        },
+        {
+            "DeviceName": "58.2-XLR8R 19-Memory",
+            "PhysicalContext": "SystemBoard",
+            "Reading": 37
+        }
+    ],
+    "TemperatureSummaryCelsius": {
+        "Ambient": {
+            "Reading": 16
+        }
+    }
+}

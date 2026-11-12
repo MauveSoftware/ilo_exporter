@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"runtime"
 	"slices"
 	"strconv"
 	"strings"
@@ -22,9 +23,17 @@ import (
 	"github.com/MauveSoftware/ilo_exporter/pkg/topology"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	dto "github.com/prometheus/client_model/go"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 )
+
+// buildInfo reports the version of the exporter with every scrape, so the deployed versions can be queried
+var buildInfo = prometheus.NewGaugeFunc(prometheus.GaugeOpts{
+	Name:        "ilo_exporter_build_info",
+	Help:        "Version of the exporter (always 1)",
+	ConstLabels: prometheus.Labels{"version": version, "goversion": runtime.Version()},
+}, func() float64 { return 1 })
 
 // exporter handles scrape requests
 type exporter struct {
@@ -41,6 +50,11 @@ type exporter struct {
 	// states contains the state of the last scrape per host, so only changes are logged
 	states   *lru.Cache[hostState]
 	statesMu sync.Mutex
+
+	// sessions contains the session per host if session authentication is used (nil: basic authentication)
+	sessions   *lru.Cache[*client.SessionAuth]
+	sessionsMu sync.Mutex
+	logouts    sync.WaitGroup
 
 	// maxTimeout is the maximum duration of a scrape (0: unlimited)
 	maxTimeout time.Duration
@@ -112,6 +126,9 @@ func (e *exporter) handleMetricsRequest(w http.ResponseWriter, r *http.Request) 
 		client.WithHTTPClient(e.httpClient),
 		client.WithLogger(e.logger.With("host", host)),
 	}
+	if e.sessions != nil {
+		opts = append(opts, client.WithAuthenticator(e.session(host)))
+	}
 	if e.logBodies {
 		opts = append(opts, client.WithResponseLogging())
 	}
@@ -135,15 +152,96 @@ func (e *exporter) handleMetricsRequest(w http.ResponseWriter, r *http.Request) 
 
 	col := collector.New(ctx, cl, tracer, collectorOpts...)
 	reg := prometheus.NewRegistry()
-	reg.MustRegister(col)
+	reg.MustRegister(col, buildInfo)
 
-	promhttp.HandlerFor(reg, promhttp.HandlerOpts{
-		ErrorLog:      slog.NewLogLogger(e.logger.Handler(), slog.LevelWarn),
+	// metrics which can not be gathered (e.g. duplicates) are dropped and logged by observe on state change only
+	g := &recordingGatherer{Gatherer: reg}
+	promhttp.HandlerFor(g, promhttp.HandlerOpts{
+		ErrorLog:      slog.NewLogLogger(e.logger.Handler(), slog.LevelDebug),
 		ErrorHandling: promhttp.ContinueOnError,
 	}).ServeHTTP(w, r)
 
-	e.observe(host, col.Result(), cl.Requests())
+	e.observe(host, col.Result(), cl.Requests(), g.err)
 	return nil
+}
+
+// recordingGatherer records the error of the last Gather call
+type recordingGatherer struct {
+	prometheus.Gatherer
+	err error
+}
+
+// Gather implements prometheus.Gatherer
+func (g *recordingGatherer) Gather() ([]*dto.MetricFamily, error) {
+	mfs, err := g.Gatherer.Gather()
+	g.err = err
+	return mfs, err
+}
+
+// countErrors returns the number of errors of a gather error
+func countErrors(err error) int {
+	if err == nil {
+		return 0
+	}
+
+	var me prometheus.MultiError
+	if errors.As(err, &me) {
+		return len(me)
+	}
+
+	return 1
+}
+
+// enableSessions enables session authentication, keeping sessions for at most maxHosts hosts
+func (e *exporter) enableSessions(maxHosts int) {
+	e.sessions = lru.New(maxHosts, lru.WithEvictCallback(func(_ string, a *client.SessionAuth) {
+		// called with the cache locked, so the session is deleted asynchronously
+		e.logouts.Go(func() {
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+
+			if err := a.Close(ctx); err != nil {
+				e.logger.Debug("Could not delete session", "err", err)
+			}
+		})
+	}))
+}
+
+// session returns the session authenticator of a host
+func (e *exporter) session(host string) *client.SessionAuth {
+	key := topology.Key(host)
+
+	e.sessionsMu.Lock()
+	defer e.sessionsMu.Unlock()
+
+	if a, found := e.sessions.Get(key); found {
+		return a
+	}
+
+	a := client.NewSessionAuth(host, e.username, e.password, e.httpClient, e.logger.With("host", host))
+	e.sessions.Set(key, a)
+	return a
+}
+
+// close releases resources held on the iLOs (sessions)
+func (e *exporter) close(ctx context.Context) {
+	if e.sessions == nil {
+		return
+	}
+
+	e.sessions.Purge()
+
+	done := make(chan struct{})
+	go func() {
+		e.logouts.Wait()
+		close(done)
+	}()
+
+	select {
+	case <-done:
+	case <-ctx.Done():
+		e.logger.Warn("Could not delete all sessions", "err", ctx.Err())
+	}
 }
 
 // hostState is the state of the last scrape of a host
@@ -152,15 +250,18 @@ type hostState struct {
 	failed   string
 	firmware string
 	uuid     string
+	// dropped is the number of metrics which could not be gathered
+	dropped int
 }
 
 // observe logs changes of the state of a host and invalidates its topology if it changed
-func (e *exporter) observe(host string, res collector.Result, requests int64) {
+func (e *exporter) observe(host string, res collector.Result, requests int64, gatherErr error) {
 	cur := hostState{
 		up:       res.Up,
 		failed:   strings.Join(res.Failed, ","),
 		firmware: res.FirmwareVersion,
 		uuid:     res.SystemUUID,
+		dropped:  countErrors(gatherErr),
 	}
 
 	key := topology.Key(host)
@@ -188,6 +289,17 @@ func (e *exporter) observe(host string, res collector.Result, requests int64) {
 	}
 	if invalidate && e.topologies != nil {
 		e.topologies.Invalidate(host)
+	}
+
+	if cur.dropped > 0 && (!known || prev.dropped == 0) {
+		var me prometheus.MultiError
+		first := gatherErr
+		if errors.As(gatherErr, &me) {
+			first = me[0]
+		}
+		e.logger.Warn("Invalid metrics dropped", "host", host, "count", cur.dropped, "err", first)
+	} else if cur.dropped == 0 && known && prev.dropped > 0 {
+		e.logger.Info("Invalid metrics resolved", "host", host)
 	}
 
 	switch {

@@ -188,6 +188,9 @@ ilo_chassis_temperature_healthy{host="ilo.test",name="38-PCI 1 Zone"} 1
 ilo_chassis_temperature_healthy{host="ilo.test",name="40-PCI 2 Zone"} 1
 ilo_chassis_temperature_healthy{host="ilo.test",name="50-CPU 1 PkgTmp"} 1
 ilo_chassis_temperature_healthy{host="ilo.test",name="51-CPU 2 PkgTmp"} 1
+# HELP ilo_exporter_build_info Version of the exporter (always 1)
+# TYPE ilo_exporter_build_info gauge
+ilo_exporter_build_info{goversion="go",version="1.1.3"} 1
 # HELP ilo_manager_info System Info
 # TYPE ilo_manager_info gauge
 ilo_manager_info{firmware_version="iLO 5 v3.11",host="ilo.test"} 1

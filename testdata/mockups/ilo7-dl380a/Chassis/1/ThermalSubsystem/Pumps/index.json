@@ -1,0 +1,10 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#PumpCollection.PumpCollection",
+    "@odata.etag": "W/\"1972911757\"",
+    "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Pumps",
+    "@odata.type": "#PumpCollection.PumpCollection",
+    "Description": "Pump Collection View",
+    "Name": "Pump Collection",
+    "Members": [],
+    "Members@odata.count": 0
+}

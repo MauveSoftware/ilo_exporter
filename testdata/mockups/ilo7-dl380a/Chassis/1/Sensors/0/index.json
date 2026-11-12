@@ -1,0 +1,37 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Sensor.Sensor",
+    "@odata.etag": "W/\"3544226702\"",
+    "@odata.id": "/redfish/v1/Chassis/1/Sensors/0",
+    "@odata.type": "#Sensor.v1_10_0.Sensor",
+    "Id": "0",
+    "Name": "01-Inlet Ambient",
+    "Oem": {
+        "Hpe": {
+            "@odata.context": "/redfish/v1/$metadata#HpeSeaOfSensors.HpeSeaOfSensors",
+            "@odata.type": "#HpeSeaOfSensors.v2_1_0.HpeSeaOfSensors",
+            "LocationXmm": 15,
+            "LocationYmm": 0
+        }
+    },
+    "PhysicalContext": "Intake",
+    "Reading": 16,
+    "Status": {
+        "Health": "OK",
+        "State": "Enabled"
+    },
+    "Thresholds": {
+        "UpperCaution": {},
+        "UpperCautionUser": {
+            "Reading": 0
+        },
+        "UpperCritical": {
+            "Reading": 42
+        },
+        "UpperCriticalUser": {
+            "Reading": 0
+        },
+        "UpperFatal": {
+            "Reading": 47
+        }
+    }
+}

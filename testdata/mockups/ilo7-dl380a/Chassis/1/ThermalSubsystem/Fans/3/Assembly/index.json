@@ -1,0 +1,20 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Assembly.Assembly",
+    "@odata.etag": "W/\"1379941224\"",
+    "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/3/Assembly",
+    "@odata.type": "#Assembly.v1_5_0.Assembly",
+    "Id": "Assembly",
+    "Assemblies": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/1/ThermalSubsystem/Fans/3/Assembly#Assemblies/0",
+            "MemberId": "0",
+            "Name": "Assembly",
+            "PhysicalContext": "SystemBoard",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        }
+    ],
+    "Name": "Assembly"
+}
