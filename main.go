@@ -27,7 +27,7 @@ import (
 )
 
 // version is set at build time using -ldflags "-X main.version=..."
-var version = "1.1.3"
+var version = "1.2.0"
 
 var (
 	showVersion              = flag.Bool("version", false, "Print version information.")
