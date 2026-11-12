@@ -190,7 +190,7 @@ ilo_chassis_temperature_healthy{host="ilo.test",name="50-CPU 1 PkgTmp"} 1
 ilo_chassis_temperature_healthy{host="ilo.test",name="51-CPU 2 PkgTmp"} 1
 # HELP ilo_exporter_build_info Version of the exporter (always 1)
 # TYPE ilo_exporter_build_info gauge
-ilo_exporter_build_info{goversion="go",version="1.2.0"} 1
+ilo_exporter_build_info{goversion="go",version="<version>"} 1
 # HELP ilo_manager_info System Info
 # TYPE ilo_manager_info gauge
 ilo_manager_info{firmware_version="iLO 5 v3.11",host="ilo.test"} 1

@@ -142,7 +142,7 @@ ilo_chassis_temperature_healthy{host="ilo.test",name="73-Sys Exhaust 1"} 1
 ilo_chassis_temperature_healthy{host="ilo.test",name="74-Sys Exhaust 2"} 1
 # HELP ilo_exporter_build_info Version of the exporter (always 1)
 # TYPE ilo_exporter_build_info gauge
-ilo_exporter_build_info{goversion="go",version="1.2.0"} 1
+ilo_exporter_build_info{goversion="go",version="<version>"} 1
 # HELP ilo_manager_info System Info
 # TYPE ilo_manager_info gauge
 ilo_manager_info{firmware_version="1.14.00 May 28 2025",host="ilo.test"} 1

@@ -149,10 +149,14 @@ var durationLine = regexp.MustCompile(`(?m)^(ilo_\w*duration\w*(?:\{[^}]*\})?) .
 
 var goVersionLabel = regexp.MustCompile(`goversion="[^"]*"`)
 
-// normalizeMetrics removes values that differ between test runs
+// versionLabel only matches the version label, not goversion
+var versionLabel = regexp.MustCompile(`([{,])version="[^"]*"`)
+
+// normalizeMetrics removes values that differ between test runs or releases
 func normalizeMetrics(body, host string) string {
 	body = strings.ReplaceAll(body, host, "ilo.test")
 	body = goVersionLabel.ReplaceAllString(body, `goversion="go"`)
+	body = versionLabel.ReplaceAllString(body, `${1}version="<version>"`)
 	return durationLine.ReplaceAllString(body, "$1 <duration>")
 }
 
