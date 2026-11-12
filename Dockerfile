@@ -10,6 +10,7 @@ COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
 COPY *.go ./
+COPY internal ./internal
 COPY pkg ./pkg
 
 RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH:-amd64} \

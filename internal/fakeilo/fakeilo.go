@@ -34,13 +34,14 @@ type Server struct {
 	srv  *httptest.Server
 	root *os.Root
 
-	username string
-	password string
-	expand   bool
-	latency  time.Duration
-	status   map[string]int
-	block    map[string]bool
-	hidden   map[string]map[string]bool
+	username     string
+	password     string
+	expand       bool
+	expandStatus int
+	latency      time.Duration
+	status       map[string]int
+	block        map[string]bool
+	hidden       map[string]map[string]bool
 
 	mu          sync.Mutex
 	conns       int
@@ -67,6 +68,13 @@ func WithCredentials(username, password string) Option {
 func WithoutExpand() Option {
 	return func(s *Server) {
 		s.expand = false
+	}
+}
+
+// WithExpandStatus makes all requests using $expand fail with code, like services rejecting $expand
+func WithExpandStatus(code int) Option {
+	return func(s *Server) {
+		s.expandStatus = code
 	}
 }
 
@@ -143,6 +151,19 @@ func New(t testing.TB, dir string, opts ...Option) *Server {
 // Host returns host:port of the server
 func (s *Server) Host() string {
 	return strings.TrimPrefix(s.srv.URL, "https://")
+}
+
+// SetStatus makes requests for path fail with code (0: serve the resource again)
+func (s *Server) SetStatus(path string, code int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if code == 0 {
+		delete(s.status, normalize(path))
+		return
+	}
+
+	s.status[normalize(path)] = code
 }
 
 // Certificate returns the certificate of the server
@@ -262,7 +283,10 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if code, found := s.status[p]; found {
+	s.mu.Lock()
+	code, found := s.status[p]
+	s.mu.Unlock()
+	if found {
 		writeError(w, code, "Base.1.0.InternalError")
 		return
 	}
@@ -274,6 +298,11 @@ func (s *Server) serve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if e := r.URL.Query().Get("$expand"); e != "" {
+		if s.expandStatus != 0 {
+			writeError(w, s.expandStatus, "Base.1.0.QueryNotSupported")
+			return
+		}
+
 		switch e {
 		case ".", ".($levels=1)":
 			if s.expand {

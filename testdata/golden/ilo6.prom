@@ -158,55 +158,45 @@ ilo_manager_scrape_duration_second{host="ilo.test"} <duration>
 # HELP ilo_memory_dimm_byte DIMM size in bytes
 # TYPE ilo_memory_dimm_byte gauge
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm1"} 3.4359738368e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm10"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm11"} 3.4359738368e+10
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm12"} 3.4359738368e+10
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm2"} 3.4359738368e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm3"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm4"} 3.4359738368e+10
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm5"} 3.4359738368e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm6"} 0
-ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm7"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm8"} 3.4359738368e+10
 ilo_memory_dimm_byte{host="ilo.test",name="proc1dimm9"} 3.4359738368e+10
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm1"} 3.4359738368e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm10"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm11"} 3.4359738368e+10
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm12"} 3.4359738368e+10
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm2"} 3.4359738368e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm3"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm4"} 3.4359738368e+10
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm5"} 3.4359738368e+10
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm6"} 0
-ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm7"} 0
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm8"} 3.4359738368e+10
 ilo_memory_dimm_byte{host="ilo.test",name="proc2dimm9"} 3.4359738368e+10
 # HELP ilo_memory_dimm_healthy Health status of processor
 # TYPE ilo_memory_dimm_healthy gauge
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm1"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm10"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm11"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm12"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm2"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm3"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm4"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm5"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm6"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm7"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm8"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc1dimm9"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm1"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm10"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm11"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm12"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm2"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm3"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm4"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm5"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm6"} 1
-ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm7"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm8"} 1
 ilo_memory_dimm_healthy{host="ilo.test",name="proc2dimm9"} 1
+# HELP ilo_memory_healthy Health status of the memory
+# TYPE ilo_memory_healthy gauge
+ilo_memory_healthy{host="ilo.test"} 1
+# HELP ilo_memory_total_byte Total memory installed in bytes
+# TYPE ilo_memory_total_byte gauge
+ilo_memory_total_byte{host="ilo.test"} 5.49755813888e+11
 # HELP ilo_power_average_watt Average power consumption in watt
 # TYPE ilo_power_average_watt gauge
 ilo_power_average_watt{host="ilo.test",id="0"} 521
@@ -239,7 +229,8 @@ ilo_power_supply_healthy{host="ilo.test",serial="5YCHT0B4DKC1IF"} 1
 ilo_power_up{host="ilo.test"} 1
 # HELP ilo_processor_core_count Number of cores of processor
 # TYPE ilo_processor_core_count gauge
-ilo_processor_core_count{host="ilo.test",model="900-21010-0320-030",socket=""} 0
+ilo_processor_core_count{host="ilo.test",model="900-21010-0320-030",socket="3"} 0
+ilo_processor_core_count{host="ilo.test",model="900-21010-0320-030",socket="4"} 0
 ilo_processor_core_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 1"} 32
 ilo_processor_core_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 2"} 32
 # HELP ilo_processor_count Number of processors
@@ -247,14 +238,37 @@ ilo_processor_core_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",sock
 ilo_processor_count{host="ilo.test"} 4
 # HELP ilo_processor_healthy Health status of processor
 # TYPE ilo_processor_healthy gauge
-ilo_processor_healthy{host="ilo.test",model="900-21010-0320-030",socket=""} 1
+ilo_processor_healthy{host="ilo.test",model="900-21010-0320-030",socket="3"} 1
+ilo_processor_healthy{host="ilo.test",model="900-21010-0320-030",socket="4"} 1
 ilo_processor_healthy{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 1"} 1
 ilo_processor_healthy{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 2"} 1
 # HELP ilo_processor_thread_count Number of threads of processor
 # TYPE ilo_processor_thread_count gauge
-ilo_processor_thread_count{host="ilo.test",model="900-21010-0320-030",socket=""} 0
+ilo_processor_thread_count{host="ilo.test",model="900-21010-0320-030",socket="3"} 0
+ilo_processor_thread_count{host="ilo.test",model="900-21010-0320-030",socket="4"} 0
 ilo_processor_thread_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 1"} 64
 ilo_processor_thread_count{host="ilo.test",model="INTEL(R) XEON(R) GOLD 6530",socket="Proc 2"} 64
+# HELP ilo_scrape_collector_duration_seconds Duration of the collector in seconds
+# TYPE ilo_scrape_collector_duration_seconds gauge
+ilo_scrape_collector_duration_seconds{collector="manager",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="memory",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="power",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="processor",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="storage",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="system",host="ilo.test"} <duration>
+ilo_scrape_collector_duration_seconds{collector="thermal",host="ilo.test"} <duration>
+# HELP ilo_scrape_collector_success 1 if all resources of the collector could be retrieved, 0 otherwise
+# TYPE ilo_scrape_collector_success gauge
+ilo_scrape_collector_success{collector="manager",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="memory",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="power",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="processor",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="storage",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="system",host="ilo.test"} 1
+ilo_scrape_collector_success{collector="thermal",host="ilo.test"} 1
+# HELP ilo_scrape_redfish_requests Number of Redfish requests sent during the scrape
+# TYPE ilo_scrape_redfish_requests gauge
+ilo_scrape_redfish_requests{host="ilo.test"} 9
 # HELP ilo_storage_disk_capacity_byte Capacity of the disk in bytes
 # TYPE ilo_storage_disk_capacity_byte gauge
 ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=17:Port=1:Box=1:Bay=1",media_type="SSD",model="MO006400KYDND",name="6.40TB 64G NVMe SSD",serial_number="S70XNN0XC14051"} 6.401252745216e+12
@@ -264,7 +278,6 @@ ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=17:Port=2:Box=1:Ba
 ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=18:Port=1:Box=1:Bay=5",media_type="SSD",model="MO006400KYDND",name="6.40TB 64G NVMe SSD",serial_number="S70XNN0XC14054"} 6.401252745216e+12
 ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=18:Port=1:Box=1:Bay=6",media_type="SSD",model="MO001600KXVYH",name="1.60TB 64G NVMe SSD",serial_number="8E10A08401C3"} 1.600321314816e+12
 ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=18:Port=2:Box=1:Bay=7",media_type="SSD",model="MO001600KXVYH",name="1.60TB 64G NVMe SSD",serial_number="8E10A08901C3"} 1.600321314816e+12
-ilo_storage_disk_capacity_byte{host="ilo.test",location="Slot=18:Port=2:Box=1:Bay=8",media_type="",model="",name="Empty Bay",serial_number=""} 0
 # HELP ilo_storage_disk_failure_predicted Failure of disk is predicted
 # TYPE ilo_storage_disk_failure_predicted gauge
 ilo_storage_disk_failure_predicted{host="ilo.test",location="Slot=17:Port=1:Box=1:Bay=1",media_type="SSD",model="MO006400KYDND",name="6.40TB 64G NVMe SSD",serial_number="S70XNN0XC14051"} 0
@@ -274,7 +287,6 @@ ilo_storage_disk_failure_predicted{host="ilo.test",location="Slot=17:Port=2:Box=
 ilo_storage_disk_failure_predicted{host="ilo.test",location="Slot=18:Port=1:Box=1:Bay=5",media_type="SSD",model="MO006400KYDND",name="6.40TB 64G NVMe SSD",serial_number="S70XNN0XC14054"} 0
 ilo_storage_disk_failure_predicted{host="ilo.test",location="Slot=18:Port=1:Box=1:Bay=6",media_type="SSD",model="MO001600KXVYH",name="1.60TB 64G NVMe SSD",serial_number="8E10A08401C3"} 0
 ilo_storage_disk_failure_predicted{host="ilo.test",location="Slot=18:Port=2:Box=1:Bay=7",media_type="SSD",model="MO001600KXVYH",name="1.60TB 64G NVMe SSD",serial_number="8E10A08901C3"} 0
-ilo_storage_disk_failure_predicted{host="ilo.test",location="Slot=18:Port=2:Box=1:Bay=8",media_type="",model="",name="Empty Bay",serial_number=""} 0
 # HELP ilo_storage_disk_healthy Health status of the disk
 # TYPE ilo_storage_disk_healthy gauge
 ilo_storage_disk_healthy{host="ilo.test",location="Slot=17:Port=1:Box=1:Bay=1",media_type="SSD",model="MO006400KYDND",name="6.40TB 64G NVMe SSD",serial_number="S70XNN0XC14051"} 1
@@ -284,7 +296,12 @@ ilo_storage_disk_healthy{host="ilo.test",location="Slot=17:Port=2:Box=1:Bay=4",m
 ilo_storage_disk_healthy{host="ilo.test",location="Slot=18:Port=1:Box=1:Bay=5",media_type="SSD",model="MO006400KYDND",name="6.40TB 64G NVMe SSD",serial_number="S70XNN0XC14054"} 1
 ilo_storage_disk_healthy{host="ilo.test",location="Slot=18:Port=1:Box=1:Bay=6",media_type="SSD",model="MO001600KXVYH",name="1.60TB 64G NVMe SSD",serial_number="8E10A08401C3"} 1
 ilo_storage_disk_healthy{host="ilo.test",location="Slot=18:Port=2:Box=1:Bay=7",media_type="SSD",model="MO001600KXVYH",name="1.60TB 64G NVMe SSD",serial_number="8E10A08901C3"} 1
-ilo_storage_disk_healthy{host="ilo.test",location="Slot=18:Port=2:Box=1:Bay=8",media_type="",model="",name="Empty Bay",serial_number=""} 1
 # HELP ilo_system_info System Info
 # TYPE ilo_system_info gauge
 ilo_system_info{bios_version="U58 v2.44 (01/17/2025)",host="ilo.test",host_name="DS03-worker",model="ProLiant DL380a Gen11 -- SIMULATED",serial="2M2D2J00L4",sku="P54903-B21",uuid="39343550-3330-4D32-3244-324A30304C34"} 1
+# HELP ilo_system_scrape_duration_second Scrape duration for the system module
+# TYPE ilo_system_scrape_duration_second gauge
+ilo_system_scrape_duration_second{host="ilo.test"} <duration>
+# HELP ilo_up 1 if the system resource of the iLO could be retrieved, 0 otherwise
+# TYPE ilo_up gauge
+ilo_up{host="ilo.test"} 1
