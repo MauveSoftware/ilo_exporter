@@ -140,7 +140,7 @@ func newExporterFromFlags(logger *slog.Logger) (*exporter, error) {
 	e := &exporter{
 		username:      *username,
 		password:      *password,
-		httpClient:    &http.Client{Transport: tr},
+		httpClient:    client.NewHTTPClient(tr),
 		targets:       targets,
 		logger:        logger,
 		logBodies:     *logRedfishBodies,

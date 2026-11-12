@@ -4,6 +4,8 @@
 
 ### Fixed
 
+- Redirects of the iLO are no longer followed. A redirect could forward the credentials (session login body,
+  `X-Auth-Token`, or basic auth to another port of the same host) to a host not allowed by `-web.allowed-targets`.
 - `ilo_storage_disk_capacity_byte` was 1024 times too small for drives reported via the HPE SmartStorage API (iLO 4/5).
 - Processors without socket (e.g. GPUs listed as processors by iLO 6) had identical labels, so only one of them
   was reported. The `socket` label now falls back to the processor ID.

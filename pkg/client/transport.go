@@ -30,6 +30,18 @@ type TransportConfig struct {
 	CAFile string
 }
 
+// NewHTTPClient creates the HTTP client to be shared by all API clients. Redirects are not followed:
+// Go keeps custom headers (X-Auth-Token) and resends request bodies (session login credentials) on
+// redirects to other hosts, which would bypass -web.allowed-targets. A Redfish service does not redirect.
+func NewHTTPClient(tr http.RoundTripper) *http.Client {
+	return &http.Client{
+		Transport: tr,
+		CheckRedirect: func(*http.Request, []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+}
+
 // NewTransport creates a transport to be shared by all clients, so connections can be reused
 // across scrapes and the per host connection limit is enforced across all scrapes.
 func NewTransport(cfg TransportConfig) (*http.Transport, error) {
