@@ -49,6 +49,7 @@ type System struct {
 type systemOem struct {
 	Links struct {
 		SmartStorage redfish.Link `json:"SmartStorage"`
+		Memory       redfish.Link `json:"Memory"` // iLO 4 has no standard Memory link
 	} `json:"Links"`
 }
 
@@ -68,6 +69,20 @@ func (s *System) SmartStorageLink() string {
 	}
 
 	return s.Oem.Hp.Links.SmartStorage.ID
+}
+
+// MemoryLink returns the link to the memory collection. iLO 4 has no standard Memory link and
+// links the HpMemoryCollection in Oem.Hp.Links.Memory only.
+func (s *System) MemoryLink() string {
+	if l := s.Memory.ID; l != "" {
+		return l
+	}
+
+	if l := s.Oem.Hpe.Links.Memory.ID; l != "" {
+		return l
+	}
+
+	return s.Oem.Hp.Links.Memory.ID
 }
 
 func collectSystem(ctx context.Context, s *scrape) error {

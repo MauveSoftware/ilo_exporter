@@ -160,3 +160,37 @@ func TestAbsentDIMM(t *testing.T) {
 		}
 	}
 }
+
+func TestMemoryLink(t *testing.T) {
+	tests := map[string]string{
+		// iLO 5 and later
+		`{"Memory": {"@odata.id": "/redfish/v1/Systems/1/Memory/"}}`: "/redfish/v1/Systems/1/Memory/",
+		// iLO 4 (OData-Version 4.0): only the OEM link
+		`{"Oem": {"Hp": {"Links": {"Memory": {"@odata.id": "/redfish/v1/Systems/1/Memory/"}}}}}`: "/redfish/v1/Systems/1/Memory/",
+		`{}`: "",
+	}
+
+	for in, want := range tests {
+		sys := System{}
+		if err := json.Unmarshal([]byte(in), &sys); err != nil {
+			t.Fatal(err)
+		}
+
+		if got := sys.MemoryLink(); got != want {
+			t.Errorf("%s: got %q, want %q", in, got, want)
+		}
+	}
+}
+
+func TestMemoryDIMMLegacy(t *testing.T) {
+	// iLO 4 HpMemory resource
+	in := `{"Name": "proc1dimm9", "DIMMStatus": "GoodInUse", "SizeMB": 16384}`
+	d := MemoryDIMM{}
+	if err := json.Unmarshal([]byte(in), &d); err != nil {
+		t.Fatal(err)
+	}
+
+	if !d.IsValid() || d.HealthValue() != 1 || d.SizeMB() != 16384 {
+		t.Errorf("got valid=%v health=%v size=%v", d.IsValid(), d.HealthValue(), d.SizeMB())
+	}
+}

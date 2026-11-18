@@ -99,7 +99,7 @@ func (m *MemoryDIMM) SizeMB() uint64 {
 }
 
 func collectMemory(ctx context.Context, s *scrape) error {
-	path := s.systemLink(func(sys *System) string { return sys.Memory.ID }, "Memory")
+	path := s.systemLink(func(sys *System) string { return sys.MemoryLink() }, "Memory")
 	if path == "" {
 		return nil
 	}
