@@ -4,6 +4,8 @@
 
 ### Fixed
 
+- DIMM metrics (`ilo_memory_dimm_healthy`, `ilo_memory_dimm_byte`) were missing on iLO 4. iLO 4 links the memory
+  collection only in `Oem.Hp.Links.Memory`, not in the standard `Memory` property.
 - Redirects of the iLO are no longer followed. A redirect could forward the credentials (session login body,
   `X-Auth-Token`, or basic auth to another port of the same host) to a host not allowed by `-web.allowed-targets`.
 - `ilo_storage_disk_capacity_byte` was 1024 times too small for drives reported via the HPE SmartStorage API (iLO 4/5).
